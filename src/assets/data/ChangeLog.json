@@ -1,0 +1,22 @@
+[
+    {
+        "version": "0.1",
+        "name": "v0.1 測試版",
+        "closed": true,
+        "date": "2022/11/04",
+        "description": "架構全改",
+        "changes": [
+            "新增新增首頁",
+            "新增關於頁面",
+            "新增作品頁面",
+            "新增朋友頁面",
+            "新團隊頁面",
+            "新增頁尾",
+            "新增選單頁面",
+            "新增 Bootstrap",
+            "同步 oldSite",
+            "新增 Google Adsense 廣告"
+            "新增 Facebook 彈出小視窗"
+        ]
+    }
+]
