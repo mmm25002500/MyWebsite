@@ -13,7 +13,40 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutMe.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/AboutPage.vue'),
+    children: [
+      {
+        path: 'me',
+        name: '',
+        component: () => import(/* webpackChunkName: "skill" */ '../views/AboutMe.vue')
+      }
+      // {
+      //   path: 'goal',
+      //   name: '',
+      //   component: () => import(/* webpackChunkName: "skill" */ '../views/AboutMe.vue')
+      // },
+      // {
+      //   path: 'works',
+      //   name: '',
+      //   component: () => import(/* webpackChunkName: "skill" */ '../views/AboutMe.vue')
+      // },
+      // {
+      //   path: 'friends',
+      //   name: '',
+      //   component: () => import(/* webpackChunkName: "skill" */ '../views/AboutMe.vue')
+      // },
+      // {
+      //   path: 'team',
+      //   name: '',
+      //   component: () => import(/* webpackChunkName: "skill" */ '../views/AboutMe.vue'),
+      //   children: [
+      //     {
+      //       path: 'team1',
+      //       name: '',
+      //       component: () => import(/* webpackChunkName: "skill" */ '../views/AboutMe.vue')
+      //     }
+      // }
+    ]
   },
   {
     path: '/myfriend',
@@ -30,6 +63,11 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/MenuPage.vue')
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'ERR 404 找不到頁面ㄛ',
+    component: () => import('../views/NotFound.vue')
   },
   {
     path: '/team',
@@ -50,11 +88,19 @@ const routes = [
         component: () => import(/* webpackChunkName: "about" */ '../views/TeamJoin.vue')
       }
     ]
+  },
+  {
+    path: '/webchangelog',
+    name: '更新日誌',
+    component: () => import(/* webpackChunkName: "about" */ '../views/ChangeLog.vue')
   }
 ]
 
 const router = createRouter({
   history: createWebHashHistory(),
+  scrollBehavior (to, from, savedPosition) {
+    return { left: 0, top: 0 }
+  },
   routes
 })
 

@@ -1,6 +1,17 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
+/* import the fontawesome core */
+import { library } from '@fortawesome/fontawesome-svg-core'
+import VueUseWebp from 'vue-use-webp'
+
+/* import font awesome icon component */
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+/* import specific icons */
+import { fab } from '@fortawesome/free-brands-svg-icons'
+import BootstrapVue3 from 'bootstrap-vue-3'
 
 const styles = 'background-color: #80FFFF; color: #FF0000; font-style: bold; border: 1px solid pink; font-size: 4em;'
 console.log('%c討厭拉！不要亂看人家的Console\n ヽ(́◕◞౪◟◕‵)ﾉ', styles)
@@ -11,15 +22,23 @@ const x = {
 }
 console.table(x, 'About me')
 
-const app = createApp(App)
+library.add(fas, fab)
 
-const DEFAULT_TITLE = 'Some Default Title'
+const app = createApp(App)
+console.log(app)
+// const DEFAULT_TITLE = 'Some Default Title'
 router.afterEach((to, from) => {
   app.nextTick(() => {
-    document.title = to.meta.title || DEFAULT_TITLE
+    if (to.meta.title) {
+      document.title = to.meta.title
+    } else {
+      document.title = 'Some Default Title'
+    }
   })
 })
-
 app.use(router)
-// app.use(jQuery)
+app.use(VueUseWebp)
+app.use(BootstrapVue3)
+app.component('font-awesome-icon', FontAwesomeIcon)
+app.config.productionTip = false
 app.mount('#app')

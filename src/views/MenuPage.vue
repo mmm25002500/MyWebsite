@@ -11,8 +11,8 @@
   <!-- Nav -->
     <nav id="nav">
       <ul>
-        <li><a href="#Internal_Link" class="active">站內連結</a></li>
-        <li><a href="#External_Link">站外連結</a></li>
+        <li><a @click.prevent="anchor('Internal_Link')" class="active" >站內連結</a></li>
+        <li><a @click.prevent="anchor('External_Link')" >站外連結</a></li>
       </ul>
     </nav>
 
@@ -31,6 +31,7 @@
 
 <script>
 import Table from '@/components/MenuPage/MenuSection.vue'
+
 export default {
   components: {
     Table
@@ -207,6 +208,14 @@ export default {
           ]
         }
       ]
+    }
+  },
+  methods: {
+    anchor (anchorName) {
+      const anchorElement = document.getElementById(anchorName)
+      if (anchorElement) {
+        anchorElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
     }
   }
 }

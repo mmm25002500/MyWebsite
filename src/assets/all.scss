@@ -1,8 +1,10 @@
 @import "~bootstrap/scss/functions";
 @import "./bs/variables";
-// @import "~bootstrap/scss/maps";
+@import "~bootstrap/scss/maps";
 @import "~bootstrap/scss/mixins";
-// @import "~bootstrap/scss/root";
-.bs-5 {
-    @import "~bootstrap/scss/bootstrap";
-}
+@import "~bootstrap/scss/root";
+@import "~bootstrap/scss/bootstrap";
+
+// .bs-5 {
+//     @import "~bootstrap/scss/bootstrap";
+// }

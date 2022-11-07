@@ -1,5 +1,23 @@
 [
     {
+        "version": "0.2",
+        "name": "v0.2 測試版",
+        "closed": true,
+        "date": "2022/11/07",
+        "description": "架構全改",
+        "changes": [
+            "進入一個新頁面到最上面",
+            "修復選單的badge",
+            "新增 404 頁面",
+            "新增背景顏色",
+            "新增卡片資訊",
+            "修改卡片背景色",
+            "新增關於的路由表",
+            "新增更新日誌",
+            "新增背景圖片"
+        ]
+    },
+    {
         "version": "0.1",
         "name": "v0.1 測試版",
         "closed": true,
@@ -15,7 +33,7 @@
             "新增選單頁面",
             "新增 Bootstrap",
             "同步 oldSite",
-            "新增 Google Adsense 廣告"
+            "新增 Google Adsense 廣告",
             "新增 Facebook 彈出小視窗"
         ]
     }

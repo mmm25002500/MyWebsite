@@ -4,27 +4,31 @@
     <!-- Header -->
       <header id="header" class="alt">
         <!--<span class="logo"><img src="images/logo.svg" alt="" /></span> -->
-        <span class="logo"><img src="images/logo.svg" width="85" alt=""></span>
+        <!-- <span class="logo"><img src="images/logo.svg" width="85" alt=""></span> -->
         <h1>{{ title }}</h1>
         <p v-html="description"></p>
 
       </header>
-      <center><h6 style="color:red;">看一下廣告支持一下我拉XD (๑•́ ₃ •̀๑)</h6></center>
+      <!-- <center><h6 style="color:red;">看一下廣告支持一下我拉XD (๑•́ ₃ •̀๑)</h6></center> -->
     <!-- Nav -->
-      <nav id="nav">
+      <!-- <nav id="nav">
         <ul>
           <li v-for="(item, key) in nav" :key="key">
             <a :href="`#`+item.link">{{ item.name }}</a>
           </li>
         </ul>
-      </nav>
+      </nav> -->
     <!-- Main -->
       <div id="main">
 
         <About></About>
+        <hr class="text-dark">
         <Goal></Goal>
+        <hr class="text-dark">
         <Work></Work>
+        <hr class="text-dark">
         <Friends></Friends>
+        <hr class="text-dark">
         <Team></Team>
 
       </div>
@@ -41,6 +45,38 @@ import Work from '@/components/HomePage/WorkSection.vue'
 import Friends from '@/components/HomePage/FriendsSection.vue'
 import Team from '@/components/HomePage/TeamSection.vue'
 import Footer from '@/components/HomePage/FooterSection.vue'
+
+// const alljs = document.createElement('script')
+// alljs.setAttribute('src', '/js/all.js')
+// document.head.appendChild(alljs)
+
+// const a1 = document.createElement('script')
+// a1.setAttribute('src', '/js/jquery.min.js')
+// document.head.appendChild(a1)
+
+// const a2 = document.createElement('script')
+// a2.setAttribute('src', '/js/jquery.scrollex.min.js')
+// document.head.appendChild(a2)
+
+// const a3 = document.createElement('script')
+// a3.setAttribute('src', '/js/jquery.scrolly.min.js')
+// document.head.appendChild(a3)
+
+// const a4 = document.createElement('script')
+// a4.setAttribute('src', '/js/browser.min.js')
+// document.head.appendChild(a4)
+
+// const a5 = document.createElement('script')
+// a5.setAttribute('src', '/js/breakpoints.min.js')
+// document.head.appendChild(a5)
+
+// const a6 = document.createElement('script')
+// a6.setAttribute('src', '/js/util.js')
+// document.head.appendChild(a6)
+
+// const a7 = document.createElement('script')
+// a7.setAttribute('src', '/js/main.js')
+// document.head.appendChild(a7)
 
 export default {
   components: {

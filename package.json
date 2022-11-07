@@ -8,12 +8,20 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.2.0",
+    "@fortawesome/free-brands-svg-icons": "^6.2.0",
+    "@fortawesome/free-regular-svg-icons": "^6.2.0",
+    "@fortawesome/free-solid-svg-icons": "^6.2.0",
+    "@fortawesome/vue-fontawesome": "^3.0.1",
+    "@popperjs/core": "^2.11.6",
     "bootstrap": "^5.2.2",
+    "bootstrap-vue-3": "^0.3.12",
     "breakpoints": "^0.0.0",
     "core-js": "^3.8.3",
     "jquery": "^3.6.1",
     "vue": "^3.2.13",
-    "vue-router": "^4.0.3"
+    "vue-router": "^4.0.3",
+    "vue-use-webp": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

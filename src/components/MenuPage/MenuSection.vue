@@ -17,11 +17,11 @@
               <td v-if="item2.name">
                 <!-- <div class="bootstrap-iso"> -->
                   <div class="bs-5" v-if="!item2.available">
-                    <span class="badge rounded-pill bg-danger">不可用</span>
+                    <span class="badge text-bg-danger">不可用</span>
                     {{item2.name}}
                   </div>
                   <div class="bs-5" v-else>
-                    <span class="badge rounded-pill bg-success">可用</span>
+                    <span class="badge text-bg-success">可用</span>
                     {{item2.name}}
                   </div>
                 <!-- </div> -->
