@@ -92,7 +92,7 @@
       </div>
     </div>
   </nav>
-  <div class="container-fluid">
+  <div class="container">
     <div style="position: fixed; bottom: 0px; width: 99%; z-index: 1">
       <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
         <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
@@ -108,11 +108,20 @@
       <div class="alert alert-danger d-flex align-items-center" role="alert">
         <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
         <div>
-          請注意！！夏特稀個人網站正在進行大更新，將全面改為 Vue CLI 架構，如要查看完整頁面，<a href="https://www2.tershi.com" class="alert-link">請回到舊正式版網頁</a>. 並等待網站全面更新完成。中華民國 111 年 11 月 04 日
+          請注意！！夏特稀個人網站正在進行大更新，將全面改為 Vue CLI 架構，目前新版頁面功能尚未完成，正在製作開發。如要查看完整頁面，<a href="https://www2.tershi.com" class="alert-link text-info">請回到舊正式版網頁</a>. 並等待網站全面更新完成。中華民國 111 年 11 月 04 日
         </div>
       </div>
     </div>
-    <router-view/>
+    <transition
+      mode="out-in"
+      enter-active-class="animate__animated animate__backInLeft"
+      leave-active-class="animate__animated animate__backOutRight"
+      >
+      <router-view />
+    </transition>
+    <hr>
+    <p class="copyright text-center">&copy; Copyright 2022. TershiXia</p>
+  <!-- <router-view /> -->
   </div>
 </template>
 
@@ -213,5 +222,4 @@ body {
   background-size: cover;
   color: white;
 }
-
 </style>

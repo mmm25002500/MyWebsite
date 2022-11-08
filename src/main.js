@@ -13,6 +13,12 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import BootstrapVue3 from 'bootstrap-vue-3'
 
+// import transition of animation
+// import Vue3Transitions from 'vue3-transitions'
+
+// import animate.css
+import 'animate.css'
+
 const styles = 'background-color: #80FFFF; color: #FF0000; font-style: bold; border: 1px solid pink; font-size: 4em;'
 console.log('%c討厭拉！不要亂看人家的Console\n ヽ(́◕◞౪◟◕‵)ﾉ', styles)
 const x = {
@@ -39,6 +45,7 @@ router.afterEach((to, from) => {
 app.use(router)
 app.use(VueUseWebp)
 app.use(BootstrapVue3)
+// app.use(Vue3Transitions)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.config.productionTip = false
 app.mount('#app')

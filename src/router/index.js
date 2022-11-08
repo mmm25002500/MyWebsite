@@ -8,33 +8,38 @@ const routes = [
     component: HomePage
   },
   {
+    path: '/projects',
+    name: '我的專案',
+    component: () => import(/* webpackChunkName: "about" */ '../views/ProjectPage.vue')
+  },
+  {
     path: '/about',
     name: '關於夏特稀',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutPage.vue'),
+    component: () => import(/* webpackChunkName: "about" */ '../views/AboutPage/AboutPage.vue'),
     children: [
       {
         path: 'me',
-        name: '',
-        component: () => import(/* webpackChunkName: "skill" */ '../views/AboutMe.vue')
+        name: '關於我',
+        component: () => import(/* webpackChunkName: "skill" */ '../views/AboutPage/AboutMe.vue')
+      },
+      {
+        path: 'goal',
+        name: '我的目標',
+        component: () => import(/* webpackChunkName: "skill" */ '../views/AboutPage/AboutGoal.vue')
+      },
+      {
+        path: 'works',
+        name: '我的作品',
+        component: () => import(/* webpackChunkName: "skill" */ '../views/AboutPage/AboutWorks.vue')
+      },
+      {
+        path: 'friends',
+        name: '我的好朋友們',
+        component: () => import(/* webpackChunkName: "skill" */ '../views/AboutPage/AboutFriends.vue')
       }
-      // {
-      //   path: 'goal',
-      //   name: '',
-      //   component: () => import(/* webpackChunkName: "skill" */ '../views/AboutMe.vue')
-      // },
-      // {
-      //   path: 'works',
-      //   name: '',
-      //   component: () => import(/* webpackChunkName: "skill" */ '../views/AboutMe.vue')
-      // },
-      // {
-      //   path: 'friends',
-      //   name: '',
-      //   component: () => import(/* webpackChunkName: "skill" */ '../views/AboutMe.vue')
-      // },
       // {
       //   path: 'team',
       //   name: '',
