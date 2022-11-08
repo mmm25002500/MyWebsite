@@ -25,15 +25,15 @@
         <hr class="text-dark">
         <Goal></Goal>
         <hr class="text-dark">
-        <Work></Work>
+        <!-- <Work></Work>
         <hr class="text-dark">
         <Friends></Friends>
         <hr class="text-dark">
-        <Team></Team>
+        <Team></Team> -->
 
       </div>
 
-    <Footer></Footer>
+    <!-- <Footer></Footer> -->
 
   </div>
 </template>
@@ -41,51 +41,19 @@
 <script>
 import About from '@/components/HomePage/AboutSection.vue'
 import Goal from '@/components/HomePage/GoalSection.vue'
-import Work from '@/components/HomePage/WorkSection.vue'
-import Friends from '@/components/HomePage/FriendsSection.vue'
-import Team from '@/components/HomePage/TeamSection.vue'
-import Footer from '@/components/HomePage/FooterSection.vue'
-
-// const alljs = document.createElement('script')
-// alljs.setAttribute('src', '/js/all.js')
-// document.head.appendChild(alljs)
-
-// const a1 = document.createElement('script')
-// a1.setAttribute('src', '/js/jquery.min.js')
-// document.head.appendChild(a1)
-
-// const a2 = document.createElement('script')
-// a2.setAttribute('src', '/js/jquery.scrollex.min.js')
-// document.head.appendChild(a2)
-
-// const a3 = document.createElement('script')
-// a3.setAttribute('src', '/js/jquery.scrolly.min.js')
-// document.head.appendChild(a3)
-
-// const a4 = document.createElement('script')
-// a4.setAttribute('src', '/js/browser.min.js')
-// document.head.appendChild(a4)
-
-// const a5 = document.createElement('script')
-// a5.setAttribute('src', '/js/breakpoints.min.js')
-// document.head.appendChild(a5)
-
-// const a6 = document.createElement('script')
-// a6.setAttribute('src', '/js/util.js')
-// document.head.appendChild(a6)
-
-// const a7 = document.createElement('script')
-// a7.setAttribute('src', '/js/main.js')
-// document.head.appendChild(a7)
+// import Work from '@/components/HomePage/WorkSection.vue'
+// import Friends from '@/components/HomePage/FriendsSection.vue'
+// import Team from '@/components/HomePage/TeamSection.vue'
+// import Footer from '@/components/HomePage/FooterSection.vue'
 
 export default {
   components: {
     About,
-    Goal,
-    Work,
-    Friends,
-    Team,
-    Footer
+    Goal
+    // Work,
+    // Friends,
+    // Team,
+    // Footer
   },
   data () {
     return {

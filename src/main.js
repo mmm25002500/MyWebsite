@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 /* import specific icons */
 import { fab } from '@fortawesome/free-brands-svg-icons'
+import { far } from '@fortawesome/free-regular-svg-icons'
 import BootstrapVue3 from 'bootstrap-vue-3'
 
 // import transition of animation
@@ -28,7 +29,7 @@ const x = {
 }
 console.table(x, 'About me')
 
-library.add(fas, fab)
+library.add(fas, fab, far)
 
 const app = createApp(App)
 console.log(app)

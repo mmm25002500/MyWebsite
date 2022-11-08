@@ -1,7 +1,25 @@
 [
     {
+        "version": "0.4",
+        "category": "測試版",
+        "closed": true,
+        "date": "2022/11/08",
+        "description": "開發架構中",
+        "changes": [
+            "將公告提醒位置修改",
+            "新增回到舊版網頁按鈕",
+            "將更新日誌版本分類分離",
+            "新增更新日誌設定",
+            "完成我的目標區塊",
+            "關於我新增按鈕和搜尋功能",
+            "關於我變成兩欄",
+            "完成目標頁面",
+            "更改頁面動畫"
+        ]
+    },
+    {
         "version": "0.3",
-        "name": "v0.3 測試版",
+        "category": "測試版",
         "closed": true,
         "date": "2022/11/08",
         "description": "開發架構中",
@@ -18,7 +36,7 @@
     },
     {
         "version": "0.2",
-        "name": "v0.2 測試版",
+        "category": "測試版",
         "closed": true,
         "date": "2022/11/07",
         "description": "架構全改",
@@ -36,7 +54,7 @@
     },
     {
         "version": "0.1",
-        "name": "v0.1 測試版",
+        "category": "測試版",
         "closed": true,
         "date": "2022/11/04",
         "description": "架構全改",

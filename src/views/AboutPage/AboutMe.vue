@@ -7,7 +7,7 @@
       <p>大家好，我是夏特稀，我是一名高中生，喜歡在課餘時候研究程式語言相關的東西。</p>
     </header>
    <!-- Nav -->
-    <nav id="nav">
+    <!-- <nav id="nav">
       <ul>
         <li v-for="(item, key) in mySelf" :key="key">
           <a :href="`#`+item.tag">
@@ -15,19 +15,52 @@
           </a>
         </li>
       </ul>
-    </nav>
+    </nav> -->
+    <div class="form-floating text-dark mb-3">
+      <textarea class="form-control" placeholder="搜尋條目" id="searchDeveloper" v-model="cacheSearch"></textarea>
+      <label for="searchDeveloper">搜尋條目</label>
+    </div>
+    <div class="btn-group" role="group" aria-label="Basic radio toggle button group mb-3">
+      <div class="mb-3">
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" @click="change('')" checked>
+        <label class="btn btn-outline-info text-white" for="btnradio2">全部</label>
+      </div>
+      <div v-for="(item, key) in data" :key="key" class="mb-3">
+        <input :href="`#`+item.name" type="radio" class="btn-check" name="btnradio" :id="item.name" autocomplete="off" @click="change(item.tag)">
+        <label class="btn btn-outline-info text-white" :for="item.name">{{ item.name }}</label>
+      </div>
+    </div>
 
     <!-- Main -->
     <div id="main">
       <!-- <span class="image main"><img src="images/pic04.jpg" alt="" /></span> -->
-      <Card v-for="(item, key) in mySelf" :key="key" :myself="item"></Card>
+
+      <!-- 如果只有一個，那就滿版 -->
+      <div v-if="searchData.length === 1">
+        <Card
+          v-for="(item, key) in searchData"
+          :key="key"
+          :title="item.name"
+          :tag="item.tag"
+          :short="item.EngName"
+          :content="item.content"
+          >
+        </Card>
+      </div>
+      <!-- 如果兩個以上，就分割成兩欄 -->
+      <div v-else>
+          <div class="row row-cols-1 g-4 row-cols-md-2">
+            <div class="col" v-for="(item, key) in searchData" :key="key">
+              <Card
+                :title="item.name"
+                :tag="item.tag"
+                :short="item.EngName"
+                :content="item.content"
+              ></Card>
+            </div>
+          </div>
+      </div>
     </div>
-
-    <!-- Footer -->
-    <footer id="footer">
-      <p class="copyright">&copy; Cutespirit {{ new Date().getFullYear() }}.</p>
-    </footer>
-
   </div>
 </template>
 
@@ -39,7 +72,9 @@ export default {
   },
   data () {
     return {
-      mySelf: [
+      cacheSearch: '',
+      searchData: [],
+      data: [
         {
           name: '介紹',
           EngName: 'Introduction',
@@ -66,10 +101,10 @@ export default {
         },
         {
           name: '我的連絡資訊',
-          EngName: 'myContactInfomation',
+          EngName: 'My Contact Information',
           tag: 'myContactInfomation',
           content: `
-          <table class="alt">
+          <table class="table table-dark table-striped">
             <tr>
               <td>項目</td>
               <td>連結</td>
@@ -110,6 +145,32 @@ export default {
           `
         }
       ]
+    }
+  },
+  watch: {
+    cacheSearch: function (val) {
+      this.searchData = this.data.filter((item) => {
+        // 如果沒有搜尋到 name
+        if (item.name.includes(this.cacheSearch)) {
+          return item.name.includes(this.cacheSearch)
+        } else if (item.EngName.includes(this.cacheSearch)) {
+          return item.EngName.includes(this.cacheSearch)
+        } else if (item.content.includes(this.cacheSearch)) {
+          return item.content.includes(this.cacheSearch)
+        } else if (item.tag.includes(this.cacheSearch)) {
+          return item.tag.includes(this.cacheSearch)
+        } else {
+          return false
+        }
+      })
+    }
+  },
+  created () {
+    this.searchData = this.data
+  },
+  methods: {
+    change (name) {
+      this.cacheSearch = name
     }
   }
 }
