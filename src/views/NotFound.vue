@@ -4,7 +4,7 @@
     <br>
     <h1 class="text-center text-danger">錯誤 404，找不到頁面ㄛ</h1>
     <h2 class="text-center">
-      <router-link to="#" class="text-info">點我立刻返回首頁</router-link>
+      <router-link to="/" class="text-info">點我立刻返回首頁</router-link>
       <br>
       <a href="https://www2.tershi.com" class="text-warning">或是回到舊正式版網頁</a>
     </h2>

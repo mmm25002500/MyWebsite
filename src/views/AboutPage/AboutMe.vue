@@ -6,16 +6,7 @@
       <h1>About Me</h1>
       <p>大家好，我是夏特稀，我是一名高中生，喜歡在課餘時候研究程式語言相關的東西。</p>
     </header>
-   <!-- Nav -->
-    <!-- <nav id="nav">
-      <ul>
-        <li v-for="(item, key) in mySelf" :key="key">
-          <a :href="`#`+item.tag">
-            {{item.name}}
-          </a>
-        </li>
-      </ul>
-    </nav> -->
+
     <div class="form-floating text-dark mb-3">
       <textarea class="form-control" placeholder="搜尋條目" id="searchDeveloper" v-model="cacheSearch"></textarea>
       <label for="searchDeveloper">搜尋條目</label>

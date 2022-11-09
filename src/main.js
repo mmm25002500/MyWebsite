@@ -1,24 +1,20 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
+
 /* import the fontawesome core */
 import { library } from '@fortawesome/fontawesome-svg-core'
 import VueUseWebp from 'vue-use-webp'
-
-/* import font awesome icon component */
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-
-/* import specific icons */
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import BootstrapVue3 from 'bootstrap-vue-3'
-
-// import transition of animation
-// import Vue3Transitions from 'vue3-transitions'
-
-// import animate.css
 import 'animate.css'
+
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+import Ads from 'vue-google-adsense'
 
 const styles = 'background-color: #80FFFF; color: #FF0000; font-style: bold; border: 1px solid pink; font-size: 4em;'
 console.log('%c討厭拉！不要亂看人家的Console\n ヽ(́◕◞౪◟◕‵)ﾉ', styles)
@@ -47,6 +43,9 @@ app.use(router)
 app.use(VueUseWebp)
 app.use(BootstrapVue3)
 // app.use(Vue3Transitions)
+app.use(require('vue-script2'))
+app.use(Ads.AutoAdsense, { adClient: 'ca-pub-9107487734392446', isNewAdsCode: true })
+app.use(VueAxios, axios)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.config.productionTip = false
 app.mount('#app')

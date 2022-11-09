@@ -1,5 +1,7 @@
 <template>
   <div>
+    <h2>我的目標</h2>
+    <p>這裡是我在人生的階段想做的事和已經做完的事，在這裡紀錄，為了實現夢想，正在朝著我的目標而前進。</p>
     <div class="form-floating text-dark mb-3">
       <textarea class="form-control" placeholder="搜尋條目" id="searchDeveloper" v-model="cacheSearch"></textarea>
       <label for="searchDeveloper">搜尋條目</label>

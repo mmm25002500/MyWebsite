@@ -43,6 +43,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@vue/cli-service", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:5.0.8"],\
             ["@vue/eslint-config-standard", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:6.1.0"],\
             ["animate.css", "npm:4.1.1"],\
+            ["axios", "npm:1.1.3"],\
             ["bootstrap", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:5.2.2"],\
             ["bootstrap-vue-3", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:0.3.12"],\
             ["breakpoints", "npm:0.0.0"],\
@@ -56,7 +57,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["sass", "npm:1.56.0"],\
             ["sass-loader", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:12.6.0"],\
             ["vue", "npm:3.2.41"],\
+            ["vue-axios", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:3.5.2"],\
+            ["vue-google-adsense", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:1.10.1"],\
             ["vue-router", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:4.1.6"],\
+            ["vue-script2", "npm:2.1.0"],\
             ["vue-use-webp", "npm:1.0.0"],\
             ["vue3-transitions", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:1.0.0"]\
           ],\
@@ -4420,6 +4424,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["asynckit", [\
+        ["npm:0.4.0", {\
+          "packageLocation": "./.yarn/cache/asynckit-npm-0.4.0-c718858525-7b78c451df.zip/node_modules/asynckit/",\
+          "packageDependencies": [\
+            ["asynckit", "npm:0.4.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["at-least-node", [\
         ["npm:1.0.0", {\
           "packageLocation": "./.yarn/cache/at-least-node-npm-1.0.0-2b36e661fa-463e2f8e43.zip/node_modules/at-least-node/",\
@@ -4453,6 +4466,18 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packagePeers": [\
             "@types/postcss",\
             "postcss"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["axios", [\
+        ["npm:1.1.3", {\
+          "packageLocation": "./.yarn/cache/axios-npm-1.1.3-4b63965ac1-cab3b17bf6.zip/node_modules/axios/",\
+          "packageDependencies": [\
+            ["axios", "npm:1.1.3"],\
+            ["follow-redirects", "virtual:4b63965ac1b2157b91a1875529bea3b0bbc3068d3676d1bef28bff5cf6689705374a86cc3832f95ba8d934037a93cc0e09c3662c13ca0e747800d7ca279a53c0#npm:1.15.2"],\
+            ["form-data", "npm:4.0.0"],\
+            ["proxy-from-env", "npm:1.1.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -5159,6 +5184,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/colorette-npm-2.0.19-f73dfe6a4e-888cf5493f.zip/node_modules/colorette/",\
           "packageDependencies": [\
             ["colorette", "npm:2.0.19"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["combined-stream", [\
+        ["npm:1.0.8", {\
+          "packageLocation": "./.yarn/cache/combined-stream-npm-1.0.8-dc14d4a63a-49fa4aeb49.zip/node_modules/combined-stream/",\
+          "packageDependencies": [\
+            ["combined-stream", "npm:1.0.8"],\
+            ["delayed-stream", "npm:1.0.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -6004,6 +6039,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["define-properties", "npm:1.1.4"],\
             ["has-property-descriptors", "npm:1.0.0"],\
             ["object-keys", "npm:1.1.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["delayed-stream", [\
+        ["npm:1.0.0", {\
+          "packageLocation": "./.yarn/cache/delayed-stream-npm-1.0.0-c5a4c4cc02-46fe6e83e2.zip/node_modules/delayed-stream/",\
+          "packageDependencies": [\
+            ["delayed-stream", "npm:1.0.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -7227,16 +7271,28 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:a313c479c5c7e54d9ec8fbeeea69ff640f56b8989ea2dff42351a3fa5c4061fb80a52d8ede0f0826a181a216820c2d2c3f15da881e7fdf31cef1c446e42f0c45#npm:1.15.2", {\
-          "packageLocation": "./.yarn/__virtual__/follow-redirects-virtual-2696a91c1b/0/cache/follow-redirects-npm-1.15.2-1ec1dd82be-faa66059b6.zip/node_modules/follow-redirects/",\
+        ["virtual:4b63965ac1b2157b91a1875529bea3b0bbc3068d3676d1bef28bff5cf6689705374a86cc3832f95ba8d934037a93cc0e09c3662c13ca0e747800d7ca279a53c0#npm:1.15.2", {\
+          "packageLocation": "./.yarn/__virtual__/follow-redirects-virtual-b0bb08d690/0/cache/follow-redirects-npm-1.15.2-1ec1dd82be-faa66059b6.zip/node_modules/follow-redirects/",\
           "packageDependencies": [\
-            ["follow-redirects", "virtual:a313c479c5c7e54d9ec8fbeeea69ff640f56b8989ea2dff42351a3fa5c4061fb80a52d8ede0f0826a181a216820c2d2c3f15da881e7fdf31cef1c446e42f0c45#npm:1.15.2"],\
+            ["follow-redirects", "virtual:4b63965ac1b2157b91a1875529bea3b0bbc3068d3676d1bef28bff5cf6689705374a86cc3832f95ba8d934037a93cc0e09c3662c13ca0e747800d7ca279a53c0#npm:1.15.2"],\
             ["@types/debug", null],\
             ["debug", null]\
           ],\
           "packagePeers": [\
             "@types/debug",\
             "debug"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["form-data", [\
+        ["npm:4.0.0", {\
+          "packageLocation": "./.yarn/cache/form-data-npm-4.0.0-916facec2d-01135bf867.zip/node_modules/form-data/",\
+          "packageDependencies": [\
+            ["form-data", "npm:4.0.0"],\
+            ["asynckit", "npm:0.4.0"],\
+            ["combined-stream", "npm:1.0.8"],\
+            ["mime-types", "npm:2.1.35"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -7823,7 +7879,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["http-proxy", "npm:1.18.1"],\
             ["eventemitter3", "npm:4.0.7"],\
-            ["follow-redirects", "virtual:a313c479c5c7e54d9ec8fbeeea69ff640f56b8989ea2dff42351a3fa5c4061fb80a52d8ede0f0826a181a216820c2d2c3f15da881e7fdf31cef1c446e42f0c45#npm:1.15.2"],\
+            ["follow-redirects", "virtual:4b63965ac1b2157b91a1875529bea3b0bbc3068d3676d1bef28bff5cf6689705374a86cc3832f95ba8d934037a93cc0e09c3662c13ca0e747800d7ca279a53c0#npm:1.15.2"],\
             ["requires-port", "npm:1.0.0"]\
           ],\
           "linkType": "HARD"\
@@ -10744,6 +10800,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["proxy-from-env", [\
+        ["npm:1.1.0", {\
+          "packageLocation": "./.yarn/cache/proxy-from-env-npm-1.1.0-c13d07f26b-ed7fcc2ba0.zip/node_modules/proxy-from-env/",\
+          "packageDependencies": [\
+            ["proxy-from-env", "npm:1.1.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["pseudomap", [\
         ["npm:1.0.2", {\
           "packageLocation": "./.yarn/cache/pseudomap-npm-1.0.2-0d0e40fee0-856c0aae0f.zip/node_modules/pseudomap/",\
@@ -12011,6 +12076,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@vue/cli-service", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:5.0.8"],\
             ["@vue/eslint-config-standard", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:6.1.0"],\
             ["animate.css", "npm:4.1.1"],\
+            ["axios", "npm:1.1.3"],\
             ["bootstrap", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:5.2.2"],\
             ["bootstrap-vue-3", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:0.3.12"],\
             ["breakpoints", "npm:0.0.0"],\
@@ -12024,7 +12090,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["sass", "npm:1.56.0"],\
             ["sass-loader", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:12.6.0"],\
             ["vue", "npm:3.2.41"],\
+            ["vue-axios", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:3.5.2"],\
+            ["vue-google-adsense", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:1.10.1"],\
             ["vue-router", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:4.1.6"],\
+            ["vue-script2", "npm:2.1.0"],\
             ["vue-use-webp", "npm:1.0.0"],\
             ["vue3-transitions", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:1.0.0"]\
           ],\
@@ -12410,6 +12479,32 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["vue-axios", [\
+        ["npm:3.5.2", {\
+          "packageLocation": "./.yarn/cache/vue-axios-npm-3.5.2-2b35729efa-c0b0251ba3.zip/node_modules/vue-axios/",\
+          "packageDependencies": [\
+            ["vue-axios", "npm:3.5.2"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:3.5.2", {\
+          "packageLocation": "./.yarn/__virtual__/vue-axios-virtual-7d969ce484/0/cache/vue-axios-npm-3.5.2-2b35729efa-c0b0251ba3.zip/node_modules/vue-axios/",\
+          "packageDependencies": [\
+            ["vue-axios", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:3.5.2"],\
+            ["@types/axios", null],\
+            ["@types/vue", null],\
+            ["axios", "npm:1.1.3"],\
+            ["vue", "npm:3.2.41"]\
+          ],\
+          "packagePeers": [\
+            "@types/axios",\
+            "@types/vue",\
+            "axios",\
+            "vue"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["vue-eslint-parser", [\
         ["npm:8.3.0", {\
           "packageLocation": "./.yarn/cache/vue-eslint-parser-npm-8.3.0-961d6d1447-8cc751e9fc.zip/node_modules/vue-eslint-parser/",\
@@ -12435,6 +12530,32 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packagePeers": [\
             "@types/eslint",\
             "eslint"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["vue-google-adsense", [\
+        ["npm:1.10.1", {\
+          "packageLocation": "./.yarn/cache/vue-google-adsense-npm-1.10.1-e4bdddeebf-2496bb7297.zip/node_modules/vue-google-adsense/",\
+          "packageDependencies": [\
+            ["vue-google-adsense", "npm:1.10.1"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:1.10.1", {\
+          "packageLocation": "./.yarn/__virtual__/vue-google-adsense-virtual-176f24cfd9/0/cache/vue-google-adsense-npm-1.10.1-e4bdddeebf-2496bb7297.zip/node_modules/vue-google-adsense/",\
+          "packageDependencies": [\
+            ["vue-google-adsense", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:1.10.1"],\
+            ["@types/vue", null],\
+            ["@types/vue-script2", null],\
+            ["vue", "npm:3.2.41"],\
+            ["vue-script2", "npm:2.1.0"]\
+          ],\
+          "packagePeers": [\
+            "@types/vue-script2",\
+            "@types/vue",\
+            "vue-script2",\
+            "vue"\
           ],\
           "linkType": "HARD"\
         }]\
@@ -12541,6 +12662,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packagePeers": [\
             "@types/vue",\
             "vue"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["vue-script2", [\
+        ["npm:2.1.0", {\
+          "packageLocation": "./.yarn/cache/vue-script2-npm-2.1.0-b769514e9b-55d016904d.zip/node_modules/vue-script2/",\
+          "packageDependencies": [\
+            ["vue-script2", "npm:2.1.0"]\
           ],\
           "linkType": "HARD"\
         }]\

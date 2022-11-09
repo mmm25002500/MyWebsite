@@ -1,33 +1,4 @@
 <template>
-  <!-- <nav class="navbar navbar-expand-lg bg-light">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">夏特稀個人網頁</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">主頁</a>
-          </li>
-          <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Link
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">關於靈萌</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav> -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="background-color: rgb(176 176 176 / 0%) !important;">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">
@@ -132,9 +103,9 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
         <div>
-          目前已經更新至 v0.5版，已經完成首頁了！
+          目前已經更新至 v0.6版，已經完成首頁了！
           <router-link to="/webchangelog" class="text-info">到更新日誌中查看</router-link>
-          。中華民國 111 年 11 月 09 日，上一個版本更新日期為 111 年 11 月 08 日。
+          。中華民國 111 年 11 月 09 日，上一個版本更新日期為 111 年 11 月 09 日。
         </div>
       </div>
     </div>
@@ -145,14 +116,17 @@
       >
       <router-view />
     </transition>
-    <hr>
-    <p class="copyright text-center">&copy; Copyright 2022. TershiXia</p>
+    <Footer></Footer>
   <!-- <router-view /> -->
   </div>
 </template>
 
 <script>
+import Footer from '@/components/FooterSection.vue'
 export default {
+  components: {
+    Footer
+  },
   data () {
     return {
       SERVER_CONFIG: {

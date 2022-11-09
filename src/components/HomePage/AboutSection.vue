@@ -33,6 +33,7 @@
           <ul>
             <li>暱稱：夏特稀</li>
             <li>性別：小男生</li>
+            <li>科系：資工系</li>
           </ul>
         </div>
         <div class="col">

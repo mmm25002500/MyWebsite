@@ -54,20 +54,12 @@ const routes = [
     ]
   },
   {
-    path: '/myfriend',
-    name: '夏特稀的好朋友',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/MyfriendPage.vue')
-  },
-  {
     path: '/menu',
     name: '選單',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/MenuPage.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/AboutPage/AboutFriends.vue')
   },
   {
     path: '/:pathMatch(.*)*',
