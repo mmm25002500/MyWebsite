@@ -1,6 +1,8 @@
 <template>
-  <h1>夏特稀個人網站 - 更新日誌</h1>
-  <ChangeLog :log="log"></ChangeLog>
+  <div>
+    <h1>夏特稀個人網站 - 更新日誌</h1>
+    <ChangeLog :log="log"></ChangeLog>
+  </div>
 </template>
 
 <script>

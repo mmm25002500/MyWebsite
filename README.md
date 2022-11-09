@@ -8,14 +8,17 @@
 
 
 ### 執行
-```
-npm run serve
-```
+
+npm: ```npm run serve```
+
+yarn: ```yarn && yarn serve```
 
 ### 編譯
-```
-npm run build
-```
+
+npm: ```npm run build```
+
+yarn: ```yarn run build```
+
 編譯完成後，會出現一個 ```dist/``` 資料夾，此資料夾為編譯後的可執行文件，以你的網頁瀏覽器打開即可運行，此動作將 Vue 打包成 Webpack。
 
 ## 貢獻
