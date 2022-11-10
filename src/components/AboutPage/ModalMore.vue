@@ -18,7 +18,10 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            ...
+            <div v-for="(item, key) in more_content" :key="key">
+              <p v-html="item.content"></p>
+              <hr>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
@@ -36,6 +39,7 @@ export default {
     title: String,
     tag: String,
     content: String,
+    more_content: Array,
     date: String,
     badge: String,
     badge_config: Object

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>我的目標</h2>
+    <h2>我的目標 {{txt}}</h2>
     <p>這裡是我在人生的階段想做的事和已經做完的事，在這裡紀錄，為了實現夢想，正在朝著我的目標而前進。</p>
     <div class="form-floating text-dark mb-3">
       <textarea class="form-control" placeholder="搜尋條目" id="searchDeveloper" v-model="cacheSearch"></textarea>
@@ -11,51 +11,57 @@
         <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" @click="change('')" checked>
         <label class="btn btn-outline-info text-white" for="btnradio2">全部</label>
       </div>
-      <div v-for="(item, key) in data" :key="key" class="mb-3">
-        <input :href="`#`+item.name" type="radio" class="btn-check" name="btnradio" :id="item.name" autocomplete="off" @click="change(item.engName)">
-        <label class="btn btn-outline-info text-white" :for="item.name">{{ item.name }}</label>
+      <div v-for="(item, key) in entries" :key="key" class="mb-3">
+        <input :href="`#`+item.title" type="radio" class="btn-check" name="btnradio" :id="item.id" autocomplete="off" @click="change(item.id)">
+        <label class="btn btn-outline-info text-white" :for="item.id">{{ item.title }}</label>
       </div>
     </div>
 
     <!-- 如果只有一個，那就滿版 -->
     <div v-if="searchData.length === 1">
       <Card
-        v-for="(item, key) in searchData"
+        v-for="(entry, key) in searchData"
         :key="key"
-        :title="item.name"
-        :tag="item.engName"
-        :short="item.engName"
-        :content="item.short_content"
-        :date="item.date"
-        :badge="item.achieve"
+        :title="entry.title"
+        :eng_name="entry.id"
+        :tag="entry.id"
+        :short="entry.id"
+        :content="entry.description"
+        :more_content="entry.content"
+        :date="entry.date"
+        :badge="entry.achieve"
         :badge_config="badge_config"
-        :isMore="item.isMore"
+        :link="true"
         >
       </Card>
     </div>
     <!-- 如果兩個以上，就分割成兩欄 -->
     <div v-else>
         <div class="row row-cols-1 g-4 row-cols-md-2">
-          <div class="col" v-for="(item, key) in searchData" :key="key">
-            <Card
-              :title="item.name"
-              :tag="item.engName"
-              :short="item.engName"
-              :content="item.short_content"
-              :date="item.date"
-              :badge="item.achieve"
-              :badge_config="badge_config"
-              :isMore="item.isMore"
-            ></Card>
+          <div class="col" v-for="(entry, key) in searchData" :key="key">
+              <Card
+                :title="entry.title"
+                :eng_name="entry.id"
+                :tag="entry.id"
+                :short="entry.id"
+                :content="entry.description"
+                :more_content="entry.content"
+                :date="entry.date"
+                :badge="entry.achieve"
+                :badge_config="badge_config"
+                :link="true"
+              ></Card>
           </div>
         </div>
     </div>
+
   </div>
 </template>
 
 <script>
 import Card from '@/components/AboutPage/TextSection.vue'
 import data from '@/assets/data/AboutGoal.json'
+// import helloworld from `raw-loader!@/assets/goal/hi.md`
 
 export default {
   components: {
@@ -63,6 +69,8 @@ export default {
   },
   data () {
     return {
+      // txt: helloworld,
+      name: 'hi.md',
       cacheSearch: '',
       searchData: [],
       badge_config: {
@@ -77,14 +85,14 @@ export default {
     cacheSearch: function (val) {
       this.searchData = this.data.filter((item) => {
         // 如果沒有搜尋到 name
-        if (item.name.includes(this.cacheSearch)) {
-          return item.name.includes(this.cacheSearch)
-        } else if (item.engName.includes(this.cacheSearch)) {
-          return item.engName.includes(this.cacheSearch)
-        } else if (item.short_content.includes(this.cacheSearch)) {
-          return item.short_content.includes(this.cacheSearch)
-        } else if (item.content.includes(this.cacheSearch)) {
-          return item.content.includes(this.cacheSearch)
+        if (item.id.includes(this.cacheSearch)) {
+          return item.id.includes(this.cacheSearch)
+        } else if (item.title.includes(this.cacheSearch)) {
+          return item.title.includes(this.cacheSearch)
+        } else if (item.description.includes(this.cacheSearch)) {
+          return item.description.includes(this.cacheSearch)
+        } else if (item.achieve.includes(this.cacheSearch)) {
+          return item.achieve.includes(this.cacheSearch)
         } else {
           return false
         }
@@ -97,6 +105,11 @@ export default {
   methods: {
     change (name) {
       this.cacheSearch = name
+    }
+  },
+  computed: {
+    entries () {
+      return data
     }
   }
 }

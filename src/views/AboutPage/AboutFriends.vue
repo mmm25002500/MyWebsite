@@ -63,7 +63,7 @@ export default {
           name: 'CuteUSB',
           nic_name: '萌弟',
           tag: 'CuteUSB',
-          img: 'images/CuteUSB.jpg',
+          img: require('@/assets/images/CuteUSB.jpg'),
           intro: 'NULL',
           link: [
             {
@@ -98,7 +98,7 @@ export default {
           name: '哈密瓜',
           nic_name: 'y1220asdf',
           tag: 'hamigua',
-          img: 'https://yt3.ggpht.com/fDFu82cgxhrpx00xLlUz-hIJbJRM9i-StKqKOIn_BOKIF1YzMJGKmdqT7p-zdyHf4B5_bCFNog=s176-c-k-c0x00ffffff-no-rj-mo',
+          img: require('@/assets/images/Cute哈密瓜.jpg'),
           intro: '人不錯',
           link: [
             {
@@ -164,6 +164,41 @@ export default {
             }
           ]
         }
+        // {
+        //   name: '',
+        //   nic_name: '',
+        //   tag: '',
+        //   img: '',
+        //   intro: '',
+        //   link: [
+        //     {
+        //       name: 'Facebook',
+        //       link: '',
+        //       color: 'primary'
+        //     },
+        //     {
+        //       name: 'Instagram',
+        //       link: '',
+        //       color: 'danger',
+        //       style: 'background-color: #d63384'
+        //     },
+        //     {
+        //       name: 'Github',
+        //       link: '',
+        //       color: 'dark'
+        //     },
+        //     {
+        //       name: 'YouTube',
+        //       link: '',
+        //       color: 'danger'
+        //     },
+        //     {
+        //       name: 'Website',
+        //       link: '',
+        //       color: 'primary'
+        //     }
+        //   ]
+        // }
       ],
       searchData: []
     }

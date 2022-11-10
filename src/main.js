@@ -44,7 +44,16 @@ app.use(VueUseWebp)
 app.use(BootstrapVue3)
 // app.use(Vue3Transitions)
 app.use(require('vue-script2'))
-app.use(Ads.AutoAdsense, { adClient: 'ca-pub-9107487734392446', isNewAdsCode: true })
+// app.use(Ads.Adsense)
+// app.use(Ads.InArticleAdsense)
+// app.use(Ads.InFeedAdsense)
+app.use(Ads.AutoAdsense, {
+  adClient: 'ca-pub-9107487734392446',
+  isNewAdsCode: true,
+  dataAdSlot: '1443478648',
+  dataAdFormat: 'auto',
+  dataFullWidthResponsive: 'true'
+})
 app.use(VueAxios, axios)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.config.productionTip = false

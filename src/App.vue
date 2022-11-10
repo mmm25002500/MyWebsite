@@ -103,12 +103,16 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
         <div>
-          目前已經更新至 v0.6版，已經完成首頁了！
+          目前已經更新至 v0.7版，已經完成首頁了！
           <router-link to="/webchangelog" class="text-info">到更新日誌中查看</router-link>
-          。中華民國 111 年 11 月 09 日，上一個版本更新日期為 111 年 11 月 09 日。
+          。中華民國 111 年 11 月 11 日，上一個版本更新日期為 111 年 11 月 09 日。
         </div>
       </div>
     </div>
+    <!-- <Adsense
+      data-ad-client="ca-pub-9107487734392446"
+      data-ad-slot="1443478648"
+    ></Adsense> -->
     <transition
       mode="out-in"
       enter-active-class="animate__animated animate__fadeIn"
@@ -194,6 +198,12 @@ export default {
           name: '回到舊版網站',
           url: 'https://www2.tershi.com',
           icon: ['fas', 'rotate-left'],
+          outside: true
+        },
+        {
+          name: '我的臉照',
+          url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          icon: ['fas', 'face-smile'],
           outside: true
         }
       ]

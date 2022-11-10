@@ -1,5 +1,42 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomePage from '../views/HomePage.vue'
+import BlogEntries from '@/assets/data/AboutGoal.json'
+
+function getRoutes () {
+  const routerGoal = []
+
+  for (let i = 0; i < BlogEntries.length; i++) {
+    routerGoal.push({
+      path: `/about/goal/${BlogEntries[i].id}`,
+      name: BlogEntries[i].title,
+      component: () => import(`@/assets/data/goal/${BlogEntries[i].id}.md`)
+    })
+  }
+
+  // const children = BlogEntries[section].map(child => ({
+  //   path: child.id,
+  //   name: child.id,
+  //   component: () => import(`@/assets/data/goal/${section}/${child.id}.md`)
+  // }))
+  return routerGoal
+}
+
+const blogRoutes = getRoutes()
+console.log(blogRoutes)
+
+//   Object.keys(BlogEntries).map(section => {
+//   const children = BlogEntries[section].map(child => ({
+//     path: child.id,
+//     name: child.id,
+//     component: () => import(`@/assets/data/goal/${section}/${child.id}.md`)
+//   }))
+//   return {
+//     path: `/about/goal/${section}`,
+//     name: section,
+//     component: () => import('../views/AboutPage/AboutPost.vue'),
+//     children
+//   }
+// })
 
 const routes = [
   {
@@ -39,7 +76,8 @@ const routes = [
         path: 'friends',
         name: '我的好朋友們',
         component: () => import(/* webpackChunkName: "skill" */ '../views/AboutPage/AboutFriends.vue')
-      }
+      },
+      ...blogRoutes
       // {
       //   path: 'team',
       //   name: '',

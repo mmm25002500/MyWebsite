@@ -1,70 +1,30 @@
 [
-    {
-        "name": "加強演算法和資料結構",
-        "achieve": "進行中",
-        "engName": "Strengthen_Algorithm_and_Data_Structure",
-        "date": "2022/09/09~NOW",
-        "short_content": "我常常都在寫專案，忽略了許多演算法和資料結構，在大學的四年中，我給自己的一個目標就是將資料結構跟演算法學好，從基礎至進階，從簡單至困難，邁向真正電腦科學(Conputer Science)一大步。",
-        "link": "",
-        "isMore": true,
-        "content": [
-            {
-                "title": "學習方式",
-                "endTitle": "",
-                "content": ""
-            },
-            {
-                "title": "學習筆記(MarkDown)",
-                "endTitle": "",
-                "content": ""
-            },
-            {
-                "title": "學習成果",
-                "endTitle": "",
-                "content": ""
-            }
-        ]
-    },
-    {
-        "name": "考上好大學",
-        "achieve": "已達成",
-        "engName": "Progress_of_learnings",
-        "date": "2022/02/15",
-        "short_content": "由於我國是一個重學歷的國家，有個好的學歷人人稱羨，目前我也只是個普通的高中生，想考個好大學，讓父母驕傲。",
-        "link": "",
-        "isMore": true,
-        "content": [
-            {
-                "title": "",
-                "endTitle": "",
-                "content": ""
-            },
-            {
-                "title": "",
-                "endTitle": "",
-                "content": ""
-            }
-        ]
-    },
-    {
-        "name": "特殊選才",
-        "achieve": "已達成",
-        "engName": "Introduction_TSXC",
-        "date": "2021/12/01 ~ 2022/12/15",
-        "short_content": "由於我本身高中是讀商業類科，對於商業興趣不是太大的我，有著特殊才能的我，想透過特殊選才離開商業類科，進入資工系。",
-        "link": "",
-        "isMore": true,
-        "content": [
-            {
-                "title": "",
-                "endTitle": "",
-                "content": ""
-            },
-            {
-                "title": "",
-                "endTitle": "",
-                "content": ""
-            }
-        ]
-    }
+  {
+    "id": "ReBuildMyOwnWebsite",
+    "date": "2022/11/10",
+    "title": "重建我的個人網站，改為 Vue.JS 架構",
+    "achieve": "進行中",
+    "description": "突然心血來潮，想說我的舊網站都是模板和純幹 HTML、CSS、JavaScript、PHP，那為什麼我不選擇使用框架來幫助我建構網站呢，於似乎我就通過 Vue.JS 框架重新打造了我的個人網站！"
+  },
+  {
+    "id": "Strengthen_Algorithm_and_Data_Structure",
+    "date": "2022/09/09",
+    "title": "加強演算法和資料結構",
+    "achieve": "進行中",
+    "description": "我常常都在寫專案，忽略了許多演算法和資料結構，在大學的四年中，我給自己的一個目標就是將資料結構跟演算法學好，從基礎至進階，從簡單至困難，邁向真正電腦科學(Computer Science)一大步。"
+  },
+  {
+    "id": "Progress_of_learnings",
+    "date": "2022/02/15",
+    "title": "考上好大學",
+    "achieve": "已達成",
+    "description": "由於我國是一個重學歷的國家，有個好的學歷人人稱羨，目前我也只是個普通的高中生，想考個好大學，讓父母驕傲。"
+  },
+  {
+    "id": "Introduction_TSXC",
+    "date": "2021/12/01",
+    "title": "特殊選才",
+    "achieve": "已達成",
+    "description": "由於我本身高中是讀商業類科，對於商業興趣不是太大的我，有著特殊才能的我，想透過特殊選才離開商業類科，進入資工系。"
+  }
 ]

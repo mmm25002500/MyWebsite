@@ -2,8 +2,10 @@
 
     <div class="col d-flex justify-content-center">
       <div class="card text-white bg-transparent border-warning" :style="style" :id="tag">
-        <img src="" class="card-img-top" alt="圖片無法顯示呦~ 請確認位置4否正確">
         <div class="card-body">
+          <div class="d-flex justify-content-center">
+            <img :src="img" class="rounded-circle" style="width: 40%" alt="圖片無法顯示呦~ 請確認位置4否正確">
+          </div>
           <h5 class="card-title text-info">{{ name }}</h5>
           <h6 class="card-subtitle mb-2 text-muted">{{ nic_name }}</h6>
           <p class="card-text text-white">
