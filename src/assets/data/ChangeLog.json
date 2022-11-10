@@ -2,7 +2,7 @@
     {
         "version": "0.7",
         "category": "測試版",
-        "date": "2022/11/10",
+        "date": "2022/11/11",
         "description": "開發架構中",
         "changes": [
             "刪除更新日誌的 closed",
