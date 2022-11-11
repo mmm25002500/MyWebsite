@@ -1,5 +1,5 @@
 <template>
-  <div id="wrapper">
+  <div>
 
     <!-- Header -->
     <header id="header">
@@ -7,53 +7,53 @@
       <p>大家好，我是夏特稀，我是一名高中生，喜歡在課餘時候研究程式語言相關的東西。</p>
     </header>
 
+    <!-- 搜尋 -->
     <div class="form-floating text-dark mb-3">
       <textarea class="form-control" placeholder="搜尋條目" id="searchDeveloper" v-model="cacheSearch"></textarea>
       <label for="searchDeveloper">搜尋條目</label>
     </div>
+
+    <!-- 顯示「全部」按鈕 -->
     <div class="btn-group" role="group" aria-label="Basic radio toggle button group mb-3">
       <div class="mb-3">
         <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" @click="change('')" checked>
         <label class="btn btn-outline-info text-white" for="btnradio2">全部</label>
       </div>
+
+      <!-- 顯示條目按鈕 -->
       <div v-for="(item, key) in data" :key="key" class="mb-3">
         <input :href="`#`+item.name" type="radio" class="btn-check" name="btnradio" :id="item.name" autocomplete="off" @click="change(item.tag)">
         <label class="btn btn-outline-info text-white" :for="item.name">{{ item.name }}</label>
       </div>
     </div>
 
-    <!-- Main -->
-    <div id="main">
-      <!-- <span class="image main"><img src="images/pic04.jpg" alt="" /></span> -->
-
-      <!-- 如果只有一個，那就滿版 -->
-      <div v-if="searchData.length === 1
+    <!-- 如果只有一個，那就滿版 -->
+    <div v-if="searchData.length === 1
 ">
-        <Card
-          v-for="(item, key) in searchData"
-          :key="key"
-          :title="item.name"
-          :tag="item.tag"
-          :short="item.EngName"
-          :content="item.content"
-          :isMore="item.isMore"
-          >
-        </Card>
-      </div>
-      <!-- 如果兩個以上，就分割成兩欄 -->
-      <div v-else>
-          <div class="row row-cols-1 g-4 row-cols-md-2">
-            <div class="col" v-for="(item, key) in searchData" :key="key">
-              <Card
-                :title="item.name"
-                :tag="item.tag"
-                :short="item.EngName"
-                :content="item.content"
-                :isMore="item.isMore"
-              ></Card>
-            </div>
+      <Card
+        v-for="(item, key) in searchData"
+        :key="key"
+        :title="item.name"
+        :tag="item.tag"
+        :short="item.EngName"
+        :content="item.content"
+        :isMore="item.isMore"
+        >
+      </Card>
+    </div>
+    <!-- 如果兩個以上，就分割成兩欄 -->
+    <div v-else>
+        <div class="row row-cols-1 g-4 row-cols-md-2">
+          <div class="col" v-for="(item, key) in searchData" :key="key">
+            <Card
+              :title="item.name"
+              :tag="item.tag"
+              :short="item.EngName"
+              :content="item.content"
+              :isMore="item.isMore"
+            ></Card>
           </div>
-      </div>
+        </div>
     </div>
   </div>
 </template>
@@ -103,57 +103,13 @@ export default {
           isMore: false,
           content: '在國小的時候，認識到單打獨鬥是難以實作出一個大專案的我，於似乎成立了一個團隊，當時團員都沒有許多技術，是一群新手，但大部分仍然是自學。到了國中以後，逐漸意識到同學的能力或是興趣不達標，因此我下定決心改革，成立了團隊官網，宣傳團隊，也因此招募到了許多對程式設計有興趣的同好，我也從這獲得到了許多不同人的想法，也結交了不同專業和領域的朋友，我們將我們各自的專業集合在一起，在 2021 年中，改組成立了靈萌團隊。在靈萌團隊，留下了許多很厲害的人，也新進了許多很強的人，我也認識到了實際在公司開發專案的軟體工程師，學習到更多業界的知識，透過團隊，不僅可以磨練自己的領導能力，更能帶動團員甚至是自己學習到更多東西，進而增廣見聞。'
           // 我的團隊目前已經至少有5年了 從一開始只有一兩個人 到目前已經有上百個人加入我們了 包括Line群組 Telegram群組 以及Facebook上志同道合與擁有共同目標的好朋友們。在2015的時候創立了團隊 當時只有2個人 為了一起學習電腦這方面 我開始拍攝YouTube 雖然當時都是廢片 但我從小六開始 轉為技術片了 從After Effect特效 到APP介紹 到Google Play開發者應用上傳 目前為止已經有1013訂閱 但因為2020/ 2月初我因為在YouTube直播上播放版權音樂遭到停用 我立馬通知YouTube解鎖 然而等不到下文 而我又開立了新頻道 短短6個月得來200訂閱 我開始轉為駭客教學 更技術的影片 幸虧有團隊幫忙 我才能走得這麼快 雖然團內都是一群小廢廢 真正跟我一起研究也只不過那幾個人而已 但我已經很開心了～ 未來的你們呢 也要跟我一起研究呦～'
-        },
-        {
-          name: '我的連絡資訊',
-          EngName: 'My Contact Information',
-          tag: 'myContactInfomation',
-          isMore: false,
-          content: `
-          <table class="table table-dark table-striped">
-            <tr>
-              <td>項目</td>
-              <td>連結</td>
-            </tr>
-            <tr>
-              <td>Email</td>
-              <td><a href="mailto:admin@tershi.com">admin@tershi.com</a></td>
-            </tr>
-            <tr>
-              <td>Gmail</td>
-              <td><a href="mailto:marryhan25648@gmail.com">marryhan25648@gmail.com</a></td>
-            </tr>
-            <tr>
-              <td>Telegram</td>
-              <td><a href="https://t.me/TershiXia">@TershiXia</a></td>
-            </tr>
-            <tr>
-              <td>Facebook</td>
-              <td><a href="http://fb.com/TershiXia">夏特稀</a></td>
-            </tr>
-            <tr>
-              <td>Instagram</td>
-              <td><a href="https://www.instagram.com/tershixia/">@TershiXia</a></td>
-            </tr>
-            <tr>
-              <td>Twitter</td>
-              <td><a href="https://twitter.com/TershiXia">@TershiXia</a></td>
-            </tr>
-            <tr>
-              <td>Discord</td>
-              <td><a href="https://discordapp.com/users/508266434091155467">夏特稀#1219</a></td>
-            </tr>
-            <!--<tr>
-              <td></td>
-              <td></td>
-            </tr>-->
-          </table>
-          `
         }
       ]
     }
   },
   watch: {
+
+    // 自製搜尋算法
     cacheSearch: function (val) {
       this.searchData = this.data.filter((item) => {
         // 如果沒有搜尋到 name
@@ -172,6 +128,7 @@ export default {
     }
   },
   created () {
+    // 載入資料
     this.searchData = this.data
   },
   methods: {

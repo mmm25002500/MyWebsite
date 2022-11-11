@@ -2,6 +2,8 @@
   <div>
     <h2>我的作品集</h2>
     <p>這些是從我開始寫程式到現在還能找到的專案、影片、網站，裡面這些內容可以看出我從最一開始的新手到現在的規模，裡面的作品都是我花了很久的時候做的。例如影片，從剛開始的威力導演到現在的 Premiere 和 After Effects，剪接和特效功力有大大提升，有句說得好：「技術就是經驗累積而成的，只有不斷失敗才會成功」。網站也是我利用課餘時間製作的，從早期只會 HTML 基本，到現在的 CSS 和 avascript 併用，或者用點 Vue.JS 都是在正常不過的了！</p>
+
+    <!-- 搜尋 -->
     <div class="form-floating text-dark mb-3">
       <textarea class="form-control" placeholder="搜尋條目" id="searchDeveloper" v-model="cacheSearch"></textarea>
       <label for="searchDeveloper">搜尋條目</label>
@@ -9,15 +11,9 @@
         目前搜索到: {{ searchData.length }} 個條目
       </div>
     </div>
-    <!-- <div class="btn-group" role="group" aria-label="Basic radio toggle button group mb-3">
-      <div class="mb-3">
-        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" @click="change('')" checked>
-        <label class="btn btn-outline-info text-white" for="btnradio2">全部</label>
-      </div>
-    </div> -->
 
     <!-- 如果只有一個，那就滿版 -->
-    <!-- :link="svn_url" 把連結加上去 -->
+    <!-- :link="svn_url" 把 github repo 連結加上去 -->
     <div v-if="searchData.length === 1
 ">
         <Card
@@ -64,12 +60,16 @@ export default {
     }
   },
   methods: {
+
+    // 擷取 github repo
     getGithubRepo () {
       this.$http.get('https://api.github.com/users/mmm25002500/repos')
         .then((res) => {
           this.githubRepo.push.apply(this.githubRepo, res.data)
         })
     },
+
+    // 擷取另一個 github repo
     getGithubPRData () {
       const apiURL = 'https://api.github.com/users/Cutespirit-Team/repos'
       this.$http.get(apiURL).then((res) => {
@@ -78,11 +78,16 @@ export default {
     }
   },
   created () {
+    // 執行擷取
     this.getGithubRepo()
     this.getGithubPRData()
+
+    // 把擷取到的內容放入 searchData
     this.searchData = this.githubRepo
   },
   watch: {
+
+    // 自製搜尋算法
     cacheSearch: function (val) {
       this.searchData = this.githubRepo.filter((item) => {
         // 如果沒有搜尋到 name

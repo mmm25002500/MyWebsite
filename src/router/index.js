@@ -2,42 +2,21 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import HomePage from '../views/HomePage.vue'
 import BlogEntries from '@/assets/data/AboutGoal.json'
 
-function getRoutes () {
+// 遍歷所有的文章
+function getRoutes (BlogEntries, path, ComponentPath) {
   const routerGoal = []
 
   for (let i = 0; i < BlogEntries.length; i++) {
     routerGoal.push({
-      path: `/about/goal/${BlogEntries[i].id}`,
+      path: `${path}${BlogEntries[i].id}`,
       name: BlogEntries[i].title,
-      component: () => import(`@/assets/data/goal/${BlogEntries[i].id}.md`)
+      component: () => import(`@/assets/data/${ComponentPath}${BlogEntries[i].id}.md`)
     })
   }
-
-  // const children = BlogEntries[section].map(child => ({
-  //   path: child.id,
-  //   name: child.id,
-  //   component: () => import(`@/assets/data/goal/${section}/${child.id}.md`)
-  // }))
   return routerGoal
 }
 
-const blogRoutes = getRoutes()
-console.log(blogRoutes)
-
-//   Object.keys(BlogEntries).map(section => {
-//   const children = BlogEntries[section].map(child => ({
-//     path: child.id,
-//     name: child.id,
-//     component: () => import(`@/assets/data/goal/${section}/${child.id}.md`)
-//   }))
-//   return {
-//     path: `/about/goal/${section}`,
-//     name: section,
-//     component: () => import('../views/AboutPage/AboutPost.vue'),
-//     children
-//   }
-// })
-
+// 定義路由表
 const routes = [
   {
     path: '/',
@@ -77,7 +56,7 @@ const routes = [
         name: '我的好朋友們',
         component: () => import(/* webpackChunkName: "skill" */ '../views/AboutPage/AboutFriends.vue')
       },
-      ...blogRoutes
+      ...getRoutes(BlogEntries, '/about/goal/', 'goal/')
       // {
       //   path: 'team',
       //   name: '',
@@ -128,9 +107,20 @@ const routes = [
     path: '/webchangelog',
     name: '更新日誌',
     component: () => import(/* webpackChunkName: "about" */ '../views/ChangeLog.vue')
+  },
+  {
+    path: '/contact',
+    name: '聯絡我',
+    component: () => import(/* webpackChunkName: "about" */ '../views/ContactMe.vue')
+  },
+  {
+    path: '/myface',
+    name: '我可愛的臉',
+    component: () => import(/* webpackChunkName: "about" */ '../views/MyFace.vue')
   }
 ]
 
+// 執行路由表
 const router = createRouter({
   history: createWebHashHistory(),
   scrollBehavior (to, from, savedPosition) {
@@ -139,6 +129,7 @@ const router = createRouter({
   routes
 })
 
+// 將 name 自動賦予至 head 中的 title
 router.beforeEach((to, from, next) => {
   document.title = to.name
   next()

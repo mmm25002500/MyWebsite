@@ -1,9 +1,6 @@
 <template>
 
   <div class="card" id="about" style="background-color: rgb(85 186 255 / 58%) !important;">
-    <!-- <div class="card-header">
-      關於我
-    </div> -->
     <div class="card-body">
       <div class="row row-cols-auto">
         <div class="col d-flex flex-column bd-highlight mb-3">
@@ -34,6 +31,13 @@
             <li>暱稱：夏特稀</li>
             <li>性別：小男生</li>
             <li>科系：資工系</li>
+          </ul>
+        </div>
+        <div class="col">
+          <h5>統計資料</h5>
+          <ul>
+            <li>女友：0</li>
+            <li>男友：0</li>
           </ul>
         </div>
         <div class="col">

@@ -4,14 +4,22 @@
       <div class="card text-white bg-transparent border-warning" :style="style" :id="tag">
         <div class="card-body">
           <div class="d-flex justify-content-center">
-            <img :src="img" class="rounded-circle" style="width: 40%" alt="圖片無法顯示呦~ 請確認位置4否正確">
+            <!-- 處理圖片，把「外框顏色、長高度、圖片位置」傳進來 -->
+            <img
+              class="rounded-circle circle"
+              :style="`background-image: url('`+img+`');border: 2px solid `+border_color+`;`+img_style">
           </div>
-          <h5 class="card-title text-info">{{ name }}</h5>
-          <h6 class="card-subtitle mb-2 text-muted">{{ nic_name }}</h6>
-          <p class="card-text text-white">
+          <!-- 處理朋友文字，點下去用 emit 回傳 cacheSearch = name 進而展開 -->
+          <h5 class="card-title text-info text-center" @click.prevent="returnCacheSearch()">
+              {{ name }}
+          </h5>
+          <h6 class="card-subtitle mb-2 text-muted text-center">{{ nic_name }}</h6>
+          <p class="card-text text-white text-center">
             {{ intro }}
           </p>
-          <div class="btn-group d-grid gap-2 d-md-block">
+
+          <!-- 處理第三方連結按鈕的部分 -->
+          <div class="btn-group d-grid gap-2 d-md-block text-center">
             <span v-for="(item, key) in link" :key="key">
               <a
                 v-if="item.link"
@@ -53,8 +61,31 @@ export default {
     intro: String,
     tag: String,
     img: String,
+    img_style: String,
     link: Object,
+    border_color: String,
     style: String
+  },
+  methods: {
+    // 點下去用 emit 回傳 cacheSearch = name 進而展開
+    returnCacheSearch () {
+      this.$emit('cache-search', this.tag)
+    }
   }
 }
 </script>
+
+<style>
+/* 處理圖片的 css */
+.circle {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    border-radius: 50%;
+    box-shadow: inset 0px 0rem 1rem 2px rgb(0 0 0 / 18%) !important;
+    background-clip: content-box;
+    /* padding: 1px; */
+    /* margin: 1em auto; */
+    /* border: 2px solid #00fffe; */
+}
+</style>

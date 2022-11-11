@@ -1,42 +1,26 @@
 <template>
   <div>
-    <div id="wrapper">
+    <h1>{{ title }}</h1>
+    <p v-html="description"></p>
 
-      <!-- Header -->
-        <header id="header" class="alt">
-          <!--<span class="logo"><img src="images/logo.svg" alt="" /></span> -->
-          <!-- <span class="logo"><img src="images/logo.svg" width="85" alt=""></span> -->
-          <h1>{{ title }}</h1>
-          <p v-html="description"></p>
+    <!-- <center><h6 style="color:red;">看一下廣告支持一下我拉XD (๑•́ ₃ •̀๑)</h6></center> -->
 
-        </header>
-        <!-- <center><h6 style="color:red;">看一下廣告支持一下我拉XD (๑•́ ₃ •̀๑)</h6></center> -->
-      <!-- Nav -->
-        <!-- <nav id="nav">
-          <ul>
-            <li v-for="(item, key) in nav" :key="key">
-              <a :href="`#`+item.link">{{ item.name }}</a>
-            </li>
-          </ul>
-        </nav> -->
-      <!-- Main -->
-        <div id="main">
+    <!-- 顯示首頁區塊 -->
+    <div id="main">
 
-          <About></About>
-          <hr class="text-dark">
-          <Goal></Goal>
-          <hr class="text-dark">
-          <!-- <Work></Work>
-          <hr class="text-dark">
-          <Friends></Friends>
-          <hr class="text-dark">
-          <Team></Team> -->
-
-        </div>
-
-      <!-- <Footer></Footer> -->
+      <About></About>
+      <hr class="text-dark">
+      <Goal></Goal>
+      <hr class="text-dark">
+      <!-- <Work></Work>
+      <hr class="text-dark">
+      <Friends></Friends>
+      <hr class="text-dark">
+      <Team></Team> -->
 
     </div>
+
+    <!-- 顯示圓框框外部連結 -->
     <footer id="footer">
       <ul class="icons home-icon ul-link">
         <li v-for="(item, key) in data" :key="key" class="li-link">

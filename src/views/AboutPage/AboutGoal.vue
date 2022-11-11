@@ -2,15 +2,21 @@
   <div>
     <h2>我的目標 {{txt}}</h2>
     <p>這裡是我在人生的階段想做的事和已經做完的事，在這裡紀錄，為了實現夢想，正在朝著我的目標而前進。</p>
+
+    <!-- 搜尋 -->
     <div class="form-floating text-dark mb-3">
       <textarea class="form-control" placeholder="搜尋條目" id="searchDeveloper" v-model="cacheSearch"></textarea>
       <label for="searchDeveloper">搜尋條目</label>
     </div>
+
+    <!-- 顯示「全部」按鈕 -->
     <div class="btn-group" role="group" aria-label="Basic radio toggle button group mb-3">
       <div class="mb-3">
         <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" @click="change('')" checked>
         <label class="btn btn-outline-info text-white" for="btnradio2">全部</label>
       </div>
+
+      <!-- 顯示目標按鈕 -->
       <div v-for="(item, key) in entries" :key="key" class="mb-3">
         <input :href="`#`+item.title" type="radio" class="btn-check" name="btnradio" :id="item.id" autocomplete="off" @click="change(item.id)">
         <label class="btn btn-outline-info text-white" :for="item.id">{{ item.title }}</label>
@@ -82,6 +88,8 @@ export default {
     }
   },
   watch: {
+
+    // 自製搜尋算法
     cacheSearch: function (val) {
       this.searchData = this.data.filter((item) => {
         // 如果沒有搜尋到 name
@@ -108,6 +116,8 @@ export default {
     }
   },
   computed: {
+
+    // 獲取所有條目
     entries () {
       return data
     }

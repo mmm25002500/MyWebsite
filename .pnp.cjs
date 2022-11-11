@@ -37,6 +37,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@fortawesome/vue-fontawesome", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:3.0.2"],\
             ["@popperjs/core", "npm:2.11.6"],\
             ["@types/jquery", "npm:3.5.14"],\
+            ["@videojs-player/vue", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:1.0.0"],\
             ["@vue/cli-plugin-babel", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:5.0.8"],\
             ["@vue/cli-plugin-eslint", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:5.0.8"],\
             ["@vue/cli-plugin-router", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:5.0.8"],\
@@ -58,6 +59,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["raw-loader", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:4.0.2"],\
             ["sass", "npm:1.56.0"],\
             ["sass-loader", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:12.6.0"],\
+            ["video.js", "npm:7.21.0"],\
             ["vue", "npm:3.2.41"],\
             ["vue-axios", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:3.5.2"],\
             ["vue-google-adsense", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:1.10.1"],\
@@ -3055,6 +3057,85 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["@videojs-player/vue", [\
+        ["npm:1.0.0", {\
+          "packageLocation": "./.yarn/cache/@videojs-player-vue-npm-1.0.0-d4a3443e4c-f96dd7b5f7.zip/node_modules/@videojs-player/vue/",\
+          "packageDependencies": [\
+            ["@videojs-player/vue", "npm:1.0.0"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:1.0.0", {\
+          "packageLocation": "./.yarn/__virtual__/@videojs-player-vue-virtual-f1f3bfb60c/0/cache/@videojs-player-vue-npm-1.0.0-d4a3443e4c-f96dd7b5f7.zip/node_modules/@videojs-player/vue/",\
+          "packageDependencies": [\
+            ["@videojs-player/vue", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:1.0.0"],\
+            ["@types/video.js", null],\
+            ["@types/vue", null],\
+            ["video.js", "npm:7.21.0"],\
+            ["vue", "npm:3.2.41"]\
+          ],\
+          "packagePeers": [\
+            "@types/video.js",\
+            "@types/vue",\
+            "video.js",\
+            "vue"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@videojs/http-streaming", [\
+        ["npm:2.15.0", {\
+          "packageLocation": "./.yarn/cache/@videojs-http-streaming-npm-2.15.0-2b8ab08788-3b04c78c42.zip/node_modules/@videojs/http-streaming/",\
+          "packageDependencies": [\
+            ["@videojs/http-streaming", "npm:2.15.0"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:881648d4ab9d35fbac5bdafb07364e565adbff7ac4671a00e5438fe7ba4df6ae49c55f0317b101eceda2c26f653b403330aca81f295f2a8dea82e093478a4b15#npm:2.15.0", {\
+          "packageLocation": "./.yarn/__virtual__/@videojs-http-streaming-virtual-9efa64cd1b/0/cache/@videojs-http-streaming-npm-2.15.0-2b8ab08788-3b04c78c42.zip/node_modules/@videojs/http-streaming/",\
+          "packageDependencies": [\
+            ["@videojs/http-streaming", "virtual:881648d4ab9d35fbac5bdafb07364e565adbff7ac4671a00e5438fe7ba4df6ae49c55f0317b101eceda2c26f653b403330aca81f295f2a8dea82e093478a4b15#npm:2.15.0"],\
+            ["@babel/runtime", "npm:7.20.1"],\
+            ["@types/video.js", null],\
+            ["@videojs/vhs-utils", "npm:3.0.5"],\
+            ["aes-decrypter", "npm:3.1.3"],\
+            ["global", "npm:4.4.0"],\
+            ["m3u8-parser", "npm:4.8.0"],\
+            ["mpd-parser", "npm:0.22.0"],\
+            ["mux.js", "npm:6.0.1"],\
+            ["video.js", "npm:7.21.0"]\
+          ],\
+          "packagePeers": [\
+            "@types/video.js",\
+            "video.js"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@videojs/vhs-utils", [\
+        ["npm:3.0.5", {\
+          "packageLocation": "./.yarn/cache/@videojs-vhs-utils-npm-3.0.5-808b1cf9ff-637dc9a884.zip/node_modules/@videojs/vhs-utils/",\
+          "packageDependencies": [\
+            ["@videojs/vhs-utils", "npm:3.0.5"],\
+            ["@babel/runtime", "npm:7.20.1"],\
+            ["global", "npm:4.4.0"],\
+            ["url-toolkit", "npm:2.2.5"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@videojs/xhr", [\
+        ["npm:2.6.0", {\
+          "packageLocation": "./.yarn/cache/@videojs-xhr-npm-2.6.0-d218ab5bfe-217d3d49f8.zip/node_modules/@videojs/xhr/",\
+          "packageDependencies": [\
+            ["@videojs/xhr", "npm:2.6.0"],\
+            ["@babel/runtime", "npm:7.20.1"],\
+            ["global", "npm:4.4.0"],\
+            ["is-function", "npm:1.0.2"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["@vue/babel-helper-vue-jsx-merge-props", [\
         ["npm:1.4.0", {\
           "packageLocation": "./.yarn/cache/@vue-babel-helper-vue-jsx-merge-props-npm-1.4.0-fb594a8ba5-2383ff7719.zip/node_modules/@vue/babel-helper-vue-jsx-merge-props/",\
@@ -3969,6 +4050,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["@xmldom/xmldom", [\
+        ["npm:0.7.9", {\
+          "packageLocation": "./.yarn/cache/@xmldom-xmldom-npm-0.7.9-89b068f3c8-66e37b7800.zip/node_modules/@xmldom/xmldom/",\
+          "packageDependencies": [\
+            ["@xmldom/xmldom", "npm:0.7.9"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["@xtuc/ieee754", [\
         ["npm:1.2.0", {\
           "packageLocation": "./.yarn/cache/@xtuc-ieee754-npm-1.2.0-ec0ce4e025-ac56d4ca6e.zip/node_modules/@xtuc/ieee754/",\
@@ -4094,6 +4184,19 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/address-npm-1.2.1-e8f7122c11-e4c0f96146.zip/node_modules/address/",\
           "packageDependencies": [\
             ["address", "npm:1.2.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["aes-decrypter", [\
+        ["npm:3.1.3", {\
+          "packageLocation": "./.yarn/cache/aes-decrypter-npm-3.1.3-8fe6bf109c-e634af25c5.zip/node_modules/aes-decrypter/",\
+          "packageDependencies": [\
+            ["aes-decrypter", "npm:3.1.3"],\
+            ["@babel/runtime", "npm:7.20.1"],\
+            ["@videojs/vhs-utils", "npm:3.0.5"],\
+            ["global", "npm:4.4.0"],\
+            ["pkcs7", "npm:1.0.4"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -6255,6 +6358,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["dom-walk", [\
+        ["npm:0.1.2", {\
+          "packageLocation": "./.yarn/cache/dom-walk-npm-0.1.2-7d20a1a8d8-19eb0ce9c6.zip/node_modules/dom-walk/",\
+          "packageDependencies": [\
+            ["dom-walk", "npm:0.1.2"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["domelementtype", [\
         ["npm:2.3.0", {\
           "packageLocation": "./.yarn/cache/domelementtype-npm-2.3.0-02de7cbfba-ee837a318f.zip/node_modules/domelementtype/",\
@@ -7681,6 +7793,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["global", [\
+        ["npm:4.4.0", {\
+          "packageLocation": "./.yarn/cache/global-npm-4.4.0-888ee8033d-9c057557c8.zip/node_modules/global/",\
+          "packageDependencies": [\
+            ["global", "npm:4.4.0"],\
+            ["min-document", "npm:2.19.0"],\
+            ["process", "npm:0.11.10"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["globals", [\
         ["npm:11.12.0", {\
           "packageLocation": "./.yarn/cache/globals-npm-11.12.0-1fa7f41a6c-67051a45ec.zip/node_modules/globals/",\
@@ -8203,6 +8326,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["individual", [\
+        ["npm:2.0.0", {\
+          "packageLocation": "./.yarn/cache/individual-npm-2.0.0-ec8003c892-34f071ade7.zip/node_modules/individual/",\
+          "packageDependencies": [\
+            ["individual", "npm:2.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["infer-owner", [\
         ["npm:1.0.4", {\
           "packageLocation": "./.yarn/cache/infer-owner-npm-1.0.4-685ac3d2af-181e732764.zip/node_modules/infer-owner/",\
@@ -8404,6 +8536,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/is-fullwidth-code-point-npm-3.0.0-1ecf4ebee5-44a30c2945.zip/node_modules/is-fullwidth-code-point/",\
           "packageDependencies": [\
             ["is-fullwidth-code-point", "npm:3.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["is-function", [\
+        ["npm:1.0.2", {\
+          "packageLocation": "./.yarn/cache/is-function-npm-1.0.2-90ac01927b-7d564562e0.zip/node_modules/is-function/",\
+          "packageDependencies": [\
+            ["is-function", "npm:1.0.2"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -8766,6 +8907,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["keycode", [\
+        ["npm:2.2.1", {\
+          "packageLocation": "./.yarn/cache/keycode-npm-2.2.1-5f35c03575-7a5c775b24.zip/node_modules/keycode/",\
+          "packageDependencies": [\
+            ["keycode", "npm:2.2.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["kind-of", [\
         ["npm:6.0.3", {\
           "packageLocation": "./.yarn/cache/kind-of-npm-6.0.3-ab15f36220-3ab01e7b1d.zip/node_modules/kind-of/",\
@@ -9033,6 +9183,18 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["m3u8-parser", [\
+        ["npm:4.8.0", {\
+          "packageLocation": "./.yarn/cache/m3u8-parser-npm-4.8.0-161fdb32a0-850a8c5cac.zip/node_modules/m3u8-parser/",\
+          "packageDependencies": [\
+            ["m3u8-parser", "npm:4.8.0"],\
+            ["@babel/runtime", "npm:7.20.1"],\
+            ["@videojs/vhs-utils", "npm:3.0.5"],\
+            ["global", "npm:4.4.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["magic-string", [\
         ["npm:0.25.9", {\
           "packageLocation": "./.yarn/cache/magic-string-npm-0.25.9-0b51c0ea50-9a0e55a15c.zip/node_modules/magic-string/",\
@@ -9280,6 +9442,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["min-document", [\
+        ["npm:2.19.0", {\
+          "packageLocation": "./.yarn/cache/min-document-npm-2.19.0-458cdb3d84-da6437562e.zip/node_modules/min-document/",\
+          "packageDependencies": [\
+            ["min-document", "npm:2.19.0"],\
+            ["dom-walk", "npm:0.1.2"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["mini-css-extract-plugin", [\
         ["npm:2.6.1", {\
           "packageLocation": "./.yarn/cache/mini-css-extract-plugin-npm-2.6.1-4e6d2beaf0-df60840404.zip/node_modules/mini-css-extract-plugin/",\
@@ -9439,6 +9611,19 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["mpd-parser", [\
+        ["npm:0.22.0", {\
+          "packageLocation": "./.yarn/cache/mpd-parser-npm-0.22.0-0bf48c7845-6266f03ec5.zip/node_modules/mpd-parser/",\
+          "packageDependencies": [\
+            ["mpd-parser", "npm:0.22.0"],\
+            ["@babel/runtime", "npm:7.20.1"],\
+            ["@videojs/vhs-utils", "npm:3.0.5"],\
+            ["@xmldom/xmldom", "npm:0.7.9"],\
+            ["global", "npm:4.4.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["mrmime", [\
         ["npm:1.0.1", {\
           "packageLocation": "./.yarn/cache/mrmime-npm-1.0.1-d0aa4f5ddf-cc979da44b.zip/node_modules/mrmime/",\
@@ -9478,6 +9663,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["multicast-dns", "npm:7.2.5"],\
             ["dns-packet", "npm:5.4.0"],\
             ["thunky", "npm:1.1.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["mux.js", [\
+        ["npm:6.0.1", {\
+          "packageLocation": "./.yarn/cache/mux.js-npm-6.0.1-caa6804313-dcf6fb7a3e.zip/node_modules/mux.js/",\
+          "packageDependencies": [\
+            ["mux.js", "npm:6.0.1"],\
+            ["@babel/runtime", "npm:7.20.1"],\
+            ["global", "npm:4.4.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -10108,6 +10304,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/picomatch-npm-2.3.1-c782cfd986-050c865ce8.zip/node_modules/picomatch/",\
           "packageDependencies": [\
             ["picomatch", "npm:2.3.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["pkcs7", [\
+        ["npm:1.0.4", {\
+          "packageLocation": "./.yarn/cache/pkcs7-npm-1.0.4-bfa07f6dac-926a713263.zip/node_modules/pkcs7/",\
+          "packageDependencies": [\
+            ["pkcs7", "npm:1.0.4"],\
+            ["@babel/runtime", "npm:7.20.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -10960,6 +11166,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["process", [\
+        ["npm:0.11.10", {\
+          "packageLocation": "./.yarn/cache/process-npm-0.11.10-aeb3b641ae-bfcce49814.zip/node_modules/process/",\
+          "packageDependencies": [\
+            ["process", "npm:0.11.10"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["process-nextick-args", [\
         ["npm:2.0.1", {\
           "packageLocation": "./.yarn/cache/process-nextick-args-npm-2.0.1-b8d7971609-1d38588e52.zip/node_modules/process-nextick-args/",\
@@ -11450,6 +11665,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["rust-result", [\
+        ["npm:1.0.0", {\
+          "packageLocation": "./.yarn/cache/rust-result-npm-1.0.0-cc126e73cd-ccad2bdf79.zip/node_modules/rust-result/",\
+          "packageDependencies": [\
+            ["rust-result", "npm:1.0.0"],\
+            ["individual", "npm:2.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["safe-buffer", [\
         ["npm:5.1.2", {\
           "packageLocation": "./.yarn/cache/safe-buffer-npm-5.1.2-c27fedf6c4-f2f1f7943c.zip/node_modules/safe-buffer/",\
@@ -11462,6 +11687,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/safe-buffer-npm-5.2.1-3481c8aa9b-b99c4b41fd.zip/node_modules/safe-buffer/",\
           "packageDependencies": [\
             ["safe-buffer", "npm:5.2.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["safe-json-parse", [\
+        ["npm:4.0.0", {\
+          "packageLocation": "./.yarn/cache/safe-json-parse-npm-4.0.0-41eba7694d-dab69dee6c.zip/node_modules/safe-json-parse/",\
+          "packageDependencies": [\
+            ["safe-json-parse", "npm:4.0.0"],\
+            ["rust-result", "npm:1.0.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -12371,6 +12606,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@fortawesome/vue-fontawesome", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:3.0.2"],\
             ["@popperjs/core", "npm:2.11.6"],\
             ["@types/jquery", "npm:3.5.14"],\
+            ["@videojs-player/vue", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:1.0.0"],\
             ["@vue/cli-plugin-babel", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:5.0.8"],\
             ["@vue/cli-plugin-eslint", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:5.0.8"],\
             ["@vue/cli-plugin-router", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:5.0.8"],\
@@ -12392,6 +12628,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["raw-loader", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:4.0.2"],\
             ["sass", "npm:1.56.0"],\
             ["sass-loader", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:12.6.0"],\
+            ["video.js", "npm:7.21.0"],\
             ["vue", "npm:3.2.41"],\
             ["vue-axios", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:3.5.2"],\
             ["vue-google-adsense", "virtual:950904c783d22a647eb003923c564d7849075fd77b8818bdca57e267d7cbc16310fb9ea4b7fbb4579e5c65f1e5ece6d2ace9cca54d5fc4e233ed48841efcd5bc#npm:1.10.1"],\
@@ -12715,6 +12952,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["url-toolkit", [\
+        ["npm:2.2.5", {\
+          "packageLocation": "./.yarn/cache/url-toolkit-npm-2.2.5-85648a69ec-c784040bd4.zip/node_modules/url-toolkit/",\
+          "packageDependencies": [\
+            ["url-toolkit", "npm:2.2.5"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["util-deprecate", [\
         ["npm:1.0.2", {\
           "packageLocation": "./.yarn/cache/util-deprecate-npm-1.0.2-e3fe1a219c-474acf1146.zip/node_modules/util-deprecate/",\
@@ -12776,6 +13022,47 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/vary-npm-1.1.2-b49f70ae63-ae0123222c.zip/node_modules/vary/",\
           "packageDependencies": [\
             ["vary", "npm:1.1.2"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["video.js", [\
+        ["npm:7.21.0", {\
+          "packageLocation": "./.yarn/cache/video.js-npm-7.21.0-881648d4ab-9eea846bb6.zip/node_modules/video.js/",\
+          "packageDependencies": [\
+            ["video.js", "npm:7.21.0"],\
+            ["@babel/runtime", "npm:7.20.1"],\
+            ["@videojs/http-streaming", "virtual:881648d4ab9d35fbac5bdafb07364e565adbff7ac4671a00e5438fe7ba4df6ae49c55f0317b101eceda2c26f653b403330aca81f295f2a8dea82e093478a4b15#npm:2.15.0"],\
+            ["@videojs/vhs-utils", "npm:3.0.5"],\
+            ["@videojs/xhr", "npm:2.6.0"],\
+            ["aes-decrypter", "npm:3.1.3"],\
+            ["global", "npm:4.4.0"],\
+            ["keycode", "npm:2.2.1"],\
+            ["m3u8-parser", "npm:4.8.0"],\
+            ["mpd-parser", "npm:0.22.0"],\
+            ["mux.js", "npm:6.0.1"],\
+            ["safe-json-parse", "npm:4.0.0"],\
+            ["videojs-font", "npm:3.2.0"],\
+            ["videojs-vtt.js", "npm:0.15.4"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["videojs-font", [\
+        ["npm:3.2.0", {\
+          "packageLocation": "./.yarn/cache/videojs-font-npm-3.2.0-b448483d93-3c773d4a64.zip/node_modules/videojs-font/",\
+          "packageDependencies": [\
+            ["videojs-font", "npm:3.2.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["videojs-vtt.js", [\
+        ["npm:0.15.4", {\
+          "packageLocation": "./.yarn/cache/videojs-vtt.js-npm-0.15.4-4c034f4182-10c6c86162.zip/node_modules/videojs-vtt.js/",\
+          "packageDependencies": [\
+            ["videojs-vtt.js", "npm:0.15.4"],\
+            ["global", "npm:4.4.0"]\
           ],\
           "linkType": "HARD"\
         }]\

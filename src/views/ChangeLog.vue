@@ -1,29 +1,40 @@
 <template>
-  <h1>夏特稀個人網站 - 更新日誌</h1>
-  <div class="btn-group" role="group" aria-label="Basic radio toggle button group mb-3">
-    <div class="mb-3">
-      <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" @click="change('')" checked>
-      <label class="btn btn-outline-info text-white" for="btnradio2">全部</label>
-    </div>
-    <div v-for="(item, key) in config" :key="key" class="mb-3">
-      <div v-if="key != 0">
-        <input :href="`#`+item.name" type="radio" class="btn-check" name="btnradio" :id="item.name" autocomplete="off" @click="change(item.name)">
-        <label class="btn btn-outline-info text-white" :for="item.name">{{ item.name }}</label>
+  <div>
+    <h1>夏特稀個人網站 - 更新日誌</h1>
+
+    <!-- 處理版本按鈕的部分 -->
+    <div class="btn-group" role="group" aria-label="Basic radio toggle button group mb-3">
+
+      <!-- 按下全部，則 cacheSearch 為空 -->
+      <div class="mb-3">
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" @click="change('')" checked>
+        <label class="btn btn-outline-info text-white" for="btnradio2">全部</label>
+      </div>
+
+      <!-- 按下其他按鈕，則 cacheSearch 為該按鈕的名字 -->
+      <div v-for="(item, key) in config" :key="key" class="mb-3">
+        <!-- 排除第零個值，即「最新版」 -->
+        <div v-if="key != 0">
+          <input :href="`#`+item.name" type="radio" class="btn-check" name="btnradio" :id="item.name" autocomplete="off" @click="change(item.name)">
+          <label class="btn btn-outline-info text-white" :for="item.name">{{ item.name }}</label>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="accordion" id="accordionExample">
-    <ChangeLog
-      v-for="(item, key) in searchData"
-      :key="key"
-      :version="item.version"
-      :category="item.category"
-      :date="item.date"
-      :description="item.description"
-      :changes="item.changes"
-      :tag="key"
-    ></ChangeLog>
-    <!-- <ChangeLog :log="log"></ChangeLog> -->
+
+    <!-- 摺疊面板 -->
+    <div class="accordion" id="accordionExample">
+      <ChangeLog
+        v-for="(item, key) in searchData"
+        :key="key"
+        :version="item.version"
+        :category="item.category"
+        :date="item.date"
+        :description="item.description"
+        :changes="item.changes"
+        :tag="key"
+      ></ChangeLog>
+      <!-- <ChangeLog :log="log"></ChangeLog> -->
+    </div>
   </div>
 </template>
 
