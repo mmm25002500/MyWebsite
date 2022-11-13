@@ -14,7 +14,7 @@ import 'animate.css'
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-import Ads from 'vue-google-adsense'
+// import Ads from 'vue-google-adsense'
 
 import VueVideoPlayer from '@videojs-player/vue'
 import 'video.js/dist/video-js.css'
@@ -53,13 +53,13 @@ app.use(VueAxios, axios)
 app.use(VueVideoPlayer)
 
 // 將廣告載入
-app.use(Ads.AutoAdsense, {
-  adClient: 'ca-pub-9107487734392446',
-  isNewAdsCode: true,
-  dataAdSlot: '1443478648',
-  dataAdFormat: 'auto',
-  dataFullWidthResponsive: 'true'
-})
+// app.use(Ads.AutoAdsense, {
+//   adClient: 'ca-pub-9107487734392446',
+//   isNewAdsCode: true,
+//   dataAdSlot: '1443478648',
+//   dataAdFormat: 'auto',
+//   dataFullWidthResponsive: 'true'
+// })
 // app.use(Ads.Adsense)
 // app.use(Ads.InArticleAdsense)
 // app.use(Ads.InFeedAdsense)

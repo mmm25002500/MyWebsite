@@ -9,9 +9,12 @@
       <textarea class="form-control" placeholder="搜尋夏特稀的捧由ㄅ!" id="searchDeveloper" v-model="cacheSearch"></textarea>
       <label for="searchDeveloper">搜尋夏特稀的捧由ㄅ!</label>
     </div>
-    <p class="fs-6">小提示！可以點選名字查看詳細內容喔。</p>
+    <p class="fs-6">小提示！可以點選名字查看詳細內容喔。 <br> 朋友數量: {{ friendData.length }}</p>
 
     <!-- 申請加入的按鈕 -->
+    <button type="button" class="d-flex p-2 btn btn-outline-warning text-white" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+      查看全部
+    </button>
     <div class="btn-group" role="group" aria-label="Basic radio toggle button group mb-3">
       <div class="mb-3">
         <button type="button" class="btn btn-outline-success text-white" data-bs-toggle="modal" data-bs-target="#signAddbtn">
@@ -70,21 +73,25 @@
 
     <!-- 顯示「申請加入」鈕 -->
     <SignUpModal></SignUpModal>
+    <Sidebar name="這是我的好捧由們" content="點點看吧，可以展開喔" :data="friendData" @cache-search="getReturnData"></Sidebar>
   </div>
 </template>
 
 <script>
 import Card from '@/components/AboutPage/AboutFriend.vue'
 import SignUpModal from '@/components/AboutPage/ModalSignAdd.vue'
+import Sidebar from '@/components/SidebarSection.vue'
 
 export default {
   components: {
     Card,
-    SignUpModal
+    SignUpModal,
+    Sidebar
   },
   data () {
     return {
       cacheSearch: '',
+      searchData: [],
       friendData: [
         {
           name: 'CuteUSB',
@@ -300,7 +307,7 @@ export default {
           name: 'Liu',
           nic_name: 'Liu',
           tag: 'Liu_Page',
-          img: '',
+          img: require('@/assets/images/liu.webp'),
           intro: '是位很強的大佬',
           link: [
             {
@@ -322,6 +329,216 @@ export default {
             {
               name: 'YouTube',
               link: '',
+              color: 'danger'
+            },
+            {
+              name: 'Website',
+              link: '',
+              color: 'primary'
+            }
+          ]
+        },
+        {
+          name: 'YYW',
+          nic_name: 'YYW',
+          tag: 'YYW_Page',
+          img: require('@/assets/images/yyw.png'),
+          intro: '一個前端好像挺強的朋友',
+          link: [
+            {
+              name: 'Facebook',
+              link: '',
+              color: 'primary'
+            },
+            {
+              name: 'Instagram',
+              link: '',
+              color: 'danger',
+              style: 'background-color: #d63384'
+            },
+            {
+              name: 'Github',
+              link: 'https://github.com/yywbadm',
+              color: 'dark'
+            },
+            {
+              name: 'YouTube',
+              link: 'https://www.youtube.com/channel/UCVssTv4Cyd_DdO-mFyKaDlg',
+              color: 'danger'
+            },
+            {
+              name: 'Website',
+              link: 'http://haimo.tk/',
+              color: 'primary'
+            }
+          ]
+        },
+        {
+          name: '玟珄',
+          nic_name: 'Min Xuan',
+          tag: 'MinXuan_Page',
+          img: require('@/assets/images/xiaoqing.gif'),
+          intro: '聽說身高180體重53的人類，也是小琉球的人類',
+          link: [
+            {
+              name: 'Facebook',
+              link: '',
+              color: 'primary'
+            },
+            {
+              name: 'Instagram',
+              link: 'https://www.instagram.com/shuanqing',
+              color: 'danger',
+              style: 'background-color: #d63384'
+            },
+            {
+              name: 'Github',
+              link: 'https://github.com/hehe6272',
+              color: 'dark'
+            },
+            {
+              name: 'YouTube',
+              link: 'https://www.MinXuan.ga',
+              color: 'danger'
+            },
+            {
+              name: 'Website',
+              link: 'https://haimo.tk',
+              color: 'primary'
+            }
+          ]
+        },
+        {
+          name: '巧克力粉',
+          nic_name: 'choco',
+          tag: 'jacchwill_Page',
+          img: require('@/assets/images/jacchwill.jpg'),
+          intro: ':>',
+          link: [
+            {
+              name: 'Facebook',
+              link: '',
+              color: 'primary'
+            },
+            {
+              name: 'Instagram',
+              link: '',
+              color: 'danger',
+              style: 'background-color: #d63384'
+            },
+            {
+              name: 'Github',
+              link: 'https://github.com/jacchwill',
+              color: 'dark'
+            },
+            {
+              name: 'YouTube',
+              link: 'https://www.youtube.com/channel/UCC-JWFr3gT9a7xDgvnydyFw',
+              color: 'danger'
+            },
+            {
+              name: 'Website',
+              link: '',
+              color: 'primary'
+            }
+          ]
+        },
+        {
+          name: '臘腸',
+          nic_name: 'lawlaw777',
+          tag: 'lawlaw777_Page',
+          img: require('@/assets/images/lawlaw.jpg'),
+          intro: '資工科辣個最強的男人',
+          link: [
+            {
+              name: 'Facebook',
+              link: '',
+              color: 'primary'
+            },
+            {
+              name: 'Instagram',
+              link: 'https://www.instagram.com/lawrencelee0113/',
+              color: 'danger',
+              style: 'background-color: #d63384'
+            },
+            {
+              name: 'Github',
+              link: 'https://github.com/LawrenceLee0113',
+              color: 'dark'
+            },
+            {
+              name: 'YouTube',
+              link: '',
+              color: 'danger'
+            },
+            {
+              name: 'Website',
+              link: 'https://lawrencelee0113.github.io/homework2022/',
+              color: 'primary'
+            }
+          ]
+        },
+        {
+          name: '胡栩睿',
+          nic_name: '海豹',
+          tag: '海豹_Page',
+          img: require('@/assets/images/ray022558.jpg'),
+          intro: '沈迷於網路的海豹',
+          link: [
+            {
+              name: 'Facebook',
+              link: 'https://www.facebook.com/profile.php?id=100009866177157',
+              color: 'primary'
+            },
+            {
+              name: 'Instagram',
+              link: 'https://www.instagram.com/ray022558/',
+              color: 'danger',
+              style: 'background-color: #d63384'
+            },
+            {
+              name: 'Github',
+              link: 'https://github.com/ray970225',
+              color: 'dark'
+            },
+            {
+              name: 'YouTube',
+              link: '',
+              color: 'danger'
+            },
+            {
+              name: 'Website',
+              link: '',
+              color: 'primary'
+            }
+          ]
+        },
+        {
+          name: '賴皮鬼',
+          nic_name: 'laievantw',
+          tag: 'laievantw_Page',
+          img: require('@/assets/images/laipi.png'),
+          intro: '一個很帥的人w',
+          link: [
+            {
+              name: 'Facebook',
+              link: '',
+              color: 'primary'
+            },
+            {
+              name: 'Instagram',
+              link: '',
+              color: 'danger',
+              style: 'background-color: #d63384'
+            },
+            {
+              name: 'Github',
+              link: '',
+              color: 'dark'
+            },
+            {
+              name: 'YouTube',
+              link: 'https://www.youtube.com/channel/UCMyohR24XB_hwYAUK0LXK9w',
               color: 'danger'
             },
             {
@@ -366,43 +583,7 @@ export default {
             }
           ]
         }
-        // {
-        //   name: '',
-        //   nic_name: '',
-        //   tag: '',
-        //   img: '',
-        //   intro: '',
-        //   link: [
-        //     {
-        //       name: 'Facebook',
-        //       link: '',
-        //       color: 'primary'
-        //     },
-        //     {
-        //       name: 'Instagram',
-        //       link: '',
-        //       color: 'danger',
-        //       style: 'background-color: #d63384'
-        //     },
-        //     {
-        //       name: 'Github',
-        //       link: '',
-        //       color: 'dark'
-        //     },
-        //     {
-        //       name: 'YouTube',
-        //       link: '',
-        //       color: 'danger'
-        //     },
-        //     {
-        //       name: 'Website',
-        //       link: '',
-        //       color: 'primary'
-        //     }
-        //   ]
-        // }
-      ],
-      searchData: []
+      ]
     }
   },
   created () {
@@ -412,14 +593,14 @@ export default {
     cacheSearch: function (val) {
       this.searchData = this.friendData.filter((item) => {
         // 如果沒有搜尋到 name
-        if (item.name.includes(this.cacheSearch)) {
-          return item.name.includes(this.cacheSearch)
-        } else if (item.tag.includes(this.cacheSearch)) {
-          return item.tag.includes(this.cacheSearch)
-        } else if (item.intro.includes(this.cacheSearch)) {
-          return item.intro.includes(this.cacheSearch)
-        } else if (item.nic_name.includes(this.cacheSearch)) {
-          return item.nic_name.includes(this.cacheSearch)
+        if (item.name.toUpperCase().includes(this.cacheSearch.toUpperCase())) {
+          return item.name.toUpperCase().includes(this.cacheSearch.toUpperCase())
+        } else if (item.tag.toUpperCase().includes(this.cacheSearch.toUpperCase())) {
+          return item.tag.toUpperCase().includes(this.cacheSearch.toUpperCase())
+        } else if (item.intro.toUpperCase().includes(this.cacheSearch.toUpperCase())) {
+          return item.intro.toUpperCase().includes(this.cacheSearch.toUpperCase())
+        } else if (item.nic_name.toUpperCase().includes(this.cacheSearch.toUpperCase())) {
+          return item.nic_name.toUpperCase().includes(this.cacheSearch.toUpperCase())
         } else {
           return false
         }

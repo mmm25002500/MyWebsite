@@ -129,9 +129,9 @@
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
           <div>
-            目前已經更新至 v0.8版，已完成「聯絡我」、「朋友頁面」！
+            目前已經更新至 v0.9版，已完成「聯絡我」、「朋友頁面」！
             <router-link to="/webchangelog" class="text-info">到更新日誌中查看</router-link>
-            。中華民國 111 年 11 月 11 日，上一個版本更新日期為 111 年 11 月 11 日。
+            。中華民國 111 年 11 月 12 日，上一個版本更新日期為 111 年 11 月 11 日。
           </div>
         </div>
       </div>
@@ -248,7 +248,7 @@ export default {
 @import './assets/all.scss';
 
 body {
-  background-image: linear-gradient(0deg,rgba(19,21,25,.5),rgba(19,21,25,.5)),url(assets/images/bg.jpg);
+  background-image: linear-gradient(0deg,rgba(19,21,25,.5),rgba(19,21,25,.5)),url(assets/images/bg.webp);
   // color: #fff;
   background-repeat: no-repeat;
   background-attachment: fixed;
