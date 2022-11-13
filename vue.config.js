@@ -4,7 +4,8 @@
 // })
 
 module.exports = {
-  chainWebpack(config){
+  parallel: false,
+  chainWebpack (config) {
     config.module.rule('md')
       .test(/\.md/)
       .use('vue-loader')
