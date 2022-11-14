@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomePage from '../views/HomePage.vue'
-import BlogEntries from '@/assets/data/AboutGoal.json'
+import AboutGoal from '@/assets/data/AboutGoal.json'
+import AboutMe from '@/assets/data/AboutMe.json'
 
 // 遍歷所有的文章
 function getRoutes (BlogEntries, path, ComponentPath) {
@@ -56,7 +57,8 @@ const routes = [
         name: '我的好朋友們',
         component: () => import(/* webpackChunkName: "skill" */ '../views/AboutPage/AboutFriends.vue')
       },
-      ...getRoutes(BlogEntries, '/about/goal/', 'goal/')
+      ...getRoutes(AboutMe, '/about/me/', 'AboutMe/'),
+      ...getRoutes(AboutGoal, '/about/goal/', 'goal/')
       // {
       //   path: 'team',
       //   name: '',

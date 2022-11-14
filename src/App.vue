@@ -129,9 +129,9 @@
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
           <div>
-            目前已經更新至 v0.9版，已完成「聯絡我」、「朋友頁面」！
+            目前已經更新至 v0.10版，已完成「聯絡我」、「朋友頁面」！
             <router-link to="/webchangelog" class="text-info">到更新日誌中查看</router-link>
-            。中華民國 111 年 11 月 13 日，上一個版本更新日期為 111 年 11 月 11 日。
+            。中華民國 111 年 11 月 14 日，上一個版本更新日期為 111 年 11 月 13 日。
           </div>
         </div>
       </div>

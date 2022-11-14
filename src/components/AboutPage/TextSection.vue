@@ -24,7 +24,7 @@
         ></Modal>
       </div>
       <div v-else>
-        <router-link :to="`/about/goal/`+eng_name" type="button" class="btn btn-outline-warning" href="#">
+        <router-link :to="more_link+eng_name" type="button" class="btn btn-outline-warning" :href="more_link+eng_name">
           查看更多
         </router-link>
 
@@ -52,6 +52,7 @@ export default {
     short: String,
     content: String,
     more_content: Array,
+    more_link: String,
     link: Boolean,
     date: String,
     badge: String,

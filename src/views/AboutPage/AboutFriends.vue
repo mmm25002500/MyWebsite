@@ -80,7 +80,7 @@
 <script>
 import Card from '@/components/AboutPage/AboutFriend.vue'
 import SignUpModal from '@/components/AboutPage/ModalSignAdd.vue'
-import Sidebar from '@/components/SidebarSection.vue'
+import Sidebar from '@/components/AboutPage/SidebarSection.vue'
 
 export default {
   components: {
@@ -539,6 +539,41 @@ export default {
             {
               name: 'YouTube',
               link: 'https://www.youtube.com/channel/UCMyohR24XB_hwYAUK0LXK9w',
+              color: 'danger'
+            },
+            {
+              name: 'Website',
+              link: '',
+              color: 'primary'
+            }
+          ]
+        },
+        {
+          name: '阿蕭',
+          nic_name: '5teveLAG',
+          tag: '5teveLAG_Page',
+          img: require('@/assets/images/axiao.jpg'),
+          intro: '🎸.📷.🍷.🚬',
+          link: [
+            {
+              name: 'Facebook',
+              link: '',
+              color: 'primary'
+            },
+            {
+              name: 'Instagram',
+              link: 'https://www.instagram.com/5tevelag/',
+              color: 'danger',
+              style: 'background-color: #d63384'
+            },
+            {
+              name: 'Github',
+              link: '',
+              color: 'dark'
+            },
+            {
+              name: 'YouTube',
+              link: 'https://youtube.com/@5tevelag',
               color: 'danger'
             },
             {

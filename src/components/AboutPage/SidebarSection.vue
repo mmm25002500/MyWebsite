@@ -11,8 +11,8 @@
           {{ content }}
         </div>
         <div v-for="(item, key) in data" :key="key">
-          <a type="button" @click.prevent="returnCacheSearch(item.id)" class="d-flex p-2 btn btn-outline-danger" >
-            {{ item.title }}
+          <a type="button" @click.prevent="returnCacheSearch(item.tag)" class="d-flex p-2 btn btn-outline-danger" >
+            {{ item.name }}
           </a>
         </div>
       </div>

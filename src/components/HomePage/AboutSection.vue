@@ -6,7 +6,10 @@
         <div class="col d-flex flex-column bd-highlight mb-3">
           <h3 class="card-title text-white text-center">夏特稀</h3>
           <div class="p-2 bd-highlight">
-            <img src="images/img.webp" class="rounded-circle" style="width: 100px" alt="" />
+            <img
+              class="rounded-circle circle"
+              :style="`background-image: url('`+require('@/assets/images/img.webp')+`');border: 2px solid #00fffe;width: 100px;height: 100px;`">
+            <!-- <img src="images/img.webp" class="rounded-circle" style="width: 100px" alt="" /> -->
           </div>
           <!-- <div class="p-2 bd-highlight">Flex item 3</div> -->
         </div>
@@ -60,6 +63,18 @@
 </template>
 
 <style>
+/* 處理圖片的 css */
+.circle {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    border-radius: 50%;
+    box-shadow: inset 0px 0rem 1rem 2px rgb(0 0 0 / 18%) !important;
+    background-clip: content-box;
+    /* padding: 1px; */
+    /* margin: 1em auto; */
+    /* border: 2px solid #00fffe; */
+}
 </style>
 
 <script>

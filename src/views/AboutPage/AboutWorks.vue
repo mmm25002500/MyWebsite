@@ -14,8 +14,16 @@
 
     <!-- 如果只有一個，那就滿版 -->
     <!-- :link="svn_url" 把 github repo 連結加上去 -->
-    <div v-if="searchData.length === 1
-">
+
+    <div v-if="!searchData[0]">
+      <div class="alert alert-danger d-flex justify-content-center align-items-center" role="alert">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">載入中... 請稍後...</span>
+        </div>
+        載入中...
+      </div>
+    </div>
+    <div v-if="searchData.length === 1">
         <Card
           v-for="(item, key) in searchData"
           :key="key"
