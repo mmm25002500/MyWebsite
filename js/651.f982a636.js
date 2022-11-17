@@ -1,2 +1,2 @@
 "use strict";(self["webpackChunktershixia_website"]=self["webpackChunktershixia_website"]||[]).push([[651],{651:function(n,e,l){l.r(e),l.d(e,{default:function(){return h}});var t=l(6252);const u=(0,t._)("html",null,[(0,t._)("head"),(0,t._)("body",null,[(0,t._)("h1",null,"自我介紹"),(0,t._)("p",null,"這是我的自我介紹"),(0,t._)("hr"),(0,t._)("p",null,"還沒做好拉XDD 鼻要亂看ε٩(๑> ₃ <)۶з")])],-1),r=[u];function i(n,e){return(0,t.wg)(),(0,t.iD)("section",null,r)}var s=l(3744);const a={},c=(0,s.Z)(a,[["render",i]]);var h=c}}]);
-//# sourceMappingURL=651.358d0777.js.map
+//# sourceMappingURL=651.f982a636.js.map
