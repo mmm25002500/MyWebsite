@@ -50,7 +50,7 @@
         :link="item.link"
         border_color="#00fffe"
         img_style="width: 101.59px; height: 101.59px"
-        style="width: 100%"
+        card_style="width: 100%"
         ></Card>
     </div>
     <!-- 如果只有一個人，則展開 -->
@@ -67,7 +67,7 @@
         :link="item.link"
         border_color="#00fffe"
         img_style="width: 150px; height: 150px;"
-        style="width: 100%;"
+        card_style="width: 100%;"
         ></Card>
     </div>
 

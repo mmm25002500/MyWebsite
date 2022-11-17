@@ -1,5 +1,17 @@
 [
     {
+        "version": "0.11",
+        "category": "測試版",
+        "date": "2022/11/17",
+        "description": "測試功能中",
+        "changes": [
+            "新增 Google Analytics",
+            "修復 AboutFriend Style Props 問題",
+            "新增贊助頁面",
+            "新增贊助按鈕"
+        ]
+    },
+    {
         "version": "0.10",
         "category": "測試版",
         "date": "2022/11/14",

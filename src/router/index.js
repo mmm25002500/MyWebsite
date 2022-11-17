@@ -57,6 +57,11 @@ const routes = [
         name: '我的好朋友們',
         component: () => import(/* webpackChunkName: "skill" */ '../views/AboutPage/AboutFriends.vue')
       },
+      {
+        path: 'donate',
+        name: '贊助',
+        component: () => import(/* webpackChunkName: "skill" */ '../views/AboutPage/AboutDonation.vue')
+      },
       ...getRoutes(AboutMe, '/about/me/', 'AboutMe/'),
       ...getRoutes(AboutGoal, '/about/goal/', 'goal/')
       // {

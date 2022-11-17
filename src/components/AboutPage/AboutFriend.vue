@@ -1,7 +1,7 @@
 <template>
 
     <div class="col d-flex justify-content-center">
-      <div class="card text-white bg-transparent border-warning" :style="style" :id="tag">
+      <div class="card text-white bg-transparent border-warning" :style="card_style" :id="tag">
         <div class="card-body">
           <div class="d-flex justify-content-center">
             <!-- 處理圖片，把「外框顏色、長高度、圖片位置」傳進來 -->
@@ -27,7 +27,7 @@
                 target="_blank"
                 class="btn "
                 :class="`btn-`+item.color"
-                :style="item.style"
+                :style="item.card_style"
                 >{{ item.name }}</a>
             </span>
           </div>
@@ -64,7 +64,7 @@ export default {
     img_style: String,
     link: Object,
     border_color: String,
-    style: String
+    card_style: String
   },
   methods: {
     // 點下去用 emit 回傳 cacheSearch = name 進而展開

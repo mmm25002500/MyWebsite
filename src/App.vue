@@ -98,7 +98,7 @@
 
       <!-- 載入警告訊息 -->
       <div class="alert alert-danger d-flex align-items-center" role="alert">
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close align-self-start" data-bs-dismiss="alert" aria-label="Close"></button>
         <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
         <div>
           請注意！！夏特稀個人網站正在進行大更新，將全面改為 Vue CLI 架構，目前新版頁面功能尚未完成，正在製作開發。如要查看完整頁面，<a href="https://www2.tershi.com" class="alert-link text-info">請回到舊正式版網頁</a>. 並等待網站全面更新完成。中華民國 111 年 11 月 04 日
@@ -126,12 +126,12 @@
 
         <!-- 載入上方提示訊息 -->
         <div class="alert alert-success d-flex align-items-center" role="alert">
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          <button type="button" class="btn-close align-self-start" data-bs-dismiss="alert" aria-label="Close"></button>
           <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
           <div>
-            目前已經更新至 v0.10版，已完成「聯絡我」、「朋友頁面」！
+            目前已經更新至 v0.11版，已完成「聯絡我」、「朋友頁面」！
             <router-link to="/webchangelog" class="text-info">到更新日誌中查看</router-link>
-            。中華民國 111 年 11 月 14 日，上一個版本更新日期為 111 年 11 月 13 日。
+            。中華民國 111 年 11 月 17 日，上一個版本更新日期為 111 年 11 月 14 日。
           </div>
         </div>
       </div>
@@ -199,6 +199,11 @@ export default {
               name: '創立團隊',
               icon: ['fas', 'building'],
               path: '/about/team/short'
+            },
+            {
+              name: '贊助夏特稀',
+              icon: ['fas', 'sack-dollar'],
+              path: '/about/donate'
             }
           ],
           outside: false
