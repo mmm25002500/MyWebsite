@@ -23,13 +23,15 @@
     <!-- 顯示圓框框外部連結 -->
     <footer id="footer">
       <ul class="icons home-icon ul-link">
-        <li v-for="(item, key) in data" :key="key" class="li-link">
-          <a target="_blank" :href="item.link">
-            <font-awesome-icon :icon="item.icon" class="icon alt" style="color: #ffffff;">
-              <span class="label">{{ item.name }}</span>
-            </font-awesome-icon>
-          </a>
-        </li>
+        <template v-for="(item, key) in data" :key="key">
+          <li class="li-link">
+            <a target="_blank" :href="item.link" class="li-link">
+              <font-awesome-icon :icon="item.icon" class="icon alt" style="color: #ffffff;">
+                <span class="label">{{ item.name }}</span>
+              </font-awesome-icon>
+            </a>
+          </li>
+        </template>
       </ul>
     </footer>
   </div>
@@ -57,7 +59,7 @@ home-icon {
   box-shadow: inset 0 0 0 1px #ffffff;
   display: inline-block;
   height: 3.25rem;
-  line-height: 3.25rem;
+  line-height: 3.5rem;
   text-align: center;
   width: 3.25rem;
   font-size: 16pt;

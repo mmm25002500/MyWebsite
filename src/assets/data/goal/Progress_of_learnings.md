@@ -1,21 +1,23 @@
 # 考上好大學(達成)
 
+索引: [學習狀況](#progress_of_learnings)、[自學成果](#achievement_of_self-study)、[我的習慣](#My_habit)、[錄取學校](#Admission_school)、[未來長遠計畫](#Long_term_plans_for_future)
+
 ---
-## 學習狀況 Progress of learnings
+## <div id="progress_of_learnings">學習狀況</div>
 我的自學能力不錯，加上我對資訊領域的興趣，持續推動我自學程式設計，在國小的時候就已經知道自己的興趣和未來的道路了，也因此開發出第一個自己的Side Project "網站APP"，內容十分簡單，就是使用WebView將網站抓下來呈現而已，在國高中時期，我的技術能力大量提升，在高中的時候毅然決然的決定要走「特殊選才」管道。在自學程式期間，我從前端到後端都有所涉略，但每一項都不是到很精，於是我大一期間繼續學習前端知識，並自學演算法，彌補我以前沒有學習到的知識，增進自我。
 
 ---
-## 自學成果 Achievement of Self-Study
+## <div id="achievement_of_self-study">自學成果</div>
 2022年時，我開始接觸了前端更多的框架，從React至Vue，也接觸了一些PHP框架，在未來我還是會持續往Vue.JS學習，不僅是看到了Vue未來的產值，也是對Vue框架的興趣，未來也打算先以Vue前端工程師做為主力工作，再以工作繼續精進自己。
 我目前這個個人網站是以Vue編寫而成的，也是將所學的應用在生活上，實現了「學以致用」，正所謂：「學程式設計就是要解決生活上的問題，任何不能解決生活上的問題，那麼都是無用的」，對於電腦科學感興趣的我，未來也會用Vue.JS寫出更多好用、好看的網頁。知道設計不強的我，未來也會繼續學習設計類，將網頁設計得很好看，是我的目標。
 
 ---
-## 我的習慣 My habit
+## <div id="My_habit">我的習慣</div>
 
 
 ---
-## 錄取學校 Admission school
+## <div id="Admission_school">錄取學校</div>
 特殊選才 國立臺中科技大學 資訊工程系 正取一
 
 ---
-## 未來長遠計畫 Long term plans for future
+## <div id="Long_term_plans_for_future">未來長遠計畫</div>

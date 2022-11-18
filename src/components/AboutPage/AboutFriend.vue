@@ -69,6 +69,7 @@ export default {
   methods: {
     // 點下去用 emit 回傳 cacheSearch = name 進而展開
     returnCacheSearch () {
+      window.scrollTo(0, 0)
       this.$emit('cache-search', this.tag)
     }
   }

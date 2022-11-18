@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-once>
     <!-- <ins class="adsbygoogle"
      style="display:block"
      data-ad-client="ca-pub-9107487734392446"

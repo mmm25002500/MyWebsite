@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '../views/HomePage.vue'
 import AboutGoal from '@/assets/data/AboutGoal.json'
 import AboutMe from '@/assets/data/AboutMe.json'
@@ -62,6 +62,11 @@ const routes = [
         name: '贊助',
         component: () => import(/* webpackChunkName: "skill" */ '../views/AboutPage/AboutDonation.vue')
       },
+      {
+        path: 'contact',
+        name: '聯絡我',
+        component: () => import(/* webpackChunkName: "about" */ '../views/AboutPage/ContactMe.vue')
+      },
       ...getRoutes(AboutMe, '/about/me/', 'AboutMe/'),
       ...getRoutes(AboutGoal, '/about/goal/', 'goal/')
       // {
@@ -116,11 +121,6 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/ChangeLog.vue')
   },
   {
-    path: '/contact',
-    name: '聯絡我',
-    component: () => import(/* webpackChunkName: "about" */ '../views/ContactMe.vue')
-  },
-  {
     path: '/myface',
     name: '我可愛的臉',
     component: () => import(/* webpackChunkName: "about" */ '../views/MyFace.vue')
@@ -129,7 +129,7 @@ const routes = [
 
 // 執行路由表
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   scrollBehavior (to, from, savedPosition) {
     return { left: 0, top: 0 }
   },
