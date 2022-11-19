@@ -48,11 +48,6 @@ const routes = [
         component: () => import(/* webpackChunkName: "skill" */ '../views/AboutPage/AboutGoal.vue')
       },
       {
-        path: 'works',
-        name: '我的作品',
-        component: () => import(/* webpackChunkName: "skill" */ '../views/AboutPage/AboutWorks.vue')
-      },
-      {
         path: 'friends',
         name: '我的好朋友們',
         component: () => import(/* webpackChunkName: "skill" */ '../views/AboutPage/AboutFriends.vue')
@@ -80,6 +75,26 @@ const routes = [
       //       component: () => import(/* webpackChunkName: "skill" */ '../views/AboutMe.vue')
       //     }
       // }
+    ]
+  },
+  {
+    path: '/stats',
+    name: '統計',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/Statistics/StatisticsPage.vue'),
+    children: [
+      {
+        path: 'yt',
+        name: 'YouTube統計',
+        component: () => import(/* webpackChunkName: "skill" */ '../views/Statistics/YouTubePage.vue')
+      },
+      {
+        path: 'github',
+        name: 'Github統計',
+        component: () => import(/* webpackChunkName: "skill" */ '../views/Statistics/GithubPage.vue')
+      }
     ]
   },
   {

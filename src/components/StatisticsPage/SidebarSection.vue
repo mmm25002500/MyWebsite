@@ -1,7 +1,8 @@
 <template>
+  <!-- 改為 ref 去展開 -->
   <div>
     <button type="button" class="d-flex p-2 btn btn-outline-warning text-white" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-      查看全部
+        查看全部
     </button>
     <div class="offcanvas offcanvas-start text-dark" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
       <div class="offcanvas-header">
@@ -13,8 +14,8 @@
           {{ content }}
         </div>
         <div v-for="(item, key) in data" :key="key">
-          <a type="button" @click.prevent="returnCacheSearch(item.tag)" class="d-flex p-2 btn btn-outline-danger" >
-            {{ item.name }}
+          <a type="button" @click.prevent="returnCacheSearch(item.id.videoId)" class="d-flex p-2 btn btn-outline-danger" >
+            {{ item.snippet.title }}
           </a>
         </div>
       </div>

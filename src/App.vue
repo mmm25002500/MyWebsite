@@ -20,7 +20,7 @@
 
               <!-- 如果是外部連結 -->
               <div v-if="item.outside">
-                <a class="nav-link text-white" :href="item.url" target="_blank">
+                <a class="nav-link text-white" :href="item.url" target="_blank" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">
                   <font-awesome-icon :icon="item.icon" class="icon alt" style="color: #ffffff;" />
                   {{ item.name }}
                 </a>
@@ -31,16 +31,18 @@
                 <!-- 如果是下拉式選單 -->
                 <div v-if="item.children">
                   <!-- 載入第一個下拉式選單 -->
-                  <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <font-awesome-icon :icon="item.icon" class="icon alt" style="color: #ffffff;" />
-                        {{ item.name }}
+                  <a class="nav-link dropdown-toggle text-white" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <font-awesome-icon :icon="item.icon" class="icon alt" style="color: #ffffff;" />
+                    {{ item.name }}
                   </a>
                   <!-- 載入裡面條目選單 -->
                   <ul class="dropdown-menu" style="background-color: rgb(7 6 6 / 82%) !important;" aria-labelledby="navbarDropdown">
                     <li v-for="(child, key2) in item.children" :key="key2">
-                      <router-link :to="child.path" class="dropdown-item text-dark" href="#">
-                        <font-awesome-icon :icon="child.icon" class="icon alt" style="color: #ffffff;" />
-                        <span style="color: #ffffff;">&nbsp;{{ child.name }}</span>
+                      <router-link :to="child.path" class="dropdown-item text-dark">
+                        <div data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">
+                          <font-awesome-icon :icon="child.icon" class="icon alt" style="color: #ffffff;" />
+                          <span style="color: #ffffff;">&nbsp;{{ child.name }}</span>
+                        </div>
                       </router-link>
                     </li>
                     <!-- <li><hr class="dropdown-divider"></li> -->
@@ -49,8 +51,8 @@
 
                 <!-- 如果是單純的條目 -->
                 <div v-else>
-                  <router-link class="nav-link" :to="item.url">
-                    <div class="text-white">
+                  <router-link class="nav-link" :to="item.url" >
+                    <div class="text-white" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">
                       <font-awesome-icon :icon="item.icon" class="icon alt" style="color: #ffffff;" />
                       {{ item.name }}
                     </div>
@@ -129,9 +131,9 @@
           <button type="button" class="btn-close align-self-start" data-bs-dismiss="alert" aria-label="Close"></button>
           <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
           <div>
-            目前已經更新至 v0.12版，已完成「贊助夏特稀」！
+            目前已經更新至 v0.13版，已完成「贊助夏特稀」！
             <router-link to="/webchangelog" class="text-info">到更新日誌中查看</router-link>
-            。中華民國 111 年 11 月 18 日，上一個版本更新日期為 111 年 11 月 17 日。
+            。中華民國 111 年 11 月 19 日，上一個版本更新日期為 111 年 11 月 18 日。
           </div>
         </div>
       </div>
@@ -187,11 +189,6 @@ export default {
               path: '/about/goal'
             },
             {
-              name: '作品',
-              icon: ['fas', 'code'],
-              path: '/about/works'
-            },
-            {
               name: '聯絡我',
               icon: ['fas', 'user-plus'],
               path: '/about/contact'
@@ -215,9 +212,27 @@ export default {
           outside: false
         },
         {
+          name: '統計',
+          url: '/stats',
+          icon: ['fas', 'address-card'],
+          children: [
+            {
+              name: 'YouTube',
+              icon: ['fab', 'youtube'],
+              path: '/stats/yt'
+            },
+            {
+              name: 'Github',
+              icon: ['fab', 'github'],
+              path: '/stats/github'
+            }
+          ],
+          outside: false
+        },
+        {
           name: '我的專案',
           url: '/projects',
-          icon: ['fas', 'terminal'],
+          icon: ['fas', 'code'],
           outside: false
         },
         {

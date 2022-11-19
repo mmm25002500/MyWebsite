@@ -12,9 +12,7 @@
     <p class="fs-6">小提示！可以點選名字查看詳細內容喔。 <br> 朋友數量: {{ friendData.length }}</p>
 
     <!-- 申請加入的按鈕 -->
-    <button type="button" class="d-flex p-2 btn btn-outline-warning text-white" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-      查看全部
-    </button>
+    <Sidebar name="這是我的好捧由們" content="點點看吧，可以展開喔" :data="friendData" @cache-search="getReturnData"></Sidebar>
     <div class="btn-group" role="group" aria-label="Basic radio toggle button group mb-3">
       <div class="mb-3">
         <button type="button" class="btn btn-outline-success text-white" data-bs-toggle="modal" data-bs-target="#signAddbtn">
@@ -33,6 +31,17 @@
       <div v-for="(item, key) in friendData" :key="key" class="mb-3 ">
         <input v-if="key<3" v-model="cacheSearch" :href="`#`+item.name" type="radio" class="btn-check" name="btnradio" :id="item.name" autocomplete="off" @click="change(item.tag)" :value="item.tag">
         <label v-if="key<3" class="btn btn-outline-info text-white" :for="item.name">{{ item.name }}</label>
+      </div>
+    </div>
+
+     <!-- 如果找不到 -->
+     <div v-if="!searchData[0]">
+      <div class="alert alert-danger d-flex align-items-center" role="alert">
+        <!-- <button type="button" class="btn-close align-self-start" data-bs-dismiss="alert" aria-label="Close"></button> -->
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+        <div>
+          找不到此這個朋友喔
+        </div>
       </div>
     </div>
 
@@ -73,7 +82,6 @@
 
     <!-- 顯示「申請加入」鈕 -->
     <SignUpModal></SignUpModal>
-    <Sidebar name="這是我的好捧由們" content="點點看吧，可以展開喔" :data="friendData" @cache-search="getReturnData"></Sidebar>
   </div>
 </template>
 

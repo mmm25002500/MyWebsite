@@ -9,7 +9,7 @@
               class="rounded-circle circle"
               :style="`background-image: url('`+img+`');border: 2px solid `+border_color+`;`+img_style">
           </div>
-          <!-- 處理朋友文字，點下去用 emit 回傳 cacheSearch = name 進而展開 -->
+          <!-- 處理卡片文字，點下去用 emit 回傳 cacheSearch = name 進而展開 -->
           <h5 class="card-title text-info text-center" @click.prevent="returnCacheSearch()">
               {{ name }}
           </h5>
