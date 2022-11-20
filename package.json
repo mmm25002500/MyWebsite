@@ -27,7 +27,6 @@
     "video.js": "^7.20.3",
     "vue": "^3.2.13",
     "vue-axios": "^3.5.2",
-    "vue-backtotop": "^1.6.1",
     "vue-google-adsense": "^1.10.1",
     "vue-loader": "^17.0.1",
     "vue-markdown-loader": "^2.5.0",

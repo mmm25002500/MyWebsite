@@ -14,7 +14,7 @@
     </div>
 
     <!-- 顯示「全部」按鈕 -->
-    <button type="button" class="d-flex p-2 btn btn-outline-warning text-white" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+    <button type="button" class="d-flex p-2 btn btn-outline-warning text-white" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" style="position: relative;">
       查看全部
     </button>
     <div class="btn-group" role="group" aria-label="Basic radio toggle button group mb-3">

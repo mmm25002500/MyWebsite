@@ -14,15 +14,25 @@
 	<meta property="og:title" content="夏特稀個人網站 - 靈萌團隊" />
 	<meta property="og:description" content="一個正在讀高中的學生，為了台灣資訊安全與自己的夢想而努力" />
 	<meta property="og:image" content="https://tershi.com/images/img.png" />
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title><%= htmlWebpackPlugin.options.title %></title>
+  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+  <title><%= htmlWebpackPlugin.options.title %></title>
     <!-- <title></title> -->
   </head>
-  <body>
+  <body style="margin: 0px">
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
 
+    <!-- 地球 -->
+	  <script type="text/javascript" src="/github-globe/main.js"></script>
+
+    <!-- 動畫線 -->
+    <link rel="stylesheet" href="/ParticleGround-Portfolio/css/style.css" />
+    <script type="text/javascript" src="/ParticleGround-Portfolio/js/jquery.particleground.js" async></script>
+    <script type="text/javascript" src="/ParticleGround-Portfolio/js/demo.js" async></script>
+    <div id="particles" style="position: fixed;">
+    </div>
+    
     <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9107487734392446"
      crossorigin="anonymous"></script> -->
     <!-- Messenger 洽談外掛程式 Code Start -->

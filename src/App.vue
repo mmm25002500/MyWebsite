@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="position:relative;">
     <!-- 載入導覽列 -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="background-color: rgb(176 176 176 / 0%) !important;">
       <div class="container-fluid">
@@ -20,7 +20,7 @@
 
               <!-- 如果是外部連結 -->
               <div v-if="item.outside">
-                <a class="nav-link text-white" :href="item.url" target="_blank" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">
+                <a class="nav-link text-white" :href="item.url" target="_blank">
                   <font-awesome-icon :icon="item.icon" class="icon alt" style="color: #ffffff;" />
                   {{ item.name }}
                 </a>
@@ -38,12 +38,24 @@
                   <!-- 載入裡面條目選單 -->
                   <ul class="dropdown-menu" style="background-color: rgb(7 6 6 / 82%) !important;" aria-labelledby="navbarDropdown">
                     <li v-for="(child, key2) in item.children" :key="key2">
-                      <router-link :to="child.path" class="dropdown-item text-dark">
-                        <div data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">
+
+                      <!-- 如果下拉式選單條目是外部連結 -->
+                      <div v-if="child.outside">
+                        <a class="dropdown-item text-white" :href="child.url" target="_blank">
                           <font-awesome-icon :icon="child.icon" class="icon alt" style="color: #ffffff;" />
-                          <span style="color: #ffffff;">&nbsp;{{ child.name }}</span>
-                        </div>
-                      </router-link>
+                          {{ child.name }}
+                        </a>
+                      </div>
+
+                      <!-- 如果下拉式選單條目是內部連結 -->
+                      <div v-else>
+                        <router-link :to="child.url" class="dropdown-item text-white">
+                          <div data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">
+                            <font-awesome-icon :icon="child.icon" class="icon alt" style="color: #ffffff;" />
+                            <span style="color: #ffffff;">&nbsp;{{ child.name }}</span>
+                          </div>
+                        </router-link>
+                      </div>
                     </li>
                     <!-- <li><hr class="dropdown-divider"></li> -->
                   </ul>
@@ -99,13 +111,13 @@
       </svg>
 
       <!-- 載入警告訊息 -->
-      <div class="alert alert-danger d-flex align-items-center" role="alert">
+      <!-- <div class="alert alert-danger d-flex align-items-center" role="alert">
         <button type="button" class="btn-close align-self-start" data-bs-dismiss="alert" aria-label="Close"></button>
         <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
         <div>
           請注意！！夏特稀個人網站正在進行大更新，將全面改為 Vue CLI 架構，目前新版頁面功能尚未完成，正在製作開發。如要查看完整頁面，<a href="https://www2.tershi.com" class="alert-link text-info">請回到舊正式版網頁</a>. 並等待網站全面更新完成。中華民國 111 年 11 月 04 日
         </div>
-      </div>
+      </div> -->
     </div>
 
     <!-- 顯示上方提示訊息 -->
@@ -131,11 +143,12 @@
           <button type="button" class="btn-close align-self-start" data-bs-dismiss="alert" aria-label="Close"></button>
           <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
           <div>
-            目前已經更新至 v0.13版，已完成「贊助夏特稀」！
+            目前已經更新至 v0.14版，已完成大部分功能！
             <router-link to="/webchangelog" class="text-info">到更新日誌中查看</router-link>
-            。中華民國 111 年 11 月 19 日，上一個版本更新日期為 111 年 11 月 18 日。
+            。中華民國 111 年 11 月 20 日，上一個版本更新日期為 111 年 11 月 19 日。
           </div>
         </div>
+
       </div>
       <!-- <Adsense
         data-ad-client="ca-pub-9107487734392446"
@@ -157,6 +170,8 @@
 
 <script>
 import Footer from '@/components/FooterSection.vue'
+import data from '@/assets/data/NavbarData.json'
+
 export default {
   components: {
     Footer
@@ -166,105 +181,15 @@ export default {
       SERVER_CONFIG: {
         title: 'TershiXia'
       },
-      data: [
-        {
-          name: '主頁',
-          url: '/',
-          icon: ['fas', 'house'],
-          outside: false
-        },
-        {
-          name: '關於我',
-          url: '/about',
-          icon: ['fas', 'address-card'],
-          children: [
-            {
-              name: '關於我',
-              icon: ['fas', 'chalkboard-user'],
-              path: '/about/me'
-            },
-            {
-              name: '目標',
-              icon: ['fas', 'bullseye'],
-              path: '/about/goal'
-            },
-            {
-              name: '聯絡我',
-              icon: ['fas', 'user-plus'],
-              path: '/about/contact'
-            },
-            {
-              name: '我的好朋友們',
-              icon: ['fas', 'user-group'],
-              path: '/about/friends'
-            },
-            {
-              name: '創立團隊',
-              icon: ['fas', 'building'],
-              path: '/about/team/short'
-            },
-            {
-              name: '贊助夏特稀',
-              icon: ['fas', 'sack-dollar'],
-              path: '/about/donate'
-            }
-          ],
-          outside: false
-        },
-        {
-          name: '統計',
-          url: '/stats',
-          icon: ['fas', 'address-card'],
-          children: [
-            {
-              name: 'YouTube',
-              icon: ['fab', 'youtube'],
-              path: '/stats/yt'
-            },
-            {
-              name: 'Github',
-              icon: ['fab', 'github'],
-              path: '/stats/github'
-            }
-          ],
-          outside: false
-        },
-        {
-          name: '我的專案',
-          url: '/projects',
-          icon: ['fas', 'code'],
-          outside: false
-        },
-        {
-          name: '更新日誌',
-          url: '/webchangelog',
-          icon: ['fas', 'file-invoice'],
-          outside: false
-        },
-        {
-          name: '回到舊版網站',
-          url: 'https://www2.tershi.com',
-          icon: ['fas', 'rotate-left'],
-          outside: true
-        },
-        {
-          name: '我的臉照',
-          url: '/myface',
-          icon: ['fas', 'face-smile'],
-          outside: false
-        },
-        {
-          name: '主控台',
-          url: '/console',
-          icon: ['fas', 'wrench'],
-          outside: false
-        }
-      ]
+      data: data
     }
   },
   mounted () {
     // 每次載入都到最上層去
     window.scrollTo(0, 0)
+    document.oncontextmenu = function () {
+      return false
+    }
   }
 }
 </script>
@@ -274,13 +199,19 @@ export default {
 @import './assets/all.scss';
 
 body {
-  background-image: linear-gradient(0deg, rgba(61, 26, 69, 0.5), rgb(43 18 0 / 57%)), url(assets/images/bg.webp);
+  // background-image: linear-gradient(0deg, rgba(61, 26, 69, 0.5), rgb(43 18 0 / 57%)), url(assets/images/bg.webp);
   // color: #fff;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: 50%;
-  background-size: cover;
+  // background-repeat: no-repeat;
+  // background-attachment: fixed;
+  // background-position: 50%;
+  // background-size: cover;
+  background: #000010;
   color: white;
+}
+canvas{
+  display: block;
+  position: fixed;
+  z-index: -999;
 }
 p {
   text-align: justify;

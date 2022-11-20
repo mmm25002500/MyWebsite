@@ -18,7 +18,7 @@ import VueAxios from 'vue-axios'
 
 import VueVideoPlayer from '@videojs-player/vue'
 import 'video.js/dist/video-js.css'
-import BackToTop from 'vue-backtotop'
+// import BackToTop from 'vue-backtotop'
 
 // 在開發者的 console 中顯示警告資訊
 const styles = 'background-color: #80FFFF; color: #FF0000; font-style: bold; border: 1px solid pink; font-size: 4em;'
@@ -52,7 +52,7 @@ app.use(BootstrapVue3)
 app.use(require('vue-script2'))
 app.use(VueAxios, axios)
 app.use(VueVideoPlayer)
-app.use(BackToTop)
+// app.use(BackToTop)
 
 // 將廣告載入
 // app.use(Ads.AutoAdsense, {
