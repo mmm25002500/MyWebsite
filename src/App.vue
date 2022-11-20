@@ -212,6 +212,7 @@ canvas{
   display: block;
   position: fixed;
   z-index: -999;
+  top: 0;
 }
 p {
   text-align: justify;
