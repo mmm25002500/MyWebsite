@@ -1,5 +1,15 @@
 [
     {
+        "version": "0.15",
+        "category": "測試版",
+        "date": "2022/11/21",
+        "description": "增加頁面和功能",
+        "changes": [
+            "修復地球出不來的bug",
+            "新增 404 檔案以防github 回傳 404"
+        ]
+    },
+    {
         "version": "0.14",
         "category": "測試版",
         "date": "2022/11/20",
