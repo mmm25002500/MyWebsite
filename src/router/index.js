@@ -111,26 +111,6 @@ const routes = [
     component: () => import('../views/NotFound.vue')
   },
   {
-    path: '/team',
-    name: '創立團隊',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/TeamPage.vue'),
-    children: [
-      {
-        path: 'more',
-        name: '創立團隊',
-        component: () => import(/* webpackChunkName: "about" */ '../views/TeamMore.vue')
-      },
-      {
-        path: 'signup',
-        name: '加入靈萌',
-        component: () => import(/* webpackChunkName: "about" */ '../views/TeamJoin.vue')
-      }
-    ]
-  },
-  {
     path: '/webchangelog',
     name: '更新日誌',
     component: () => import(/* webpackChunkName: "about" */ '../views/ChangeLog.vue')

@@ -6,7 +6,12 @@
         "description": "增加頁面和功能",
         "changes": [
             "修復地球出不來的bug",
-            "新增 404 檔案以防github 回傳 404"
+            "新增 404 檔案以防github 回傳 404",
+            "將背景 JS 新增 Defer 以延遲載入",
+            "刪除創立團隊檔案",
+            "更改 navbar 顏色",
+            "Navbar 新增青色底",
+            "將 navbar 標題改為連結"
         ]
     },
     {

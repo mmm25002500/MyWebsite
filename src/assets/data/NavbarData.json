@@ -30,11 +30,6 @@
             "url": "/about/friends"
         },
         {
-            "name": "創立團隊",
-            "icon": ["fas", "building"],
-            "url": "/about/team/short"
-        },
-        {
             "name": "贊助夏特稀",
             "icon": ["fas", "sack-dollar"],
             "url": "/about/donate"

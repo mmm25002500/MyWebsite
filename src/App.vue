@@ -3,11 +3,11 @@
     <!-- 載入導覽列 -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="background-color: rgb(176 176 176 / 0%) !important;">
       <div class="container-fluid">
-        <router-link class="navbar-brand" to="/">
+        <a class="navbar-brand" @click.prevent="$router.push({ path: '/' })" href="">
           <!-- <img :src="require('@/assets/icon.png')" alt="" width="30" class="d-inline-block align-text-top"> -->
           <!-- 載入標題 -->
           {{ SERVER_CONFIG.title }}
-        </router-link>
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -20,7 +20,7 @@
 
               <!-- 如果是外部連結 -->
               <div v-if="item.outside">
-                <a class="nav-link text-white" :href="item.url" target="_blank">
+                <a class="nav-link" :href="item.url" target="_blank">
                   <font-awesome-icon :icon="item.icon" class="icon alt" style="color: #ffffff;" />
                   {{ item.name }}
                 </a>
@@ -31,7 +31,7 @@
                 <!-- 如果是下拉式選單 -->
                 <div v-if="item.children">
                   <!-- 載入第一個下拉式選單 -->
-                  <a class="nav-link dropdown-toggle text-white" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <font-awesome-icon :icon="item.icon" class="icon alt" style="color: #ffffff;" />
                     {{ item.name }}
                   </a>
@@ -41,15 +41,15 @@
 
                       <!-- 如果下拉式選單條目是外部連結 -->
                       <div v-if="child.outside">
-                        <a class="dropdown-item text-white" :href="child.url" target="_blank">
+                        <a class="dropdown-item" :href="child.url" target="_blank">
                           <font-awesome-icon :icon="child.icon" class="icon alt" style="color: #ffffff;" />
-                          {{ child.name }}
+                          <span style="color: #ffffff;">{{ child.name }}</span>
                         </a>
                       </div>
 
                       <!-- 如果下拉式選單條目是內部連結 -->
                       <div v-else>
-                        <router-link :to="child.url" class="dropdown-item text-white">
+                        <router-link :to="child.url" class="dropdown-item">
                           <div data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">
                             <font-awesome-icon :icon="child.icon" class="icon alt" style="color: #ffffff;" />
                             <span style="color: #ffffff;">&nbsp;{{ child.name }}</span>
@@ -64,7 +64,7 @@
                 <!-- 如果是單純的條目 -->
                 <div v-else>
                   <router-link class="nav-link" :to="item.url" >
-                    <div class="text-white" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">
+                    <div data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">
                       <font-awesome-icon :icon="item.icon" class="icon alt" style="color: #ffffff;" />
                       {{ item.name }}
                     </div>
@@ -143,9 +143,9 @@
           <button type="button" class="btn-close align-self-start" data-bs-dismiss="alert" aria-label="Close"></button>
           <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
           <div>
-            目前已經更新至 v0.14版，已完成大部分功能！
+            目前已經更新至 v0.15版，已完成大部分功能！
             <router-link to="/webchangelog" class="text-info">到更新日誌中查看</router-link>
-            。中華民國 111 年 11 月 20 日，上一個版本更新日期為 111 年 11 月 19 日。
+            。中華民國 111 年 11 月 21 日，上一個版本更新日期為 111 年 11 月 20 日。
           </div>
         </div>
 
@@ -216,5 +216,17 @@ canvas{
 }
 p {
   text-align: justify;
+}
+// .nav-link:visited,
+// .nav-link:link {
+//   border-bottom: 2px solid transparent;
+// }
+
+.nav-link:hover,
+.nav-link:active {
+  border-bottom: 2px solid #1bcfc6;
+}
+.router-link-active{
+  border-bottom: 2px solid #1bcfc6;
 }
 </style>

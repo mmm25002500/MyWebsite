@@ -20,6 +20,8 @@
     <!-- <title></title> -->
   </head>
   <body style="margin: 0px">
+
+	<!-- Github Page 到 / 以外就會回傳 404，將 sessionStorage.redirect 取出來 -->
 	<script>
 	(function(){
 		let redirect = sessionStorage.redirect;
@@ -29,15 +31,16 @@
 		}
 	})();
 	</script>
+
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
 
     <!-- 地球 -->
-	<script type="text/javascript" src="/github-globe/main.js"></script>
+	<script type="text/javascript" src="/github-globe/main.js" defer></script>
     <!-- 動畫線 -->
-    <script type="text/javascript" src="/ParticleGround-Portfolio/js/jquery.particleground.js" async></script>
-    <script type="text/javascript" src="/ParticleGround-Portfolio/js/demo.js" async></script>
+    <script type="text/javascript" src="/ParticleGround-Portfolio/js/jquery.particleground.js" defer></script>
+    <script type="text/javascript" src="/ParticleGround-Portfolio/js/demo.js" defer></script>
     <div id="particles" style="position: fixed;">
     </div>
     
