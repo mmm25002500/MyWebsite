@@ -97,7 +97,7 @@ export default {
     return {
       title: '夏特稀個人網站',
       // h1: '夏特稀 TershiXia',
-      description: '一個正在讀高中的學生<br>為了台灣資訊安全與自己的夢想而努力',
+      description: '一個正在讀大學的學生<br>為了台灣資訊安全與自己的夢想而努力',
       nav: [
         {
           name: '關於我',

@@ -143,9 +143,9 @@
           <button type="button" class="btn-close align-self-start" data-bs-dismiss="alert" aria-label="Close"></button>
           <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
           <div>
-            目前已經更新至 v0.15版，已完成大部分功能！
-            <router-link to="/webchangelog" class="text-info">到更新日誌中查看</router-link>
-            。中華民國 111 年 11 月 21 日，上一個版本更新日期為 111 年 11 月 20 日。
+            目前已經更新至 v0.16版，已完成大部分功能！
+            <a class="text-info" href="/webchangelog" @click.prevent="$router.push({ path: '/webchangelog' })" >到更新日誌中查看</a>
+            。中華民國 111 年 11 月 22 日，上一個版本更新日期為 111 年 11 月 21 日。
           </div>
         </div>
 
