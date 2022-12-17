@@ -101,41 +101,41 @@ export default {
       cacheSearch: '',
       searchData: [],
       friendData: [
-        {
-          name: 'CuteUSB',
-          nic_name: '萌弟',
-          tag: 'CuteUSB_Page',
-          img: require('@/assets/images/CuteUSB.jpg'),
-          intro: 'NULL',
-          link: [
-            {
-              name: 'Facebook',
-              link: 'https://www.facebook.com/ChanelOscar929',
-              color: 'primary'
-            },
-            {
-              name: 'Instagram',
-              link: '',
-              color: 'danger',
-              style: 'background-color: #d63384'
-            },
-            {
-              name: 'Github',
-              link: 'https://github.com/cskevinc',
-              color: 'dark'
-            },
-            {
-              name: 'YouTube',
-              link: 'https://youtube.com/CuteUSB',
-              color: 'danger'
-            },
-            {
-              name: 'Website',
-              link: '',
-              color: 'primary'
-            }
-          ]
-        },
+        // {
+        //   name: 'CuteUSB',
+        //   nic_name: '萌弟',
+        //   tag: 'CuteUSB_Page',
+        //   img: require('@/assets/images/CuteUSB.jpg'),
+        //   intro: 'NULL',
+        //   link: [
+        //     {
+        //       name: 'Facebook',
+        //       link: 'https://www.facebook.com/ChanelOscar929',
+        //       color: 'primary'
+        //     },
+        //     {
+        //       name: 'Instagram',
+        //       link: '',
+        //       color: 'danger',
+        //       style: 'background-color: #d63384'
+        //     },
+        //     {
+        //       name: 'Github',
+        //       link: 'https://github.com/cskevinc',
+        //       color: 'dark'
+        //     },
+        //     {
+        //       name: 'YouTube',
+        //       link: 'https://youtube.com/CuteUSB',
+        //       color: 'danger'
+        //     },
+        //     {
+        //       name: 'Website',
+        //       link: '',
+        //       color: 'primary'
+        //     }
+        //   ]
+        // },
         {
           name: '哈密瓜',
           nic_name: 'y1220asdf',

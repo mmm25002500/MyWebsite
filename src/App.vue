@@ -23,6 +23,7 @@
                 <a class="nav-link" :href="item.url" target="_blank">
                   <font-awesome-icon :icon="item.icon" class="icon alt" style="color: #ffffff;" />
                   {{ item.name }}
+                  <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="icon alt" style="color: rgb(0 255 245 / 53%); width: 10%; position: relative; bottom: 3px;" />
                 </a>
               </div>
 
@@ -44,6 +45,7 @@
                         <a class="dropdown-item" :href="child.url" target="_blank">
                           <font-awesome-icon :icon="child.icon" class="icon alt" style="color: #ffffff;" />
                           <span style="color: #ffffff;">{{ child.name }}</span>
+                          <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="icon alt" style="color: rgb(0 255 245 / 53%); display: inline-block; float: right; padding-top: 3px;" />
                         </a>
                       </div>
 
@@ -143,9 +145,9 @@
           <button type="button" class="btn-close align-self-start" data-bs-dismiss="alert" aria-label="Close"></button>
           <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
           <div>
-            目前已經更新至 v0.16版，已完成大部分功能！
+            目前已經更新至 v0.17 版，已完成大部分功能！
             <a class="text-info" href="/webchangelog" @click.prevent="$router.push({ path: '/webchangelog' })" >到更新日誌中查看</a>
-            。中華民國 111 年 11 月 22 日，上一個版本更新日期為 111 年 11 月 21 日。
+            。中華民國 111 年 12 月 17 日，上一個版本更新日期為 111 年 11 月 21 日。
           </div>
         </div>
 

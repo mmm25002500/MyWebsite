@@ -15,6 +15,12 @@
             "url": "/about/me"
         },
         {
+            "name": "履歷表",
+            "icon": ["fas", "briefcase"],
+            "url": "https://resume.tershi.com",
+            "outside": true
+        },
+        {
             "name": "目標",
             "icon": ["fas", "bullseye"],
             "url": "/about/goal"
