@@ -37,7 +37,7 @@
     "vue-script2": "^2.1.0",
     "vue-use-webp": "^1.0.0",
     "vue3-transitions": "^1.0.0",
-    "webpack": "^5.75.0"
+    "webpack": "^5.76.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
