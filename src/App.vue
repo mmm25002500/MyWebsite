@@ -163,7 +163,7 @@
         >
         <router-view />
       </transition>
-      <Footer></Footer>
+      <MyFooter></MyFooter>
       <back-to-top text="反回到最上面"></back-to-top>
     <!-- <router-view /> -->
     </div>
@@ -171,12 +171,12 @@
 </template>
 
 <script>
-import Footer from '@/components/FooterSection.vue'
+import MyFooter from '@/components/FooterSection.vue'
 import data from '@/assets/data/NavbarData.json'
 
 export default {
   components: {
-    Footer
+    MyFooter
   },
   data () {
     return {

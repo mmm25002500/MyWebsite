@@ -9,7 +9,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
-import BootstrapVue3 from 'bootstrap-vue-3'
+import BootstrapVueNext from 'bootstrap-vue-next'
 import 'animate.css'
 
 import axios from 'axios'
@@ -47,7 +47,7 @@ router.afterEach((to, from) => {
 })
 app.use(router)
 app.use(VueUseWebp)
-app.use(BootstrapVue3)
+app.use(BootstrapVueNext)
 // app.use(Vue3Transitions)
 app.use(require('vue-script2'))
 app.use(VueAxios, axios)
