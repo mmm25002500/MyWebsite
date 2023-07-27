@@ -1,4 +1,6 @@
 
+.next
+*next*
 .DS_Store
 node_modules
 /dist
