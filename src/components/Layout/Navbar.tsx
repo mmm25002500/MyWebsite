@@ -7,54 +7,54 @@ import Link from 'next/link';
 import Themes from "../Themes";
 import { useEffect, useState } from "react";
 // import { auth } from "@/config/firebase";
-import { Unsubscribe, User, onAuthStateChanged } from "firebase/auth";
+// import { Unsubscribe, User, onAuthStateChanged } from "firebase/auth";
 // import { logout } from "./CheckLogin";
 // import { useRouter } from 'next/navigation';
 
 // 個人頁面按鈕
-const Personal = (props: {user: User| undefined}) => {
-  return (
-    <Link
-      href="/my"
-      prefetch={false}
-      className="flex items-center mr-5 text-base font-normal hover:text-black/70 dark:hover:text-white/70"
-    >
-      {
-        props.user?.photoURL ? (
-          <img src={props.user?.photoURL} alt="" className="w-5 rounded-full"/>
-        ): (
-          <FontAwesomeIcon icon={faCircleUser} className="w-5 pr-1" />
-        )
-      }
-      {props.user?.displayName || "個人頁面"}
-    </Link>
-  )
-}
+// const Personal = (props: {user: User| undefined}) => {
+//   return (
+//     <Link
+//       href="/my"
+//       prefetch={false}
+//       className="flex items-center mr-5 text-base font-normal hover:text-black/70 dark:hover:text-white/70"
+//     >
+//       {
+//         props.user?.photoURL ? (
+//           <img src={props.user?.photoURL} alt="" className="w-5 rounded-full"/>
+//         ): (
+//           <FontAwesomeIcon icon={faCircleUser} className="w-5 pr-1" />
+//         )
+//       }
+//       {props.user?.displayName || "個人頁面"}
+//     </Link>
+//   )
+// }
 
 // 登出按鈕
-const Logout = (props: {user: User| undefined, logout_btn: () => void}) => {
-  return (
-    props.user ? (
-      <div className="false" key="logout">
-        <button
-          onClick={() => props.logout_btn()}
-          className="flex items-center mr-10 text-base font-normal hover:text-black/70 dark:hover:text-white/70"
-        >
-          <FontAwesomeIcon icon={faRightFromBracket} className="w-5 pr-1" />
-          登出
-        </button>
-      </div>
-    ) : (
-      <></>
-    )
-  )
-}
+// const Logout = (props: {user: User| undefined, logout_btn: () => void}) => {
+//   return (
+//     props.user ? (
+//       <div className="false" key="logout">
+//         <button
+//           onClick={() => props.logout_btn()}
+//           className="flex items-center mr-10 text-base font-normal hover:text-black/70 dark:hover:text-white/70"
+//         >
+//           <FontAwesomeIcon icon={faRightFromBracket} className="w-5 pr-1" />
+//           登出
+//         </button>
+//       </div>
+//     ) : (
+//       <></>
+//     )
+//   )
+// }
 
 // 整個 Navbar
 const Navbar = () => {
   // const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const [user, setUser] = useState<User | undefined>();
+  // const [user, setUser] = useState<User | undefined>();
 
   const navlinks = [
     {
@@ -125,9 +125,9 @@ const Navbar = () => {
           ))}
 
           {/* 個人頁面 */}
-          <div className="false" key="person_page">
+          {/* <div className="false" key="person_page">
             <Personal user={ user } />
-          </div>
+          </div> */}
 
           {/* 登出按鈕 */}
           {/* <Logout user={ user } logout_btn={ logout_btn } /> */}
@@ -174,11 +174,11 @@ const Navbar = () => {
           ))}
 
           {/* 個人頁面 */}
-          <li>
+          {/* <li>
             <div className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
               <Personal user={ user } />
             </div>
-          </li>
+          </li> */}
 
           {/* 登出按鈕 */}
           {/* <li>
