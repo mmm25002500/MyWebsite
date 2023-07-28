@@ -64,7 +64,7 @@ const Navbar = () => {
     },
     {
       title: "關於我",
-      href: "/crypto/Pionex",
+      href: "/About",
       icon: faAddressCard,
     },
     {
@@ -101,7 +101,7 @@ const Navbar = () => {
 
   return (
     <nav>
-      <div className="flex h-16 z-50 w-full items-center justify-between bg-white px-3 font-bold text-black shadow md:justify-center md:px-7 mb-1 dark:bg-gray-800 dark:text-white">
+      <div className="flex h-16 z-50 w-full items-center justify-between px-3 font-bold text-black md:justify-center md:px-7 mb-1 dark:text-white bg-transparent">
         <Link href="/">
           <button className="flex items-center border-none bg-transparent text-lg normal-case">
             {/* <img src="/imgs/bityo_bg_circle.png" alt="logo" className="w-7 mr-2" /> */}
@@ -156,7 +156,7 @@ const Navbar = () => {
       </div>
 
       {/* 手機版頁面 */}
-      <div className={`w-full md:block md:w-auto ${isOpen? '': 'hidden'}`} id="navbar-default">
+      <div className={`w-full pr-2 pl-2 md:block md:w-auto ${isOpen? '': 'hidden'}`} id="navbar-default">
         <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700 sm:hidden">
 
           {/* 寫一個迴圈 */}
@@ -164,6 +164,7 @@ const Navbar = () => {
             <li key={link.title}>
               <Link
                 href={link.href}
+                onClick={() => setIsOpen(false)}
                 prefetch={false}
                 className="py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent flex w-full"
               >

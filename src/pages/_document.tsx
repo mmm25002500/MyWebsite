@@ -16,7 +16,7 @@ const Document = () => {
         <meta property="og:image" content="https://tershi.com/images/img.png" />
         <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
       </Head>
-      <body className='text-black bg-white dark:bg-gray-900 dark:text-white transition-colors duration-100'>
+      <body className='text-black bg-gray-100 dark:bg-gray-900 dark:text-white transition-colors duration-100'>
         <Main />
         <NextScript />
       </body>

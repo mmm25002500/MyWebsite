@@ -56,6 +56,9 @@ dependencies:
   firebase:
     specifier: ^10.1.0
     version: 10.1.0(react-native@0.72.3)
+  gsap:
+    specifier: ^3.12.2
+    version: 3.12.2
   html2canvas:
     specifier: ^1.4.1
     version: 1.4.1
@@ -4558,6 +4561,10 @@ packages:
 
   /graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
+    dev: false
+
+  /gsap@3.12.2:
+    resolution: {integrity: sha512-EkYnpG8qHgYBFAwsgsGEqvT1WUidX0tt/ijepx7z8EUJHElykg91RvW1XbkT59T0gZzzszOpjQv7SE41XuIXyQ==}
     dev: false
 
   /has-bigints@1.0.2:

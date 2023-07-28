@@ -1,7 +1,8 @@
 import { ReactNode } from "react";
 import Head from "next/head"
-import Navbar from "./Navbar";
-import Footer from "./Footer";
+import Navbar from "./Layout/Navbar";
+import Footer from "./Layout/Footer";
+import Particles from "@/components/particles";
 
 interface LayoutProps {
   children: ReactNode;
@@ -17,6 +18,10 @@ const Layout = ({ children }: LayoutProps) => {
       <div className="min-h-screen flex flex-col">
         <Navbar />
         <main className="flex-grow">
+          <Particles
+            className="absolute inset-0 -z-10 animate-fade-in"
+            quantity={1000}
+          />
           {children}
         </main>
         <Footer />
