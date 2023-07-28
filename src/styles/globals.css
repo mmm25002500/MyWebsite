@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+h1, h2, h3, h4, h5, h6, p {
+    @apply transition-colors duration-100;
+}
+
+@font-face {
+  font-family: 'youhei';
+  src: local('MyFont'), url(/font/有爱新黑_CN.ttf) format('woff');
+  /* other formats include: 'woff2', 'truetype, 'opentype',
+                            'embedded-opentype', and 'svg' */
+}
+
+@font-face {
+  font-family: 'inter';
+  src: local('MyFont'), url(/font/Intra-Regular-Plus.ttf) format('woff');
+  /* other formats include: 'woff2', 'truetype, 'opentype',
+                            'embedded-opentype', and 'svg' */
+}
