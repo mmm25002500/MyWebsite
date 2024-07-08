@@ -2,41 +2,41 @@
     {
         "title": "主頁",
         "link": "/",
-        "icon": "fontawesome/solid/house.svg"
+        "icon": "fas house"
     },
     {
         "title": "關於我",
         "link": "/About",
-        "icon": "fontawesome/solid/address-card.svg"
+        "icon": "fas address-card"
     },
     {
         "title": "統計",
         "link": "/forex",
-        "icon": "fontawesome/solid/chart-bar.svg"
+        "icon": "fas chart-bar"
     },
     {
         "title": "我的專案",
         "link": "/stock",
-        "icon": "fontawesome/solid/code.svg"
+        "icon": "fas code"
     },
     {
         "title": "我的筆記",
         "link": "/About",
-        "icon": "fontawesome/solid/pen-to-square.svg"
+        "icon": "fas pen-to-square"
     },
     {
         "title": "網站資訊",
         "link": "/About",
-        "icon": "fontawesome/solid/circle-info.svg"
+        "icon": "fas circle-info"
     },
     {
         "title": "我的臉照",
         "link": "/About",
-        "icon": "fontawesome/solid/face-smile.svg"
+        "icon": "fas face-smile"
     },
     {
         "title": "主控台",
         "link": "/About",
-        "icon": "fontawesome/solid/wrench.svg"
+        "icon": "fas wrench"
     }
 ]

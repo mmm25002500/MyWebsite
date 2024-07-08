@@ -1,10 +1,13 @@
-import Themes from "../Themes";
+// Navbar.tsx
 import { useState } from "react";
-import NavbarData from "@/config/Navbar.json";
 import { useRouter } from "next/router";
-import { NavbarDataType } from "@/types/Navbar/Navbar";
 import Image from "next/image";
 import AvaterImage from "@/icons/tsx.jpg";
+import NavbarData from "@/config/Navbar.json";
+import Themes from "../Themes";
+import { NavbarDataType } from "@/types/Navbar/Navbar";
+import DynamicIcon from '@/components/Icon';
+import { IconPrefix } from "@fortawesome/fontawesome-svg-core";
 
 // 整個 Navbar
 const Navbar = () => {
@@ -24,35 +27,28 @@ const Navbar = () => {
         >
           <Image
             src={AvaterImage}
-            alt=""
+            alt="Avatar"
             className="w-8 h-8 mr-2 rounded-full"
           />
-          {/* <img src="/imgs/bityo_bg_circle.png" alt="logo" className="w-7 mr-2" /> */}
-          <h1 className="">TershiXia</h1>
+          <h1>TershiXia</h1>
         </button>
         <div className="hidden flex-1 items-center justify-end sm:flex">
           {/* Navbar 右邊欄位 */}
-          {
-            NavbarData.map((item: NavbarDataType, idx: number) => {
-              return (
-                <button
-                  key={idx}
-                  onClick={() => { checkLinkHaveHttp(item.link) ? window.open(item.link) : router.push(item.link) }}
-                  className="flex items-center mr-5 text-base font-normal hover:text-black/70 dark:hover:text-white/70"
-                >
-                  <Image
-                    src={require(`/src/icons/${item.icon}`)}
-                    alt={""}
-                    className="w-5 pr-1 dark:invert "
-                  />
-                  {item.title}
-
-                </button>
-              )
-            })
-          }
+          {NavbarData.map((item: NavbarDataType, idx: number) => {
+            const [prefix, iconName] = item.icon.split(' ') as [IconPrefix, string];
+            return (
+              <button
+                key={idx}
+                onClick={() => { checkLinkHaveHttp(item.link) ? window.open(item.link) : router.push(item.link) }}
+                className="flex items-center mr-5 text-base font-normal hover:text-black/70 dark:hover:text-white/70"
+              >
+                <DynamicIcon iconName={iconName} prefix={prefix as IconPrefix} className="w-5 pr-1" />
+                {item.title}
+              </button>
+            );
+          })}
           {/* 切換背景 */}
-          <Themes></Themes>
+          <Themes />
         </div>
       </div>
     </nav>

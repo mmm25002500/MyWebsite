@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { useCookies } from 'react-cookie';
 import { useTheme } from "next-themes";
-import Image from "next/image";
-import Sun from "@/icons/fontawesome/solid/sun.svg";
-import Moon from "@/icons/fontawesome/solid/moon.svg";
+import Icon from "./Icon";
 
 const Themes = () => {
 
@@ -17,19 +15,19 @@ const Themes = () => {
         {
           theme === 'dark' ? (
             <>
-              <Image
-                src={ Sun }
-                alt={""}
-                className="mr-1 w-4 dark:invert"
+              <Icon
+                iconName="sun"
+                prefix="fas"
+                className="mr-1 w-4 dark:invert-0"
               />
               <p>亮色模式</p>
             </>
           ) : (
             <>
-              <Image
-                src={Moon}
-                alt={""}
-                className="mr-1 w-4 dark:invert "
+              <Icon
+                iconName="moon"
+                prefix="fas"
+                className="mr-1 w-4 dark:invert-0"
               />
               <p>暗色模式</p>
             </>

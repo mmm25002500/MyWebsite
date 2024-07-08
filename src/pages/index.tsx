@@ -2,12 +2,11 @@ import Alert from "@/components/Alert";
 import Card from "@/components/Card/Card";
 import CardThreeCol from "@/components/Card/CardThreeCol";
 import ParticlesLayout from "@/components/Layout/ParticlesLayout";
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Head from "next/head";
 import SEO from "@/config/SEO.json";
 import SetSEO from "@/components/SEO/SetSEO";
 import Navbar from "@/components/Layout/Navbar";
+import Icon from "@/components/Icon";
 
 const Index = () => {
   return (
@@ -36,9 +35,20 @@ const Index = () => {
         <Navbar />
         <div className="container mx-auto mt-2 pl-5 pr-5 md:pl-10 md:pr-10 transition-colors duration-100">
           <Alert color="cyan" close={true}>
-            <FontAwesomeIcon icon={faInfoCircle} className="w-5 mr-1"></FontAwesomeIcon>
-            <p>目前版本：v2.0 夏特稀新版的個人網站正在開發中...
-              <a className="underline underline-offset-4" href="https://tershi.com" target="_blank">點此回到舊版網站</a>
+            <Icon
+              prefix="fas"
+              iconName="exclamation-triangle"
+              className="w-5 mr-1 text-red-500"
+            />
+            <p className="text-red-500 text-xl">
+              目前版本：v2.0 夏特稀新版的個人網站正在開發中...
+              <a
+                className="underline underline-offset-4 text-cyan-300"
+                href="https://tershi.com"
+                target="_blank"
+              >
+                點此回到舊版網站
+              </a>
             </p>
           </Alert>
 
@@ -81,8 +91,6 @@ const Index = () => {
               </div>
             </div>
           </Card>
-
-          <CardThreeCol />
         </div>
       </ParticlesLayout>
     </>
