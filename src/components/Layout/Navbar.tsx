@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import AvaterImage from "@/icons/tsx.jpg";
+import AvaterImage from "@/icons/Avatar/tsx.jpg";
 import NavbarData from "@/config/Navbar.json";
 import Themes from "../Themes";
 import { NavbarDataType } from "@/types/Navbar/Navbar";
