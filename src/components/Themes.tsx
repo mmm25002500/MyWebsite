@@ -1,8 +1,9 @@
-import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useCookies } from 'react-cookie';
 import { useTheme } from "next-themes";
+import Image from "next/image";
+import Sun from "@/icons/fontawesome/solid/sun.svg";
+import Moon from "@/icons/fontawesome/solid/moon.svg";
 
 const Themes = () => {
 
@@ -16,12 +17,20 @@ const Themes = () => {
         {
           theme === 'dark' ? (
             <>
-              <FontAwesomeIcon icon={faSun} className='mr-1 w-4' />
+              <Image
+                src={ Sun }
+                alt={""}
+                className="mr-1 w-4 dark:invert"
+              />
               <p>亮色模式</p>
             </>
           ) : (
             <>
-              <FontAwesomeIcon icon={faMoon} className='mr-1 w-4' />
+              <Image
+                src={Moon}
+                alt={""}
+                className="mr-1 w-4 dark:invert "
+              />
               <p>暗色模式</p>
             </>
           )

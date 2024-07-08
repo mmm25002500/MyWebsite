@@ -1,3 +1,63 @@
 {
-  "extends": "next/core-web-vitals"
+  // 繼承 ESLint 的推薦配置、React 的推薦配置、TypeScript 的推薦配置、Prettier 的推薦配置和 Next.js 的核心 Web Vitals 配置
+  "extends": [
+    "eslint:recommended", // ESLint 推薦的基本規則
+    "plugin:react/recommended", // React 推薦的基本規則
+    "plugin:@typescript-eslint/recommended", // TypeScript 推薦的基本規則
+    "plugin:prettier/recommended", // Prettier 推薦的基本規則，確保與 Prettier 集成
+    "next/core-web-vitals" // Next.js 核心 Web Vitals 規則
+  ],
+  // 使用 @typescript-eslint/parser 來解析 TypeScript 代碼
+  "parser": "@typescript-eslint/parser",
+  // 解析器選項
+  "parserOptions": {
+    // 支持 JSX 語法
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    // 使用最新的 ECMAScript 語法
+    "ecmaVersion": "latest",
+    // 代碼使用 ES 模塊
+    "sourceType": "module"
+  },
+  // 使用的 ESLint 插件
+  "plugins": [
+    "react", // React 插件
+    "@typescript-eslint", // TypeScript 插件
+    "prettier" // Prettier 插件
+  ],
+  // 自定義規則
+  "rules": {
+    // 使用 Prettier 進行代碼格式檢查
+    "prettier/prettier": "error",
+    // 不要求顯式導入 React（在 React 17+ 中不再需要）
+    "react/react-in-jsx-scope": "off",
+    // 未使用的變量報錯，但允許以下劃線開頭的變量
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    // 禁止使用 console（警告級別）
+    "no-console": "warn",
+    // 強制使用全等（=== 和 !==）
+    "eqeqeq": ["error", "always"],
+    // 強制所有控制語句使用大括號
+    "curly": "error",
+    // 強制使用分號結束語句
+    "semi": ["error", "always"],
+    // 強制使用雙引號
+    "quotes": ["error", "double"],
+    // 強制使用 2 空格縮進
+    "indent": ["error", 2],
+    // 禁止拖尾逗號
+    "comma-dangle": ["error", "never"],
+    // 禁止尾部空白
+    "no-trailing-spaces": "error",
+    // 強制在花括號內使用空格
+    "object-curly-spacing": ["error", "always"]
+  },
+  // 設置
+  "settings": {
+    // 自動檢測 React 版本
+    "react": {
+      "version": "detect"
+    }
+  }
 }

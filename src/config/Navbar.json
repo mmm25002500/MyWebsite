@@ -1,0 +1,42 @@
+[
+    {
+        "title": "主頁",
+        "link": "/",
+        "icon": "fontawesome/solid/house.svg"
+    },
+    {
+        "title": "關於我",
+        "link": "/About",
+        "icon": "fontawesome/solid/address-card.svg"
+    },
+    {
+        "title": "統計",
+        "link": "/forex",
+        "icon": "fontawesome/solid/chart-bar.svg"
+    },
+    {
+        "title": "我的專案",
+        "link": "/stock",
+        "icon": "fontawesome/solid/code.svg"
+    },
+    {
+        "title": "我的筆記",
+        "link": "/About",
+        "icon": "fontawesome/solid/pen-to-square.svg"
+    },
+    {
+        "title": "網站資訊",
+        "link": "/About",
+        "icon": "fontawesome/solid/circle-info.svg"
+    },
+    {
+        "title": "我的臉照",
+        "link": "/About",
+        "icon": "fontawesome/solid/face-smile.svg"
+    },
+    {
+        "title": "主控台",
+        "link": "/About",
+        "icon": "fontawesome/solid/wrench.svg"
+    }
+]

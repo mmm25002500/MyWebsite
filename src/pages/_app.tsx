@@ -8,6 +8,11 @@ import { config } from '@fortawesome/fontawesome-svg-core'
 
 config.autoAddCss = false;
 
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/free-mode';
+import 'swiper/css/pagination';
+
 const App = ({ Component, pageProps }: AppProps) => {
   return (
     <ThemeProvider attribute="class">

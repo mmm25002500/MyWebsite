@@ -1,5 +1,6 @@
 import Alert from "@/components/Alert";
-import Card from "@/components/Card";
+import Card from "@/components/Card/Card";
+import CardThreeCol from "@/components/Card/CardThreeCol";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -53,6 +54,7 @@ const Index = () => {
         </div>
       </Card>
 
+      <CardThreeCol />
     </div>
   )
 }
