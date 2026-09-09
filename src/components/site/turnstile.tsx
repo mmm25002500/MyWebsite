@@ -1,6 +1,5 @@
 'use client';
 
-import Script from 'next/script';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 
 declare global {
@@ -31,7 +30,36 @@ declare global {
  *
  * 未設定 `NEXT_PUBLIC_TURNSTILE_SITE_KEY` 時整個元件不渲染，表單照常可用——
  * 後端在沒有 secret 時也會放行，兩邊的預設一致。
+ *
+ * api.js 是自己插進 DOM 的，不走 `next/script`：實測 `lazyOnload` 的 script
+ * 標籤根本沒有被插入，widget 位置就一直空著。這裡只需要「載入一次、好了叫我」，
+ * 自己做反而短。
  */
+const SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+
+/** 同一頁可能有多個 widget，共用一份 api.js。 */
+function loadTurnstileScript(): Promise<void> {
+  if (typeof window === 'undefined') return Promise.resolve();
+  if (window.turnstile) return Promise.resolve();
+
+  const existing = document.querySelector<HTMLScriptElement>(`script[src="${SCRIPT_SRC}"]`);
+  if (existing) {
+    return new Promise((resolve, reject) => {
+      existing.addEventListener('load', () => resolve());
+      existing.addEventListener('error', () => reject(new Error('turnstile script failed')));
+    });
+  }
+
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = SCRIPT_SRC;
+    script.async = true;
+    script.defer = true;
+    script.addEventListener('load', () => resolve());
+    script.addEventListener('error', () => reject(new Error('turnstile script failed')));
+    document.head.appendChild(script);
+  });
+}
 export function Turnstile({
   onToken,
   resetSignal,
@@ -60,6 +88,19 @@ export function Turnstile({
   }, [siteKey, onToken]);
 
   useEffect(() => {
+    if (!siteKey) return;
+    let cancelled = false;
+    loadTurnstileScript()
+      .then(() => {
+        if (!cancelled) setScriptReady(true);
+      })
+      .catch(() => onToken(null));
+    return () => {
+      cancelled = true;
+    };
+  }, [siteKey, onToken]);
+
+  useEffect(() => {
     if (scriptReady) render();
   }, [scriptReady, render]);
 
@@ -80,14 +121,5 @@ export function Turnstile({
 
   if (!siteKey) return null;
 
-  return (
-    <>
-      <Script
-        src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
-        strategy="lazyOnload"
-        onReady={() => setScriptReady(true)}
-      />
-      <div ref={containerRef} id={id} />
-    </>
-  );
+  return <div ref={containerRef} id={id} />;
 }
