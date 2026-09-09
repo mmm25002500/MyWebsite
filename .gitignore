@@ -10,6 +10,7 @@
 
 # next.js
 /.next/
+/.next-build/
 /out/
 
 # production
@@ -33,3 +34,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# design source files are documentation, not deployed assets
+.vercel
+
+# 由 `pnpm seed:generate` 產生，內容視 src/lib/data/seed 而定，不進版控
+/supabase/seed.sql
+
+# 設計稿與規格書（含個人資料，另外保管）
+/docs/design/

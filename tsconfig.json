@@ -1,10 +1,15 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
+    "target": "ES2022",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
+    "noUncheckedIndexedAccess": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -13,11 +18,27 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/Articals/*.mdx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "next-env.d.ts",
+    ".next-build/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "public"
+  ]
 }

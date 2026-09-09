@@ -1,0 +1,59 @@
+import {
+  ArrowBendUpRightIcon,
+  ArticleIcon,
+  BriefcaseIcon,
+  BuildingsIcon,
+  ChartLineIcon,
+  ChatsIcon,
+  ClockCounterClockwiseIcon,
+  EnvelopeIcon,
+  FileTextIcon,
+  FoldersIcon,
+  GaugeIcon,
+  GearIcon,
+  GitCommitIcon,
+  HandCoinsIcon,
+  IdentificationCardIcon,
+  ImagesIcon,
+  LinkIcon,
+  ListMagnifyingGlassIcon,
+  PaperPlaneTiltIcon,
+  StackIcon,
+  TagIcon,
+  UsersIcon,
+  WrenchIcon,
+  YoutubeLogoIcon,
+} from '@phosphor-icons/react/dist/ssr';
+
+/** 側欄圖示。以名稱對應，避免在資料裡放元件。 */
+const icons: Record<string, typeof ArticleIcon> = {
+  gauge: GaugeIcon,
+  article: ArticleIcon,
+  folders: FoldersIcon,
+  tag: TagIcon,
+  stack: StackIcon,
+  briefcase: BriefcaseIcon,
+  'file-text': FileTextIcon,
+  images: ImagesIcon,
+  'identification-card': IdentificationCardIcon,
+  'clock-counter-clockwise': ClockCounterClockwiseIcon,
+  buildings: BuildingsIcon,
+  'youtube-logo': YoutubeLogoIcon,
+  link: LinkIcon,
+  'hand-coins': HandCoinsIcon,
+  'git-commit': GitCommitIcon,
+  chats: ChatsIcon,
+  users: UsersIcon,
+  envelope: EnvelopeIcon,
+  'paper-plane-tilt': PaperPlaneTiltIcon,
+  'chart-line': ChartLineIcon,
+  'list-magnifying-glass': ListMagnifyingGlassIcon,
+  'arrow-bend-up-right': ArrowBendUpRightIcon,
+  gear: GearIcon,
+  wrench: WrenchIcon,
+};
+
+export function AdminIcon({ name, size = 17 }: { name: string; size?: number }) {
+  const Component = icons[name] ?? ArticleIcon;
+  return <Component size={size} weight="duotone" />;
+}
