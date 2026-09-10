@@ -3,6 +3,7 @@ import 'server-only';
 import { requireRole } from '@/lib/auth/session';
 import { createServerSupabase } from '@/lib/supabase/server';
 import { createServiceClient } from '@/lib/supabase/service';
+import type { Locale } from '@/lib/i18n/config';
 
 export interface DashboardStats {
   viewsToday: number;
@@ -85,10 +86,7 @@ export async function getDashboard(): Promise<{
       .select('created_at, visitor_hash, path')
       .gte('created_at', daysAgo(30))
       .limit(20000),
-    supabase
-      .from('comments')
-      .select('id', { count: 'exact', head: true })
-      .eq('status', 'pending'),
+    supabase.from('comments').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
     supabase
       .from('contact_messages')
       .select('id', { count: 'exact', head: true })
@@ -227,15 +225,13 @@ export async function getAdminPosts(query: AdminPostQuery = {}): Promise<{
   const page = Math.max(1, query.page ?? 1);
   const pageSize = query.pageSize ?? 20;
 
-  let builder = supabase
-    .from('posts')
-    .select(
-      `id, slug, status, published_at, updated_at, view_count, comment_count, is_pinned, is_featured,
+  let builder = supabase.from('posts').select(
+    `id, slug, status, published_at, updated_at, view_count, comment_count, is_pinned, is_featured,
        posts_i18n(locale, title),
        post_categories(category_id, is_primary, categories(slug, categories_i18n(name, locale))),
        post_tags(tag_id, tags(slug))`,
-      { count: 'exact' },
-    );
+    { count: 'exact' },
+  );
 
   if (query.status) builder = builder.eq('status', query.status);
 
@@ -384,7 +380,10 @@ export async function getPostFormOptions() {
   const supabase = await createServerSupabase();
 
   const [categories, tags, series] = await Promise.all([
-    supabase.from('categories').select('id, slug, categories_i18n(name, locale)').order('sort_order'),
+    supabase
+      .from('categories')
+      .select('id, slug, categories_i18n(name, locale)')
+      .order('sort_order'),
     supabase.from('tags').select('id, slug, tags_i18n(name, locale)').order('slug'),
     supabase.from('series').select('id, slug, series_i18n(title, locale)').order('sort_order'),
   ]);
@@ -433,7 +432,9 @@ export async function getAdminCategories(): Promise<AdminTaxonomyRow[]> {
 
   const { data, error } = await supabase
     .from('categories')
-    .select('id, slug, icon, is_visible, sort_order, categories_i18n(locale, name, description), post_categories(post_id)')
+    .select(
+      'id, slug, icon, is_visible, sort_order, categories_i18n(locale, name, description), post_categories(post_id)',
+    )
     .order('sort_order');
 
   if (error) throw new Error(`[admin] categories: ${error.message}`);
@@ -693,7 +694,10 @@ export async function getProjectFormOptions() {
       .from('project_categories')
       .select('id, slug, project_categories_i18n(locale, name)')
       .order('sort_order'),
-    supabase.from('organizations').select('id, slug, organizations_i18n(locale, name)').order('sort_order'),
+    supabase
+      .from('organizations')
+      .select('id, slug, organizations_i18n(locale, name)')
+      .order('sort_order'),
     supabase.from('tags').select('id, slug, tags_i18n(locale, name)').order('slug'),
     supabase.from('posts').select('id, slug, posts_i18n(locale, title)').eq('status', 'published'),
   ]);
@@ -738,7 +742,13 @@ export interface AdminExperience {
   url: string | null;
   contents: Record<
     string,
-    { companyName: string; title: string; location: string | null; highlights: string[]; tech: string[] }
+    {
+      companyName: string;
+      title: string;
+      location: string | null;
+      highlights: string[];
+      tech: string[];
+    }
   >;
 }
 
@@ -781,7 +791,9 @@ export async function getAdminResume() {
         .order('sort_order'),
       supabase
         .from('education')
-        .select('id, started_at, ended_at, is_current, is_visible, sort_order, education_i18n(locale, school, degree, field)')
+        .select(
+          'id, started_at, ended_at, is_current, is_visible, sort_order, education_i18n(locale, school, degree, field)',
+        )
         .order('sort_order'),
       supabase
         .from('skill_groups')
@@ -791,14 +803,24 @@ export async function getAdminResume() {
         .order('sort_order'),
       supabase
         .from('certifications')
-        .select('id, issued_at, credential_url, is_visible, sort_order, certifications_i18n(locale, name, issuer)')
+        .select(
+          'id, issued_at, credential_url, is_visible, sort_order, certifications_i18n(locale, name, issuer)',
+        )
         .order('sort_order'),
       supabase
         .from('languages_spoken')
-        .select('id, code, proficiency, is_visible, sort_order, languages_spoken_i18n(locale, name)')
+        .select(
+          'id, code, proficiency, is_visible, sort_order, languages_spoken_i18n(locale, name)',
+        )
         .order('sort_order'),
-      supabase.from('site_settings').select('key, value').in('key', ['show_company_name', 'show_certifications']),
-      supabase.from('organizations').select('id, slug, organizations_i18n(locale, name)').order('sort_order'),
+      supabase
+        .from('site_settings')
+        .select('key, value')
+        .in('key', ['show_company_name', 'show_certifications']),
+      supabase
+        .from('organizations')
+        .select('id, slug, organizations_i18n(locale, name)')
+        .order('sort_order'),
     ]);
 
   const settingsMap = new Map((settings.data ?? []).map((row) => [row.key, row.value]));
@@ -926,7 +948,9 @@ export async function getAdminComments(status?: string): Promise<AdminComment[]>
   if (error) throw new Error(`[admin] comments: ${error.message}`);
 
   const rows = data ?? [];
-  const postIds = [...new Set(rows.filter((r) => r.target_type === 'post').map((r) => r.target_id))];
+  const postIds = [
+    ...new Set(rows.filter((r) => r.target_type === 'post').map((r) => r.target_id)),
+  ];
 
   const titles = new Map<string, { slug: string; title: string }>();
   if (postIds.length > 0) {
@@ -1024,7 +1048,9 @@ export async function getAdminOrganizations() {
   const supabase = await createServerSupabase();
   const { data, error } = await supabase
     .from('organizations')
-    .select('id, slug, website_url, github_org, started_at, ended_at, status, is_visible, sort_order, organizations_i18n(locale, name, role, description_md)')
+    .select(
+      'id, slug, website_url, github_org, started_at, ended_at, status, is_visible, sort_order, organizations_i18n(locale, name, role, description_md)',
+    )
     .order('sort_order');
   if (error) throw new Error(`[admin] organizations: ${error.message}`);
   return data ?? [];
@@ -1035,7 +1061,9 @@ export async function getAdminTimeline() {
   const supabase = await createServerSupabase();
   const { data, error } = await supabase
     .from('timeline_events')
-    .select('id, event_date, branch, type, icon, link_url, is_milestone, is_visible, sort_order, timeline_events_i18n(locale, title, subtitle, description)')
+    .select(
+      'id, event_date, branch, type, icon, link_url, is_milestone, is_visible, sort_order, timeline_events_i18n(locale, title, subtitle, description)',
+    )
     .order('event_date');
   if (error) throw new Error(`[admin] timeline: ${error.message}`);
   return data ?? [];
@@ -1045,8 +1073,16 @@ export async function getAdminLinks() {
   await requireRole('editor');
   const supabase = await createServerSupabase();
   const [groups, buttons] = await Promise.all([
-    supabase.from('link_groups').select('id, key, sort_order, is_visible, link_groups_i18n(locale, name)').order('sort_order'),
-    supabase.from('link_buttons').select('id, group_id, url, icon, image_url, is_highlighted, is_visible, sort_order, click_count, link_buttons_i18n(locale, label, description)').order('sort_order'),
+    supabase
+      .from('link_groups')
+      .select('id, key, sort_order, is_visible, link_groups_i18n(locale, name)')
+      .order('sort_order'),
+    supabase
+      .from('link_buttons')
+      .select(
+        'id, group_id, url, icon, image_url, is_highlighted, is_visible, sort_order, click_count, link_buttons_i18n(locale, label, description)',
+      )
+      .order('sort_order'),
   ]);
   return { groups: groups.data ?? [], buttons: buttons.data ?? [] };
 }
@@ -1055,8 +1091,18 @@ export async function getAdminSponsors() {
   await requireRole('editor');
   const supabase = await createServerSupabase();
   const [methods, sponsors] = await Promise.all([
-    supabase.from('sponsor_methods').select('id, key, type, address_or_url, qr_image_url, network, icon, is_visible, sort_order, sponsor_methods_i18n(locale, label, note)').order('sort_order'),
-    supabase.from('sponsors').select('id, display_name, tier, amount_note, sponsored_at, is_anonymous, is_visible, sort_order').order('sort_order'),
+    supabase
+      .from('sponsor_methods')
+      .select(
+        'id, key, type, address_or_url, qr_image_url, network, icon, is_visible, sort_order, sponsor_methods_i18n(locale, label, note)',
+      )
+      .order('sort_order'),
+    supabase
+      .from('sponsors')
+      .select(
+        'id, display_name, tier, amount_note, sponsored_at, is_anonymous, is_visible, sort_order',
+      )
+      .order('sort_order'),
   ]);
   return { methods: methods.data ?? [], sponsors: sponsors.data ?? [] };
 }
@@ -1066,7 +1112,9 @@ export async function getAdminChangelog() {
   const supabase = await createServerSupabase();
   const { data, error } = await supabase
     .from('changelog_entries')
-    .select('id, version, released_at, is_visible, sort_order, changelog_entries_i18n(locale, title, items)')
+    .select(
+      'id, version, released_at, is_visible, sort_order, changelog_entries_i18n(locale, title, items)',
+    )
     .order('released_at', { ascending: false });
   if (error) throw new Error(`[admin] changelog: ${error.message}`);
   return data ?? [];
@@ -1118,12 +1166,59 @@ export async function getAdminMedia() {
   return data ?? [];
 }
 
+export interface AdminPageDetailRow {
+  id: string;
+  slug: string;
+  status: 'draft' | 'published';
+  contents: {
+    locale: Locale;
+    title: string;
+    contentMd: string;
+    seoTitle: string;
+    seoDescription: string;
+  }[];
+}
+
+/** 單頁的編輯資料。 */
+export async function getAdminPage(slug: string): Promise<AdminPageDetailRow | null> {
+  await requireRole('editor');
+  const supabase = await createServerSupabase();
+
+  const { data } = await supabase
+    .from('pages')
+    .select('id, slug, status, pages_i18n(locale, title, content_md, seo_title, seo_description)')
+    .eq('slug', slug)
+    .maybeSingle();
+
+  if (!data) return null;
+
+  return {
+    id: data.id,
+    slug: data.slug,
+    status: data.status === 'published' ? 'published' : 'draft',
+    contents: (data.pages_i18n ?? []).map((row) => ({
+      locale: row.locale as Locale,
+      title: row.title,
+      contentMd: row.content_md ?? '',
+      seoTitle: row.seo_title ?? '',
+      seoDescription: row.seo_description ?? '',
+    })),
+  };
+}
+
 export async function getAdminPages() {
   await requireRole('editor');
   const supabase = await createServerSupabase();
   const [pages, sections] = await Promise.all([
-    supabase.from('pages').select('id, slug, status, updated_at, pages_i18n(locale, title, content_md)').order('sort_order'),
-    supabase.from('page_sections').select('id, page_slug, section_key, is_visible, sort_order').eq('page_slug', 'home').order('sort_order'),
+    supabase
+      .from('pages')
+      .select('id, slug, status, updated_at, pages_i18n(locale, title, content_md)')
+      .order('sort_order'),
+    supabase
+      .from('page_sections')
+      .select('id, page_slug, section_key, is_visible, sort_order')
+      .eq('page_slug', 'home')
+      .order('sort_order'),
   ]);
   return { pages: pages.data ?? [], sections: sections.data ?? [] };
 }
@@ -1176,7 +1271,9 @@ export async function getAnalyticsDashboard(days = 30) {
 
   const { data, error } = await supabase
     .from('analytics_events')
-    .select('created_at, visitor_hash, session_id, path, device_type, browser, os, country, referrer_source, locale, duration_sec')
+    .select(
+      'created_at, visitor_hash, session_id, path, device_type, browser, os, country, referrer_source, locale, duration_sec',
+    )
     .gte('created_at', since.toISOString())
     .limit(50000);
 
@@ -1199,7 +1296,9 @@ export async function getAnalyticsDashboard(days = 30) {
     totalViews: events.length,
     uniqueVisitors: new Set(events.map((e) => e.visitor_hash)).size,
     sessions: new Set(events.map((e) => e.session_id)).size,
-    avgDuration: durations.length ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length) : 0,
+    avgDuration: durations.length
+      ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length)
+      : 0,
     byPath: tally('path'),
     byDevice: tally('device_type'),
     byBrowser: tally('browser'),
