@@ -265,7 +265,13 @@
     "viewPost": "View post",
     "profile": "Profile",
     "activity": "Activity",
-    "security": "Account security"
+    "security": "Account security",
+    "linkedAccounts": "Linked accounts",
+    "linkedAccountsHint": "Once linked, you can sign in to the same account with any of these. At least one sign-in method must remain.",
+    "linkWith": "Link {provider}",
+    "unlink": "Unlink",
+    "unlinkDone": "Unlinked",
+    "unlinkLast": "This is your only sign-in method; unlinking it would lock you out."
   },
   "footer": {
     "builtWith": "Built with Next.js and Supabase",

@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound, redirect } from 'next/navigation';
 
 import { AccountPanel } from '@/components/site/auth/account-panel';
+import { LinkedAccounts } from '@/components/site/auth/linked-accounts';
 import { TotpSetup } from '@/components/site/auth/totp-setup';
 import { PageHeader } from '@/components/site/page-header';
 import { Container, Display } from '@/components/ui/typography';
@@ -65,8 +66,16 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
         <Display level={2} className="mb-4">
           {t('auth.security')}
         </Display>
-        <div className="max-w-[60ch] rounded-lg border border-divider bg-surface p-5">
-          <TotpSetup />
+        <div className="max-w-[60ch] space-y-5">
+          <div className="rounded-lg border border-divider bg-surface p-5">
+            <TotpSetup />
+          </div>
+
+          <div className="rounded-lg border border-divider bg-surface p-5">
+            <p className="font-heading text-[16px] font-bold">{t('auth.linkedAccounts')}</p>
+            <p className="mb-3 mt-1 text-[14px] text-ink-62">{t('auth.linkedAccountsHint')}</p>
+            <LinkedAccounts />
+          </div>
         </div>
       </Container>
 

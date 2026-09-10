@@ -265,7 +265,13 @@
     "viewPost": "查看文章",
     "profile": "個人資料",
     "activity": "我的活動",
-    "security": "帳號安全"
+    "security": "帳號安全",
+    "linkedAccounts": "第三方帳號",
+    "linkedAccountsHint": "綁定之後就能用這些服務登入同一個帳號。至少要保留一種登入方式。",
+    "linkWith": "綁定 {provider}",
+    "unlink": "解除綁定",
+    "unlinkDone": "已解除綁定",
+    "unlinkLast": "這是你唯一的登入方式，解除後會無法登入。"
   },
   "footer": {
     "builtWith": "以 Next.js 與 Supabase 打造",
