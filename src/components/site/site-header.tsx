@@ -96,8 +96,15 @@ export function SiteHeader({
               <MagnifyingGlassIcon size={14} weight="duotone" />
               <span className="hidden tracking-[0.06em] text-ink-55 md:inline">⌘K</span>
             </button>
-            <LocaleSwitch current={locale} />
-            <ThemeToggle label={t('common.toggleTheme')} />
+            {/*
+              語言與主題切換在手機上移進抽屜。360px 寬的機型（不少 Android 都是）
+              放不下五組控制項，右側這一串會把整份文件撐寬，連帶讓 sticky 的頁首
+              在橫向捲動時看起來斷掉。
+            */}
+            <div className="hidden items-center gap-1.5 md:flex">
+              <LocaleSwitch current={locale} />
+              <ThemeToggle label={t('common.toggleTheme')} />
+            </div>
             <UserMenu />
 
             <button
@@ -166,6 +173,11 @@ export function SiteHeader({
                 ))}
               </ul>
             </nav>
+
+            <div className="flex items-center gap-2 border-t border-divider px-3 py-3">
+              <LocaleSwitch current={locale} />
+              <ThemeToggle label={t('common.toggleTheme')} />
+            </div>
           </div>
         </div>
       ) : null}
