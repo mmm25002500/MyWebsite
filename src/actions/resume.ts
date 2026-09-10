@@ -9,6 +9,7 @@ import { cacheTags } from '@/lib/data/cache';
 import { locales } from '@/lib/i18n/config';
 import { createServerSupabase } from '@/lib/supabase/server';
 import type { Json } from '@/types/database';
+import { httpUrl } from '@/lib/validators/url';
 
 export interface ActionResult {
   ok: boolean;
@@ -38,7 +39,7 @@ const experienceSchema = z.object({
   showCompanyName: z.boolean(),
   isVisible: z.boolean(),
   sortOrder: z.number().int().min(0).max(9999),
-  url: nullable(z.string().trim().max(300)),
+  url: nullable(z.string().max(300).pipe(httpUrl)),
   contents: z
     .array(
       z.object({

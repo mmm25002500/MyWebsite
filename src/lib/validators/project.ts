@@ -38,7 +38,8 @@ export const projectContentSchema = z.object({
 
 export const projectImageSchema = z.object({
   id: z.string().uuid().nullable(),
-  url: z.string().trim().min(1).max(500),
+  // 輪播的圖片來源，同樣只接受 http(s)。
+  url: z.string().max(500).pipe(httpUrl),
   alt: z.string().trim().max(300),
   caption: z.string().trim().max(300),
   isCover: z.boolean(),
@@ -65,7 +66,7 @@ export const saveProjectSchema = z.object({
   endedAt: nullable(z.string()),
   categoryId: nullable(z.string().uuid()),
   organizationId: nullable(z.string().uuid()),
-  coverUrl: nullable(z.string().trim().max(500)),
+  coverUrl: nullable(z.string().max(500).pipe(httpUrl)),
   // GitHub repo 存的是 `owner/repo`，不是網址；限成這個形狀免得被塞進別的東西。
   githubRepo: nullable(
     z

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { locales } from '@/lib/i18n/config';
+import { httpUrl } from '@/lib/validators/url';
 
 export const postStatuses = ['draft', 'published', 'unlisted', 'archived'] as const;
 
@@ -30,8 +31,9 @@ export const savePostSchema = z.object({
   slug: slugSchema,
   status: z.enum(postStatuses),
   publishedAt: emptyToNull(z.string()),
-  coverUrl: emptyToNull(z.string().trim().max(500)),
-  canonicalUrl: emptyToNull(z.string().trim().max(500)),
+  // 兩者都會被輸出成 src／canonical，只接受 http(s)。
+  coverUrl: emptyToNull(z.string().max(500).pipe(httpUrl)),
+  canonicalUrl: emptyToNull(z.string().max(500).pipe(httpUrl)),
   isPinned: z.boolean(),
   isFeatured: z.boolean(),
   allowComments: z.boolean(),
