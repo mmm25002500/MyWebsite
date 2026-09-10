@@ -198,6 +198,9 @@
   --shadow-lg: var(--shadow-lg);
 
   --container-page: 1160px;
+
+  /* sticky 頁首的高度，換頁進度條靠它定位。 */
+  --header-h: 64px;
 }
 
 @layer base {
@@ -835,4 +838,24 @@
 
 [data-admin] .admin-section-title {
   @apply text-[16px] font-semibold text-text;
+}
+
+/* ---------------------------------------------------------------------------
+   換頁進度條（nextjs-toploader）。
+
+   套件把進度條固定在視窗最頂端的兩個像素。手機版 Chrome 在換頁的瞬間會把收合
+   起來的網址列滑回來，那道動畫正好蓋過最上緣——換頁本身又常常只花一百多毫秒
+   （路由已預取），於是使用者往下滑之後跳頁，進度條等於完全看不到。
+
+   改成貼在 sticky 頁首的下緣：頁首一直在畫面上，瀏覽器介面的動畫蓋不到它。
+   高度也從 2px 提到 3px，手機上才看得出來。
+--------------------------------------------------------------------------- */
+#nprogress .bar,
+#nprogress .peg {
+  height: 3px !important;
+}
+
+/* 只有站台頁首存在時才下移；登入頁與後台沒有這個頁首，維持貼在最頂端。 */
+body:has([data-site-header]) #nprogress .bar {
+  top: var(--header-h) !important;
 }

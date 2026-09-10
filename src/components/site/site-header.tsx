@@ -57,7 +57,7 @@ export function SiteHeader({
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-bg/[0.88] backdrop-blur-[10px]">
+      <header data-site-header className="sticky top-0 z-40 bg-bg/[0.88] backdrop-blur-[10px]">
         <div className="w-full max-w-page mx-auto flex items-center gap-4 px-[22px] py-3.5 md:px-11">
           <Link
             href="/"

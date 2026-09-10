@@ -13,7 +13,7 @@ export function RouteProgress() {
   return (
     <NextTopLoader
       color="#00FFFE"
-      height={2}
+      height={3}
       showSpinner={false}
       shadow="0 0 10px #00FFFE, 0 0 5px #00FFFE"
       crawlSpeed={200}
