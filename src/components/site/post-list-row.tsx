@@ -24,7 +24,9 @@ export async function PostListRow({ post, locale }: { post: PostSummary; locale:
           {post.title}
         </h3>
         {post.excerpt ? (
-          <p className="mt-1.5 max-w-[70ch] text-[15px] leading-relaxed text-ink-62">{post.excerpt}</p>
+          <p className="mt-1.5 max-w-[70ch] text-[15px] leading-relaxed text-ink-62">
+            {post.excerpt}
+          </p>
         ) : null}
       </Link>
     </article>

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { hasSupabase, siteUrl } from '@/lib/env';
 import { Link } from '@/lib/i18n/routing';
 import { createBrowserSupabase } from '@/lib/supabase/client';
+import { setFlash, toast } from '@/lib/toast';
 
 type Mode = 'login' | 'register';
 
@@ -54,6 +55,7 @@ export function AuthForm({ mode, nextPath }: { mode: Mode; nextPath?: string }) 
           nextPath && nextPath.startsWith('/') && !nextPath.startsWith('//')
             ? nextPath
             : '/account';
+        setFlash('登入成功');
         window.location.assign(target);
       } else {
         const { error: signUpError } = await supabase.auth.signUp({
@@ -65,6 +67,7 @@ export function AuthForm({ mode, nextPath }: { mode: Mode; nextPath?: string }) 
           },
         });
         if (signUpError) throw signUpError;
+        toast.success('註冊成功，請收信完成驗證');
         setSent(true);
       }
     } catch {

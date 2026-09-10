@@ -7,6 +7,7 @@ import { useState, useTransition } from 'react';
 import { savePage } from '@/actions/pages';
 import { Button } from '@/components/ui/button';
 import { locales, type Locale } from '@/lib/i18n/config';
+import { toast } from '@/lib/toast';
 import { cn } from '@/lib/utils';
 
 // 編輯器只在這一頁用得到，動態載入才不會讓其他後台頁面一起背這包。
@@ -44,7 +45,6 @@ export function PageForm({ page }: { page: AdminPageDetail }) {
   const [pending, startTransition] = useTransition();
   const [activeLocale, setActiveLocale] = useState<Locale>('zh-TW');
   const [status, setStatus] = useState(page.status);
-  const [message, setMessage] = useState<string | null>(null);
   const [tab, setTab] = useState<'content' | 'seo'>('content');
 
   const [contents, setContents] = useState<PageContentDraft[]>(() =>
@@ -68,26 +68,25 @@ export function PageForm({ page }: { page: AdminPageDetail }) {
     );
 
   const submit = () => {
-    setMessage(null);
     startTransition(async () => {
       // 完全沒填標題的語系不送出，免得在資料庫留下空白的翻譯列。
       const filled = contents.filter((row) => row.title.trim().length > 0);
       if (filled.length === 0) {
-        setMessage('至少要填一個語系的標題');
+        toast.error('至少要填一個語系的標題');
         return;
       }
 
       const result = await savePage({ id: page.id, status, contents: filled });
       if (!result.ok) {
-        setMessage(result.error ?? '儲存失敗');
+        toast.error(result.error ?? '儲存失敗');
         return;
       }
 
-      setMessage(
-        result.issues && result.issues.length > 0
-          ? `已儲存，但有 ${result.issues.length} 個指令警告`
-          : '已儲存',
-      );
+      if (result.issues && result.issues.length > 0) {
+        toast.success(`已儲存，但有 ${result.issues.length} 個指令警告`);
+      } else {
+        toast.success('已儲存');
+      }
       router.refresh();
     });
   };
@@ -117,8 +116,6 @@ export function PageForm({ page }: { page: AdminPageDetail }) {
           </Button>
         </div>
       </div>
-
-      {message ? <p className="text-[15px] text-accent-700">{message}</p> : null}
 
       <div className="flex flex-wrap items-center gap-2 border-b border-divider pb-2.5">
         {(['content', 'seo'] as const).map((item) => (

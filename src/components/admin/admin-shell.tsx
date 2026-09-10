@@ -12,6 +12,7 @@ import { allAdminItems } from '@/components/admin/nav-items';
 import { ThemeToggle } from '@/components/site/theme-toggle';
 import { roleLabels, type Role } from '@/lib/auth/roles';
 import { createBrowserSupabase } from '@/lib/supabase/client';
+import { setFlash } from '@/lib/toast';
 
 /** 後台外框：側欄 + 頂部麵包屑 + 右上帳號區（規格 §8.0）。 */
 export function AdminShell({
@@ -32,6 +33,7 @@ export function AdminShell({
 
   const signOut = async () => {
     await createBrowserSupabase().auth.signOut();
+    setFlash('已登出');
     window.location.assign('/admin/login');
   };
 

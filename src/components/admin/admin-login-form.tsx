@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { hasSupabase } from '@/lib/env';
 import { createBrowserSupabase } from '@/lib/supabase/client';
+import { setFlash } from '@/lib/toast';
 
 /**
  * 後台登入（規格 §5.3）。
@@ -70,6 +71,7 @@ export function AdminLoginForm({ nextPath }: { nextPath?: string }) {
         body: JSON.stringify({ action: 'login' }),
       }).catch(() => undefined);
 
+      setFlash('登入成功');
       window.location.assign(nextPath && nextPath.startsWith('/admin') ? nextPath : '/admin');
     } catch {
       setError('登入失敗，請確認帳號密碼');

@@ -6,6 +6,7 @@ import { useState, useTransition } from 'react';
 import { saveSetting } from '@/actions/resources';
 import { Button } from '@/components/ui/button';
 import type { Json } from '@/types/database';
+import { toastResult } from '@/lib/toast';
 
 interface SocialLink {
   key: string;
@@ -33,7 +34,6 @@ export function SettingsForm({
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [message, setMessage] = useState<string | null>(null);
 
   const [siteTitle, setSiteTitle] = useState(
     (initial.site_title as Record<string, string>) ?? { 'zh-TW': '', en: '' },
@@ -53,10 +53,9 @@ export function SettingsForm({
   });
 
   const persist = (key: string, value: Json) => {
-    setMessage(null);
     startTransition(async () => {
       const result = await saveSetting(key, value);
-      setMessage(result.ok ? '已儲存' : (result.error ?? '儲存失敗'));
+      toastResult(result, '設定已儲存');
       if (result.ok) router.refresh();
     });
   };
@@ -71,36 +70,71 @@ export function SettingsForm({
 
   return (
     <div className="max-w-3xl space-y-8">
-      {message ? <p className="text-[14px] text-accent-700">{message}</p> : null}
-
       <section className="space-y-3 rounded-lg border border-divider bg-surface p-4">
         <h2 className="admin-section-title">一般</h2>
 
         <div className="grid gap-3 md:grid-cols-2">
           <div>
-            <label className={label} htmlFor="s-title-zh">站名（中文）</label>
-            <input id="s-title-zh" value={siteTitle['zh-TW'] ?? ''} onChange={(e) => setSiteTitle((v) => ({ ...v, 'zh-TW': e.target.value }))} className={field} />
+            <label className={label} htmlFor="s-title-zh">
+              站名（中文）
+            </label>
+            <input
+              id="s-title-zh"
+              value={siteTitle['zh-TW'] ?? ''}
+              onChange={(e) => setSiteTitle((v) => ({ ...v, 'zh-TW': e.target.value }))}
+              className={field}
+            />
           </div>
           <div>
-            <label className={label} htmlFor="s-title-en">站名（英文）</label>
-            <input id="s-title-en" value={siteTitle.en ?? ''} onChange={(e) => setSiteTitle((v) => ({ ...v, en: e.target.value }))} className={field} />
+            <label className={label} htmlFor="s-title-en">
+              站名（英文）
+            </label>
+            <input
+              id="s-title-en"
+              value={siteTitle.en ?? ''}
+              onChange={(e) => setSiteTitle((v) => ({ ...v, en: e.target.value }))}
+              className={field}
+            />
           </div>
         </div>
 
         <div className="grid gap-3 md:grid-cols-2">
           <div>
-            <label className={label} htmlFor="s-hero-zh">Hero 文案（中文）</label>
-            <textarea id="s-hero-zh" rows={3} value={hero['zh-TW'] ?? ''} onChange={(e) => setHero((v) => ({ ...v, 'zh-TW': e.target.value }))} className={`${field} resize-y`} />
+            <label className={label} htmlFor="s-hero-zh">
+              Hero 文案（中文）
+            </label>
+            <textarea
+              id="s-hero-zh"
+              rows={3}
+              value={hero['zh-TW'] ?? ''}
+              onChange={(e) => setHero((v) => ({ ...v, 'zh-TW': e.target.value }))}
+              className={`${field} resize-y`}
+            />
           </div>
           <div>
-            <label className={label} htmlFor="s-hero-en">Hero 文案（英文）</label>
-            <textarea id="s-hero-en" rows={3} value={hero.en ?? ''} onChange={(e) => setHero((v) => ({ ...v, en: e.target.value }))} className={`${field} resize-y`} />
+            <label className={label} htmlFor="s-hero-en">
+              Hero 文案（英文）
+            </label>
+            <textarea
+              id="s-hero-en"
+              rows={3}
+              value={hero.en ?? ''}
+              onChange={(e) => setHero((v) => ({ ...v, en: e.target.value }))}
+              className={`${field} resize-y`}
+            />
           </div>
         </div>
 
         <div>
-          <label className={label} htmlFor="s-email">公開聯絡信箱</label>
-          <input id="s-email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} className={field} />
+          <label className={label} htmlFor="s-email">
+            公開聯絡信箱
+          </label>
+          <input
+            id="s-email"
+            value={contactEmail}
+            onChange={(e) => setContactEmail(e.target.value)}
+            className={field}
+          />
         </div>
 
         <Button
@@ -146,18 +180,53 @@ export function SettingsForm({
         <h2 className="admin-section-title">社群連結</h2>
         {socialLinks.map((link, index) => (
           <div key={index} className="flex flex-wrap gap-2">
-            <input value={link.label} placeholder="名稱" onChange={(e) => setSocialLinks((rows) => rows.map((row, i) => (i === index ? { ...row, label: e.target.value } : row)))} className={`${field} w-32`} />
-            <input value={link.url} placeholder="網址" onChange={(e) => setSocialLinks((rows) => rows.map((row, i) => (i === index ? { ...row, url: e.target.value } : row)))} className={`${field} flex-1`} />
-            <button type="button" onClick={() => setSocialLinks((rows) => rows.filter((_, i) => i !== index))} className="cursor-pointer px-2 text-[14px] text-ink-70 hover:text-accent-2-700">
+            <input
+              value={link.label}
+              placeholder="名稱"
+              onChange={(e) =>
+                setSocialLinks((rows) =>
+                  rows.map((row, i) => (i === index ? { ...row, label: e.target.value } : row)),
+                )
+              }
+              className={`${field} w-32`}
+            />
+            <input
+              value={link.url}
+              placeholder="網址"
+              onChange={(e) =>
+                setSocialLinks((rows) =>
+                  rows.map((row, i) => (i === index ? { ...row, url: e.target.value } : row)),
+                )
+              }
+              className={`${field} flex-1`}
+            />
+            <button
+              type="button"
+              onClick={() => setSocialLinks((rows) => rows.filter((_, i) => i !== index))}
+              className="cursor-pointer px-2 text-[14px] text-ink-70 hover:text-accent-2-700"
+            >
               移除
             </button>
           </div>
         ))}
         <div className="flex gap-2">
-          <Button size="sm" variant="secondary" onClick={() => setSocialLinks((rows) => [...rows, { key: `link-${rows.length}`, label: '', url: '', icon: 'link' }])}>
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() =>
+              setSocialLinks((rows) => [
+                ...rows,
+                { key: `link-${rows.length}`, label: '', url: '', icon: 'link' },
+              ])
+            }
+          >
             新增連結
           </Button>
-          <Button size="sm" disabled={pending} onClick={() => persist('social_links', socialLinks as unknown as Json)}>
+          <Button
+            size="sm"
+            disabled={pending}
+            onClick={() => persist('social_links', socialLinks as unknown as Json)}
+          >
             儲存社群連結
           </Button>
         </div>
@@ -166,8 +235,8 @@ export function SettingsForm({
       <section className="rounded-lg border border-divider bg-surface p-4">
         <h2 className="admin-section-title">金鑰</h2>
         <p className="mt-2 text-[15px] text-ink-70">
-          API 金鑰、資料庫密碼等敏感設定只放環境變數，後台不顯示也不儲存（規格 §8.9）。
-          需要變更請改 Vercel 的環境變數或本機的 .env.local。
+          API 金鑰、資料庫密碼等敏感設定只放環境變數，後台不顯示也不儲存（規格 §8.9）。 需要變更請改
+          Vercel 的環境變數或本機的 .env.local。
         </p>
       </section>
     </div>

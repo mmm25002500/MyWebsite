@@ -60,13 +60,28 @@ export function PostTable({ rows }: { rows: AdminPostRow[] }) {
         <div className="mb-3 flex flex-wrap items-center gap-2 rounded-lg border border-divider bg-surface px-4 py-2.5">
           <span className="text-[15px] font-bold">已選 {selected.size} 篇</span>
           <div className="ml-auto flex gap-2">
-            <Button size="sm" variant="secondary" disabled={pending} onClick={() => applyStatus('published')}>
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={pending}
+              onClick={() => applyStatus('published')}
+            >
               發佈
             </Button>
-            <Button size="sm" variant="secondary" disabled={pending} onClick={() => applyStatus('draft')}>
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={pending}
+              onClick={() => applyStatus('draft')}
+            >
               轉為草稿
             </Button>
-            <Button size="sm" variant="secondary" disabled={pending} onClick={() => applyStatus('archived')}>
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={pending}
+              onClick={() => applyStatus('archived')}
+            >
               封存
             </Button>
           </div>

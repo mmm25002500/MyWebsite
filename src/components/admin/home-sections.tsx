@@ -6,6 +6,7 @@ import { useState, useTransition } from 'react';
 import { saveHomeSections } from '@/actions/pages';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { toastResult } from '@/lib/toast';
 
 export interface HomeSectionRow {
   id: string;
@@ -30,7 +31,6 @@ export function HomeSections({ sections }: { sections: HomeSectionRow[] }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [rows, setRows] = useState(() => [...sections].sort((a, b) => a.sortOrder - b.sortOrder));
-  const [message, setMessage] = useState<string | null>(null);
 
   const move = (index: number, direction: -1 | 1) => {
     const target = index + direction;
@@ -47,12 +47,11 @@ export function HomeSections({ sections }: { sections: HomeSectionRow[] }) {
     );
 
   const submit = () => {
-    setMessage(null);
     startTransition(async () => {
       const result = await saveHomeSections(
         rows.map((row, index) => ({ id: row.id, isVisible: row.isVisible, sortOrder: index })),
       );
-      setMessage(result.ok ? '已儲存' : (result.error ?? '儲存失敗'));
+      toastResult(result, '首頁區塊已更新');
       if (result.ok) router.refresh();
     });
   };
@@ -107,7 +106,6 @@ export function HomeSections({ sections }: { sections: HomeSectionRow[] }) {
         <Button type="button" onClick={submit} disabled={pending}>
           {pending ? '儲存中…' : '儲存區塊設定'}
         </Button>
-        {message ? <p className="text-[15px] text-accent-700">{message}</p> : null}
       </div>
     </div>
   );

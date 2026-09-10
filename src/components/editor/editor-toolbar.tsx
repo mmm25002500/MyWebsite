@@ -8,10 +8,12 @@ export interface ToolbarAction {
   build: (selected: string) => { text: string; cursorOffset?: number };
 }
 
-const wrap = (before: string, after = before) => (selected: string) => ({
-  text: `${before}${selected}${after}`,
-  cursorOffset: selected ? undefined : before.length,
-});
+const wrap =
+  (before: string, after = before) =>
+  (selected: string) => ({
+    text: `${before}${selected}${after}`,
+    cursorOffset: selected ? undefined : before.length,
+  });
 
 const prefixLines = (prefix: string) => (selected: string) => {
   const lines = (selected || '').split('\n');
@@ -95,7 +97,12 @@ const actions: ToolbarAction[] = [
     title: '文章引用卡',
     build: () => ({ text: ':::ref{type="post" slug=""}\n:::\n', cursorOffset: 25 }),
   },
-  { key: 'table', label: '表格', title: '表格', build: () => ({ text: '| 欄一 | 欄二 |\n|---|---|\n| 　 | 　 |\n' }) },
+  {
+    key: 'table',
+    label: '表格',
+    title: '表格',
+    build: () => ({ text: '| 欄一 | 欄二 |\n|---|---|\n| 　 | 　 |\n' }),
+  },
   { key: 'math', label: '公式', title: '數學公式', build: wrap('$') },
   { key: 'hr', label: '分隔線', title: '水平線', build: () => ({ text: '\n---\n' }) },
 ];

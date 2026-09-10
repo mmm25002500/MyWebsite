@@ -9,6 +9,7 @@ import type { Locale } from '@/lib/i18n/config';
 import { Link } from '@/lib/i18n/routing';
 import { createBrowserSupabase } from '@/lib/supabase/client';
 import { cn, formatDate } from '@/lib/utils';
+import { toast } from '@/lib/toast';
 
 export interface CommentNode {
   id: string;
@@ -56,6 +57,7 @@ export function CommentSection({
       const payload = (await response.json()) as { comments: CommentNode[] };
       setComments(payload.comments);
     } catch {
+      toast.error(t('common.error'));
       setError(t('common.error'));
     } finally {
       setLoading(false);
@@ -93,6 +95,7 @@ export function CommentSection({
       setReplyTo(null);
       await load();
     } catch {
+      toast.error(t('common.error'));
       setError(t('common.error'));
     } finally {
       setSubmitting(false);

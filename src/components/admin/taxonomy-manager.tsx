@@ -178,7 +178,9 @@ export function TaxonomyManager({
                 id="tax-slug"
                 value={draft.slug}
                 onChange={(event) =>
-                  setDraft((current) => (current ? { ...current, slug: event.target.value } : current))
+                  setDraft((current) =>
+                    current ? { ...current, slug: event.target.value } : current,
+                  )
                 }
                 className={field}
               />

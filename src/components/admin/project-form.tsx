@@ -10,6 +10,7 @@ import type { AdminProjectDetail } from '@/lib/data/queries/admin';
 import { locales, type Locale } from '@/lib/i18n/config';
 import { projectLinkTypes, projectStatuses } from '@/lib/validators/project';
 import { cn } from '@/lib/utils';
+import { toast } from '@/lib/toast';
 
 const MarkdownEditor = dynamic(
   () => import('@/components/editor/markdown-editor').then((mod) => mod.MarkdownEditor),
@@ -80,7 +81,6 @@ export function ProjectForm({
   const [pending, startTransition] = useTransition();
   const [tab, setTab] = useState<'basic' | 'images' | 'links' | 'content' | 'related'>('basic');
   const [activeLocale, setActiveLocale] = useState<Locale>('zh-TW');
-  const [message, setMessage] = useState<{ kind: 'ok' | 'error'; text: string } | null>(null);
 
   const [slug, setSlug] = useState(project?.slug ?? '');
   const [status, setStatus] = useState(project?.status ?? 'in_progress');
@@ -145,10 +145,9 @@ export function ProjectForm({
     );
 
   const submit = () => {
-    setMessage(null);
     const filled = contents.filter((row) => row.name.trim());
     if (filled.length === 0) {
-      setMessage({ kind: 'error', text: '至少要有一個語系填了名稱' });
+      toast.error('至少要有一個語系填了名稱');
       return;
     }
 
@@ -198,11 +197,11 @@ export function ProjectForm({
       });
 
       if (!result.ok) {
-        setMessage({ kind: 'error', text: result.error ?? '儲存失敗' });
+        toast.error(result.error ?? '儲存失敗');
         return;
       }
 
-      setMessage({ kind: 'ok', text: '已儲存' });
+      toast.success('已儲存');
       if (!project && result.projectId) router.replace(`/admin/projects/${result.projectId}`);
       else router.refresh();
     });
@@ -213,7 +212,7 @@ export function ProjectForm({
     startTransition(async () => {
       const result = await deleteProject(project.id);
       if (!result.ok) {
-        setMessage({ kind: 'error', text: result.error ?? '刪除失敗' });
+        toast.error(result.error ?? '刪除失敗');
         return;
       }
       router.push('/admin/projects');
@@ -240,16 +239,6 @@ export function ProjectForm({
           </p>
         </div>
         <div className="ml-auto flex items-center gap-2">
-          {message ? (
-            <span
-              className={cn(
-                'text-[14px]',
-                message.kind === 'ok' ? 'text-accent-700' : 'text-accent-2-700',
-              )}
-            >
-              {message.text}
-            </span>
-          ) : null}
           {project ? (
             <a
               href={`/projects/${project.slug}`}

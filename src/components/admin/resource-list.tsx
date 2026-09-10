@@ -6,6 +6,7 @@ import { useState, useTransition, type ReactNode } from 'react';
 import { deleteResource, saveResource, type ResourceTable } from '@/actions/resources';
 import { Button } from '@/components/ui/button';
 import { locales } from '@/lib/i18n/config';
+import { toast } from '@/lib/toast';
 
 export interface ResourceField {
   key: string;
@@ -51,7 +52,6 @@ export function ResourceList({
     values: Record<string, unknown>;
     i18n: Record<string, Record<string, unknown>>;
   } | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
 
   const mainFields = fields.filter((f) => !f.i18n);
   const i18nFields = fields.filter((f) => f.i18n);
@@ -68,7 +68,6 @@ export function ResourceList({
 
   const save = () => {
     if (!draft) return;
-    setMessage(null);
     startTransition(async () => {
       const result = await saveResource({
         table,
@@ -81,22 +80,23 @@ export function ResourceList({
       });
 
       if (!result.ok) {
-        setMessage(result.error ?? '儲存失敗');
+        toast.error(result.error ?? '儲存失敗');
         return;
       }
+      toast.success('已儲存');
       setDraft(null);
       router.refresh();
     });
   };
 
   const remove = (id: string) => {
-    setMessage(null);
     startTransition(async () => {
       const result = await deleteResource(table, id);
       if (!result.ok) {
-        setMessage(result.error ?? '刪除失敗');
+        toast.error(result.error ?? '刪除失敗');
         return;
       }
+      toast.success('已刪除');
       router.refresh();
     });
   };
@@ -122,7 +122,11 @@ export function ResourceList({
 
     if (definition.type === 'select') {
       return (
-        <select value={String(value ?? '')} onChange={(event) => onChange(event.target.value)} className={field}>
+        <select
+          value={String(value ?? '')}
+          onChange={(event) => onChange(event.target.value)}
+          className={field}
+        >
           <option value="">—</option>
           {definition.options?.map((option) => (
             <option key={option.value} value={option.value}>
@@ -164,7 +168,6 @@ export function ResourceList({
         <Button size="sm" onClick={startNew}>
           新增
         </Button>
-        {message ? <span className="text-[14px] text-accent-2-700">{message}</span> : null}
       </div>
 
       {draft ? (

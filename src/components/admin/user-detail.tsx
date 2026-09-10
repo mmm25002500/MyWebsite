@@ -6,6 +6,7 @@ import { useState, useTransition } from 'react';
 import { updateUserProfile } from '@/actions/moderation';
 import { Button } from '@/components/ui/button';
 import { roleLabels, type Role } from '@/lib/auth/roles';
+import { toastResult } from '@/lib/toast';
 
 const field =
   'w-full rounded-md border border-divider bg-bg px-3 py-2 text-[15px] text-text outline-none focus:border-accent';
@@ -50,7 +51,6 @@ export interface UserDetailView {
 export function UserDetail({ user }: { user: UserDetailView }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [message, setMessage] = useState<string | null>(null);
   const [form, setForm] = useState({
     displayName: user.displayName,
     bio: user.bio ?? '',
@@ -59,10 +59,9 @@ export function UserDetail({ user }: { user: UserDetailView }) {
   });
 
   const submit = () => {
-    setMessage(null);
     startTransition(async () => {
       const result = await updateUserProfile({ userId: user.userId, ...form });
-      setMessage(result.ok ? '已儲存' : (result.error ?? '儲存失敗'));
+      toastResult(result, '已儲存');
       if (result.ok) router.refresh();
     });
   };
@@ -152,7 +151,6 @@ export function UserDetail({ user }: { user: UserDetailView }) {
           <Button type="button" onClick={submit} disabled={pending}>
             {pending ? '儲存中…' : '儲存'}
           </Button>
-          {message ? <p className="text-[15px] text-accent-700">{message}</p> : null}
         </div>
       </section>
 

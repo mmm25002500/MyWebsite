@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import type { AdminEducation, AdminExperience, AdminSkillGroup } from '@/lib/data/queries/admin';
 import { locales } from '@/lib/i18n/config';
 import { cn, formatPeriod } from '@/lib/utils';
+import { toastResult } from '@/lib/toast';
 
 const field =
   'w-full min-h-9 rounded-md border border-divider bg-bg px-2.5 py-1.5 text-[15px] text-text outline-none transition-colors focus-visible:border-accent';
@@ -45,20 +46,15 @@ export function ResumeManager({ data, canEditSettings }: Props) {
   const [tab, setTab] = useState<Tab>('experience');
   const [editingGroup, setEditingGroup] = useState<GroupEditing>(null);
   const [pending, startTransition] = useTransition();
-  const [message, setMessage] = useState<string | null>(null);
 
   const [experienceDraft, setExperienceDraft] = useState<SaveExperienceInput | null>(null);
   const [educationDraft, setEducationDraft] = useState<SaveEducationInput | null>(null);
   const [settings, setSettings] = useState(data.settings);
 
   const run = (fn: () => Promise<{ ok: boolean; error?: string }>, done?: () => void) => {
-    setMessage(null);
     startTransition(async () => {
       const result = await fn();
-      if (!result.ok) {
-        setMessage(result.error ?? '操作失敗');
-        return;
-      }
+      if (!toastResult(result)) return;
       done?.();
       router.refresh();
     });
@@ -144,7 +140,6 @@ export function ResumeManager({ data, canEditSettings }: Props) {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="text-[28px] font-bold">履歷</h1>
-        {message ? <span className="text-[14px] text-accent-2-700">{message}</span> : null}
         <a
           href="/resume"
           target="_blank"

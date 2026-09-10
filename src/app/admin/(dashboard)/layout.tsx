@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 
 import { AdminShell } from '@/components/admin/admin-shell';
+import { Toaster } from '@/components/ui/toaster';
 import { getAdminSession } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
@@ -19,6 +20,7 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
   return (
     <AdminShell role={session.role} displayName={session.displayName}>
       {children}
+      <Toaster />
     </AdminShell>
   );
 }

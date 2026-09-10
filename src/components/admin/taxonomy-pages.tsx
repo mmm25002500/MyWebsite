@@ -16,6 +16,7 @@ import {
 import { TaxonomyManager, type TaxonomyDraft } from '@/components/admin/taxonomy-manager';
 import { Button } from '@/components/ui/button';
 import type { AdminSeriesRow, AdminTaxonomyRow } from '@/lib/data/queries/admin';
+import { toast, toastResult } from '@/lib/toast';
 
 const toContents = (draft: TaxonomyDraft) =>
   draft.contents
@@ -50,14 +51,16 @@ export function CategoriesManager({ rows }: { rows: AdminTaxonomyRow[] }) {
 export function TagsManager({ rows }: { rows: AdminTaxonomyRow[] }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [merge, setMerge] = useState<{ source: string; target: string }>({ source: '', target: '' });
-  const [message, setMessage] = useState<string | null>(null);
+  const [merge, setMerge] = useState<{ source: string; target: string }>({
+    source: '',
+    target: '',
+  });
 
   const runMerge = () => {
     if (!merge.source || !merge.target) return;
     startTransition(async () => {
       const result = await mergeTags(merge.source, merge.target);
-      setMessage(result.ok ? '已合併' : (result.error ?? '合併失敗'));
+      toastResult(result, '已儲存');
       if (result.ok) {
         setMerge({ source: '', target: '' });
         router.refresh();
@@ -68,7 +71,8 @@ export function TagsManager({ rows }: { rows: AdminTaxonomyRow[] }) {
   const runPrune = () => {
     startTransition(async () => {
       const result = await pruneUnusedTags();
-      setMessage(result.ok ? `清除了 ${result.removed ?? 0} 個未使用標籤` : (result.error ?? '失敗'));
+      if (result.ok) toast.success(`清除了 ${result.removed ?? 0} 個未使用標籤`);
+      else toast.error(result.error ?? '清除失敗');
       if (result.ok) router.refresh();
     });
   };
@@ -127,7 +131,6 @@ export function TagsManager({ rows }: { rows: AdminTaxonomyRow[] }) {
           <Button size="sm" variant="secondary" onClick={runPrune} disabled={pending}>
             清除未使用
           </Button>
-          {message ? <span className="text-[14px] text-ink-70">{message}</span> : null}
         </div>
       }
     />
@@ -167,16 +170,12 @@ export function SeriesManager({ rows }: { rows: AdminSeriesRow[] }) {
             <ol className="mt-3 space-y-1.5 text-[15px]">
               {row.posts.map((post) => (
                 <li key={post.id} className="flex items-baseline gap-3">
-                  <span className="w-8 shrink-0 tabular-nums text-ink-70">
-                    {post.order ?? '—'}
-                  </span>
+                  <span className="w-8 shrink-0 tabular-nums text-ink-70">{post.order ?? '—'}</span>
                   <span>{post.title}</span>
                 </li>
               ))}
             </ol>
-            <p className="mt-2.5 text-[13px] text-ink-70">
-              順序在文章的「設定」分頁調整。
-            </p>
+            <p className="mt-2.5 text-[13px] text-ink-70">順序在文章的「設定」分頁調整。</p>
           </section>
         ))}
     </div>

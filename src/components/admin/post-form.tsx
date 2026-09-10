@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import type { AdminPostDetail } from '@/lib/data/queries/admin';
 import { locales, type Locale } from '@/lib/i18n/config';
 import { cn, slugify } from '@/lib/utils';
+import { toast } from '@/lib/toast';
 
 // 編輯器只在後台用得到，動態載入才不會讓其他後台頁面一起背這包。
 const MarkdownEditor = dynamic(
@@ -65,7 +66,6 @@ export function PostForm({
   const [pending, startTransition] = useTransition();
   const [tab, setTab] = useState<Tab>('content');
   const [activeLocale, setActiveLocale] = useState<Locale>('zh-TW');
-  const [message, setMessage] = useState<{ kind: 'ok' | 'error'; text: string } | null>(null);
 
   const [slug, setSlug] = useState(post?.slug ?? '');
   const [status, setStatus] = useState(post?.status ?? 'draft');
@@ -127,10 +127,8 @@ export function PostForm({
   );
 
   const submit = () => {
-    setMessage(null);
-
     if (filled.length === 0) {
-      setMessage({ kind: 'error', text: '至少要有一個語系填了標題與內容' });
+      toast.error('至少要有一個語系填了標題與內容');
       return;
     }
 
@@ -162,16 +160,13 @@ export function PostForm({
       });
 
       if (!result.ok) {
-        setMessage({ kind: 'error', text: result.error ?? '儲存失敗' });
+        toast.error(result.error ?? '儲存失敗');
         return;
       }
 
-      setMessage({
-        kind: 'ok',
-        text: result.issues?.length
-          ? `已儲存，但有 ${result.issues.length} 個指令語法問題`
-          : '已儲存',
-      });
+      toast.success(
+        result.issues?.length ? `已儲存，但有 ${result.issues.length} 個指令語法問題` : '已儲存',
+      );
 
       if (!post && result.postId) router.replace(`/admin/posts/${result.postId}`);
       else router.refresh();
@@ -183,7 +178,7 @@ export function PostForm({
     startTransition(async () => {
       const result = await deletePost(post.id);
       if (!result.ok) {
-        setMessage({ kind: 'error', text: result.error ?? '刪除失敗' });
+        toast.error(result.error ?? '刪除失敗');
         return;
       }
       router.push('/admin/posts');
@@ -203,16 +198,6 @@ export function PostForm({
         </div>
 
         <div className="ml-auto flex items-center gap-2">
-          {message ? (
-            <span
-              className={cn(
-                'text-[14px]',
-                message.kind === 'ok' ? 'text-accent-700' : 'text-accent-2-700',
-              )}
-            >
-              {message.text}
-            </span>
-          ) : null}
           {post ? (
             <a
               href={`/notes/p/${post.slug}`}
@@ -388,9 +373,7 @@ export function PostForm({
                 onChange={(event) => setSlug(event.target.value)}
                 className={field}
               />
-              <p className="mt-1 text-[13px] text-ink-70">
-                修改後會自動建立舊網址的 301 轉址。
-              </p>
+              <p className="mt-1 text-[13px] text-ink-70">修改後會自動建立舊網址的 301 轉址。</p>
             </div>
 
             <div>

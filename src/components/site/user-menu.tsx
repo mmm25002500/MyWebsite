@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import { hasSupabase } from '@/lib/env';
 import { Link, usePathname } from '@/lib/i18n/routing';
 import { createBrowserSupabase } from '@/lib/supabase/client';
+import { setFlash } from '@/lib/toast';
 
 interface Viewer {
   displayName: string;
@@ -71,6 +72,7 @@ export function UserMenu() {
   const signOut = async () => {
     await createBrowserSupabase().auth.signOut();
     setOpen(false);
+    setFlash('已登出');
     window.location.reload();
   };
 

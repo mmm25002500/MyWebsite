@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { hasSupabase } from '@/lib/env';
 import { createBrowserSupabase } from '@/lib/supabase/client';
+import { setFlash, toast } from '@/lib/toast';
 
 interface Profile {
   displayName: string;
@@ -63,13 +64,16 @@ export function AccountPanel({ email }: { email: string | null }) {
       } = await supabase.auth.getUser();
       if (!user) return;
 
-      await supabase
+      const { error } = await supabase
         .from('profiles')
         .update({
           display_name: profile.displayName,
           notify_reply: profile.notifyReply,
         } as never)
         .eq('user_id', user.id);
+
+      if (error) toast.error('儲存失敗');
+      else toast.success('已儲存');
     } finally {
       setSaving(false);
     }
@@ -78,6 +82,7 @@ export function AccountPanel({ email }: { email: string | null }) {
   const signOut = async () => {
     if (!hasSupabase) return;
     await createBrowserSupabase().auth.signOut();
+    setFlash('已登出');
     window.location.assign('/');
   };
 

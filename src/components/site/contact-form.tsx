@@ -8,6 +8,7 @@ import { z } from 'zod';
 
 import { Turnstile } from '@/components/site/turnstile';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/lib/toast';
 
 const types = ['collab', 'hire', 'tech', 'other'] as const;
 
@@ -51,8 +52,10 @@ export function ContactForm() {
       reset();
       setTurnstileReset((value) => value + 1);
       setStatus('success');
+      toast.success(t('contact.success'));
     } catch {
       setStatus('error');
+      toast.error(t('contact.failure'));
     }
   });
 

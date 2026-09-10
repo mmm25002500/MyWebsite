@@ -6,6 +6,7 @@ import { useState, useTransition } from 'react';
 import { saveNavItems } from '@/actions/pages';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { toastResult } from '@/lib/toast';
 
 export interface NavRow {
   key: string;
@@ -19,7 +20,6 @@ export function NavManager({ items }: { items: NavRow[] }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [rows, setRows] = useState(items);
-  const [message, setMessage] = useState<string | null>(null);
 
   const move = (index: number, direction: -1 | 1) => {
     const target = index + direction;
@@ -36,12 +36,11 @@ export function NavManager({ items }: { items: NavRow[] }) {
     );
 
   const submit = () => {
-    setMessage(null);
     startTransition(async () => {
       const result = await saveNavItems(
         rows.map((row) => ({ key: row.key, isVisible: row.isVisible })),
       );
-      setMessage(result.ok ? '已儲存' : (result.error ?? '儲存失敗'));
+      toastResult(result, '導覽列已更新');
       if (result.ok) router.refresh();
     });
   };
@@ -99,7 +98,6 @@ export function NavManager({ items }: { items: NavRow[] }) {
         <Button type="button" onClick={submit} disabled={pending}>
           {pending ? '儲存中…' : '儲存導覽列'}
         </Button>
-        {message ? <p className="text-[15px] text-accent-700">{message}</p> : null}
       </div>
     </div>
   );

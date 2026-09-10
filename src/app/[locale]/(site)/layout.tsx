@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { Suspense, type ReactNode } from 'react';
 
 import { AdsConsentBanner } from '@/components/ads/consent-banner';
+import { Toaster } from '@/components/ui/toaster';
 import { AdsenseScript } from '@/components/ads/adsense-script';
 import { AnalyticsTracker } from '@/components/site/analytics-tracker';
 import { RouteProgress } from '@/components/site/route-progress';
@@ -41,6 +42,7 @@ export default async function SiteLayout({
       </Suspense>
       <main id="main">{children}</main>
       <SiteFooter locale={locale} />
+      <Toaster />
       <AdsenseScript />
       <AdsConsentBanner
         title={t('ads.consentTitle')}

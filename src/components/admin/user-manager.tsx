@@ -8,22 +8,18 @@ import { banUser, setUserRole, unbanUser, updateDisplayName } from '@/actions/mo
 import { roleLabels, roles, type Role } from '@/lib/auth/roles';
 import type { AdminUser } from '@/lib/data/queries/admin';
 import { cn, formatDate } from '@/lib/utils';
+import { toastResult } from '@/lib/toast';
 
 /** 使用者管理（規格 §8.7）。頭像不可編輯——它來自 OAuth 或系統產生。 */
 export function UserManager({ users, isOwner }: { users: AdminUser[]; isOwner: boolean }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [message, setMessage] = useState<string | null>(null);
   const [renaming, setRenaming] = useState<{ id: string; name: string } | null>(null);
 
   const run = (fn: () => Promise<{ ok: boolean; error?: string }>, done?: () => void) => {
-    setMessage(null);
     startTransition(async () => {
       const result = await fn();
-      if (!result.ok) {
-        setMessage(result.error ?? '操作失敗');
-        return;
-      }
+      if (!toastResult(result)) return;
       done?.();
       router.refresh();
     });
@@ -31,8 +27,6 @@ export function UserManager({ users, isOwner }: { users: AdminUser[]; isOwner: b
 
   return (
     <div className="space-y-4">
-      {message ? <p className="text-[14px] text-accent-2-700">{message}</p> : null}
-
       <div className="overflow-x-auto rounded-lg border border-divider">
         <table className="w-full min-w-[860px] border-collapse text-[15px]">
           <thead>

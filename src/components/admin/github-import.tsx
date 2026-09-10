@@ -5,6 +5,7 @@ import { useState, useTransition } from 'react';
 
 import { importFromGithub } from '@/actions/projects';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/lib/toast';
 
 interface Repo {
   fullName: string;
@@ -25,7 +26,6 @@ export function GithubImportPanel() {
   const [open, setOpen] = useState(false);
   const [repos, setRepos] = useState<Repo[] | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [pending, startTransition] = useTransition();
 
@@ -39,10 +39,10 @@ export function GithubImportPanel() {
       const payload = (await response.json()) as { repos: Repo[] };
       setRepos(payload.repos ?? []);
       if ((payload.repos ?? []).length === 0) {
-        setMessage('沒有取得任何 repo。請確認已設定 GITHUB_TOKEN。');
+        toast.error('沒有取得任何 repo。請確認已設定 GITHUB_ACCOUNTS。');
       }
     } catch {
-      setMessage('無法連線到 GitHub 代理');
+      toast.error('無法連線到 GitHub 代理');
     } finally {
       setLoading(false);
     }
@@ -51,7 +51,8 @@ export function GithubImportPanel() {
   const run = () => {
     startTransition(async () => {
       const result = await importFromGithub([...selected]);
-      setMessage(result.ok ? `匯入了 ${result.created ?? 0} 個專案（預設不顯示）` : (result.error ?? '匯入失敗'));
+      if (result.ok) toast.success(`匯入了 ${result.created ?? 0} 個專案（預設不顯示）`);
+      else toast.error(result.error ?? '匯入失敗');
       if (result.ok) {
         setSelected(new Set());
         router.refresh();
@@ -68,21 +69,32 @@ export function GithubImportPanel() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-start justify-center bg-neutral-900/40 p-4 pt-[10vh]" onClick={() => setOpen(false)}>
-      <div onClick={(event) => event.stopPropagation()} className="w-full max-w-2xl rounded-lg border border-divider bg-bg p-5 shadow-lg">
+    <div
+      className="fixed inset-0 z-50 grid place-items-start justify-center bg-neutral-900/40 p-4 pt-[10vh]"
+      onClick={() => setOpen(false)}
+    >
+      <div
+        onClick={(event) => event.stopPropagation()}
+        className="w-full max-w-2xl rounded-lg border border-divider bg-bg p-5 shadow-lg"
+      >
         <div className="flex items-center gap-3">
           <h2 className="text-[18px] font-bold">從 GitHub 匯入</h2>
-          <button type="button" onClick={() => setOpen(false)} className="ml-auto cursor-pointer text-[14px] text-ink-70 hover:text-text">
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="ml-auto cursor-pointer text-[14px] text-ink-70 hover:text-text"
+          >
             關閉
           </button>
         </div>
 
-        {message ? <p className="mt-3 text-[14px] text-ink-70">{message}</p> : null}
-
         <div className="mt-4 max-h-[50vh] space-y-1.5 overflow-y-auto">
           {loading ? <p className="py-8 text-center text-[15px] text-ink-70">載入中…</p> : null}
           {(repos ?? []).map((repo) => (
-            <label key={repo.fullName} className="flex items-start gap-2.5 rounded-md p-2 text-[15px] hover:bg-ink-4">
+            <label
+              key={repo.fullName}
+              className="flex items-start gap-2.5 rounded-md p-2 text-[15px] hover:bg-ink-4"
+            >
               <input
                 type="checkbox"
                 checked={selected.has(repo.fullName)}
