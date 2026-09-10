@@ -31,12 +31,20 @@ export default async function LoginPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; error?: string }>;
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   setRequestLocale(locale);
 
-  const { next } = await searchParams;
-  return <AuthForm mode="login" nextPath={next} />;
+  const { next, error } = await searchParams;
+  /*
+   * `error` 由 /api/auth/callback 帶回來：OAuth 或信件連結兌換失敗時不該靜悄悄。
+   * 只顯示一句本地化的說明——Supabase 的原文是給開發者看的（例如「PKCE code
+   * verifier not found in storage」），對訪客沒有意義。原始原因留在網址裡。
+   */
+  const t = await getTranslations({ locale });
+  return (
+    <AuthForm mode="login" nextPath={next} initialError={error ? t('auth.oauthFailed') : undefined} />
+  );
 }

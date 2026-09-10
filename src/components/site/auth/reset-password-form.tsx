@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { hasSupabase, siteUrl } from '@/lib/env';
+import { authCallbackUrl, hasSupabase } from '@/lib/env';
 import { Link } from '@/lib/i18n/routing';
 import { createBrowserSupabase } from '@/lib/supabase/client';
 
@@ -27,7 +27,7 @@ export function ResetPasswordForm() {
     try {
       const supabase = createBrowserSupabase();
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${siteUrl}/account`,
+        redirectTo: authCallbackUrl('/account'),
       });
       if (resetError) throw resetError;
       setSent(true);

@@ -271,7 +271,8 @@
     "linkWith": "Link {provider}",
     "unlink": "Unlink",
     "unlinkDone": "Unlinked",
-    "unlinkLast": "This is your only sign-in method; unlinking it would lock you out."
+    "unlinkLast": "This is your only sign-in method; unlinking it would lock you out.",
+    "oauthFailed": "Sign-in did not complete. Please try again."
   },
   "footer": {
     "builtWith": "Built with Next.js and Supabase",

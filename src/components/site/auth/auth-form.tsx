@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { hasSupabase, siteUrl } from '@/lib/env';
+import { authCallbackUrl, hasSupabase } from '@/lib/env';
 import { Link } from '@/lib/i18n/routing';
 import { createBrowserSupabase } from '@/lib/supabase/client';
 import { setFlash, toast } from '@/lib/toast';
@@ -16,13 +16,21 @@ type Mode = 'login' | 'register';
  * 前台使用者的登入與註冊（規格 §5.3）：Email + 密碼、Google、GitHub 三種。
  * 頭像不開放上傳，OAuth 登入者沿用 provider 帶入的 `avatar_url`。
  */
-export function AuthForm({ mode, nextPath }: { mode: Mode; nextPath?: string }) {
+export function AuthForm({
+  mode,
+  nextPath,
+  initialError,
+}: {
+  mode: Mode;
+  nextPath?: string;
+  initialError?: string;
+}) {
   const t = useTranslations();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(initialError ?? null);
   const [sent, setSent] = useState(false);
 
   const fieldClass =
@@ -73,7 +81,7 @@ export function AuthForm({ mode, nextPath }: { mode: Mode; nextPath?: string }) 
           password,
           options: {
             data: { display_name: displayName },
-            emailRedirectTo: `${siteUrl}/account`,
+            emailRedirectTo: authCallbackUrl(),
           },
         });
         if (signUpError) throw signUpError;
@@ -90,10 +98,15 @@ export function AuthForm({ mode, nextPath }: { mode: Mode; nextPath?: string }) 
   const oauth = async (provider: 'google' | 'github') => {
     if (!hasSupabase) return;
     const supabase = createBrowserSupabase();
-    await supabase.auth.signInWithOAuth({
+    // 只接受站內的相對路徑，避免被帶去外部網站（open redirect）。
+    const target =
+      nextPath && nextPath.startsWith('/') && !nextPath.startsWith('//') ? nextPath : '/account';
+    const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: `${siteUrl}/account` },
+      options: { redirectTo: authCallbackUrl(target) },
     });
+    // 成功的話瀏覽器已經跳去 provider 了，走到這裡就是連跳都沒跳成。
+    if (oauthError) setError(oauthError.message);
   };
 
   if (sent) {

@@ -5,7 +5,7 @@ import type { UserIdentity } from '@supabase/supabase-js';
 import { useTranslations } from 'next-intl';
 
 import { Button } from '@/components/ui/button';
-import { siteUrl } from '@/lib/env';
+import { authCallbackUrl } from '@/lib/env';
 import { createBrowserSupabase } from '@/lib/supabase/client';
 import { toast } from '@/lib/toast';
 
@@ -53,7 +53,7 @@ export function LinkedAccounts() {
       const supabase = createBrowserSupabase();
       const { error } = await supabase.auth.linkIdentity({
         provider,
-        options: { redirectTo: `${siteUrl}/account` },
+        options: { redirectTo: authCallbackUrl('/account') },
       });
       // 成功的話瀏覽器已經跳去 provider 了，走到這裡就是沒跳成。
       if (error) toast.error(error.message);

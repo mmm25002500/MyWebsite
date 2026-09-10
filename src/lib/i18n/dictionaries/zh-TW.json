@@ -271,7 +271,8 @@
     "linkWith": "綁定 {provider}",
     "unlink": "解除綁定",
     "unlinkDone": "已解除綁定",
-    "unlinkLast": "這是你唯一的登入方式，解除後會無法登入。"
+    "unlinkLast": "這是你唯一的登入方式，解除後會無法登入。",
+    "oauthFailed": "登入沒有完成，請再試一次。"
   },
   "footer": {
     "builtWith": "以 Next.js 與 Supabase 打造",
