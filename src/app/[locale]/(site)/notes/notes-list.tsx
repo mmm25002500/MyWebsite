@@ -26,7 +26,7 @@ export async function NotesList({
 
   return (
     <Container className="pt-8">
-      <div className="grid gap-11 md:grid-cols-[minmax(0,1fr)_254px]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-11 md:grid-cols-[minmax(0,1fr)_254px]">
         <div>
           {result.items.length === 0 ? (
             <p className="py-16 text-center text-[15px] text-ink-55">{t('common.empty')}</p>

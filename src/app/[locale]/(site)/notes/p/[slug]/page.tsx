@@ -206,7 +206,7 @@ export default async function PostPage({
       </Container>
 
       <Container className="pt-10">
-        <div className="grid gap-11 md:grid-cols-[minmax(0,1fr)_220px]">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-11 md:grid-cols-[minmax(0,1fr)_220px]">
           <article>
             <MarkdownContent html={post.contentHtml} />
             <CodeCopyButtons label={t('common.copy')} copiedLabel={t('common.copied')} />

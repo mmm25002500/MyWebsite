@@ -188,7 +188,7 @@ export default async function ProjectPage({
       ) : null}
 
       <Container className="pt-12">
-        <div className="grid gap-11 md:grid-cols-[minmax(0,1fr)_220px]">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-11 md:grid-cols-[minmax(0,1fr)_220px]">
           <article>
             {project.summary ? <p className="text-lede text-ink-62">{project.summary}</p> : null}
             {project.contentHtml ? (

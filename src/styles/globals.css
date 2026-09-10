@@ -410,6 +410,10 @@
 @layer components {
   .prose-content {
     @apply text-[18px] leading-[1.8];
+    /* 沒有空白可斷的長字串（網址、雜湊值）不該把版面撐寬；中日文本來就能斷行，
+       `anywhere` 只在沒有其他斷點時才生效，不會影響正常段落的斷行品質。 */
+    overflow-wrap: anywhere;
+    min-width: 0;
   }
 
   .prose-content > * + * {
