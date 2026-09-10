@@ -5,28 +5,36 @@ import { clientIp } from '@/lib/analytics/visitor';
 import { checkRateLimit } from '@/lib/cache/ratelimit';
 import { hasSupabase } from '@/lib/env';
 import { createServerSupabase } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/service';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const paramsSchema = z.object({ postId: z.string().min(1).max(64) });
 
+/**
+ * 按讚必須登入（規格 §3.1）。
+ *
+ * 匿名路徑已經取消：`toggle_like` 只剩 service_role 呼叫得到，去重也改以
+ * 使用者為準，換 IP 不再能重複按。速率限制因此改用 user id 當 key。
+ */
 async function toggle(request: NextRequest, postId: string, liked: boolean) {
-  const { success } = await checkRateLimit('likes', clientIp(request.headers), 20, 60);
-  if (!success) return NextResponse.json({ ok: false }, { status: 429 });
-
   if (!hasSupabase) return NextResponse.json({ ok: true });
 
   const supabase = await createServerSupabase();
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ ok: false, error: '請先登入' }, { status: 401 });
 
-  const { error } = await supabase.rpc('toggle_like', {
+  const { success } = await checkRateLimit('likes', user.id, 20, 60);
+  if (!success) return NextResponse.json({ ok: false }, { status: 429 });
+
+  const { error } = await createServiceClient().rpc('toggle_like', {
     p_post_id: postId,
     p_ip: clientIp(request.headers),
     p_user_agent: request.headers.get('user-agent') ?? '',
-    p_user_id: user?.id ?? null,
+    p_user_id: user.id,
     p_liked: liked,
   } as never);
 

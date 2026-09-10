@@ -18,7 +18,6 @@ export interface CommentNode {
   status: 'published' | 'deleted';
   authorName: string;
   authorAvatarUrl: string | null;
-  authorId: string | null;
   isPinned: boolean;
   replies: CommentNode[];
 }

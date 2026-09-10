@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { locales } from '@/lib/i18n/config';
+import { httpUrl } from '@/lib/validators/url';
 
 export const projectStatuses = [
   'idea',
@@ -46,7 +47,8 @@ export const projectImageSchema = z.object({
 export const projectLinkSchema = z.object({
   id: z.string().uuid().nullable(),
   type: z.enum(projectLinkTypes),
-  url: z.string().trim().min(1).max(500),
+  // 這個值會直接變成前台的 `href`，只接受 http/https。
+  url: z.string().max(500).pipe(httpUrl),
   label: z.string().trim().min(1, '連結需要標籤').max(80),
 });
 
@@ -64,7 +66,14 @@ export const saveProjectSchema = z.object({
   categoryId: nullable(z.string().uuid()),
   organizationId: nullable(z.string().uuid()),
   coverUrl: nullable(z.string().trim().max(500)),
-  githubRepo: nullable(z.string().trim().max(200)),
+  // GitHub repo 存的是 `owner/repo`，不是網址；限成這個形狀免得被塞進別的東西。
+  githubRepo: nullable(
+    z
+      .string()
+      .trim()
+      .max(200)
+      .regex(/^[\w.-]+\/[\w.-]+$/, 'GitHub repo 需為 owner/repo 格式'),
+  ),
   isFeatured: z.boolean(),
   isVisible: z.boolean(),
   allowComments: z.boolean(),

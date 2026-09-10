@@ -10,64 +10,8 @@ export function visitorHash(ip: string, userAgent: string, salt: string): string
   return createHash('sha256').update(`${ip}|${userAgent}|${salt}`).digest('hex');
 }
 
-/** 取用戶端 IP。Vercel 會帶 `x-forwarded-for`，本機退回 loopback。 */
-export function clientIp(headers: Headers): string {
-  const forwarded = headers.get('x-forwarded-for');
-  if (forwarded) return forwarded.split(',')[0]?.trim() ?? '127.0.0.1';
-  return headers.get('x-real-ip') ?? '127.0.0.1';
-}
-
-const botPattern =
-  /bot|crawler|spider|crawling|slurp|facebookexternalhit|bingpreview|headlesschrome|lighthouse|pingdom|gtmetrix/i;
-
-export function isBot(userAgent: string): boolean {
-  return botPattern.test(userAgent);
-}
-
-/**
- * 來源分類（規格 §11.2）。
+/*
+ * IP、爬蟲、來源分類已搬到 `./request`（不含 node 相依，Edge 也能用）。
+ * 這裡轉出一份，既有的 import 路徑不必動。
  */
-export function referrerSource(
-  referrer: string | null,
-  selfHost: string,
-): { source: string; domain: string | null } {
-  if (!referrer) return { source: 'direct', domain: null };
-
-  let host: string;
-  try {
-    host = new URL(referrer).hostname.replace(/^www\./, '');
-  } catch {
-    return { source: 'external', domain: null };
-  }
-
-  if (host === selfHost.replace(/^www\./, '')) return { source: 'internal', domain: host };
-
-  const searchEngines = [
-    'google.',
-    'bing.',
-    'duckduckgo.',
-    'yahoo.',
-    'baidu.',
-    'ecosia.',
-    'brave.',
-  ];
-  if (searchEngines.some((engine) => host.includes(engine))) {
-    return { source: 'search', domain: host };
-  }
-
-  const socials = [
-    'threads.net',
-    'x.com',
-    'twitter.com',
-    'facebook.com',
-    'instagram.com',
-    'linkedin.com',
-    'line.me',
-    'reddit.com',
-    'news.ycombinator.com',
-    't.co',
-  ];
-  if (socials.some((social) => host.includes(social))) return { source: 'social', domain: host };
-
-  return { source: 'external', domain: host };
-}
+export { clientIp, isBot, isSameOrigin, referrerSource } from './request';

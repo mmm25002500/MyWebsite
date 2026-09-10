@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidateTag } from 'next/cache';
+import { z } from 'zod';
 
 import { requireRole } from '@/lib/auth/session';
 import { renderMarkdown } from '@/lib/content/markdown';
@@ -8,7 +9,16 @@ import { cacheTags } from '@/lib/data/cache';
 import { buildDiff, writeAuditLog } from '@/lib/audit';
 import { createServerSupabase } from '@/lib/supabase/server';
 import type { Json } from '@/types/database';
-import { savePostSchema, validatePrimaryCategory, type SavePostInput } from '@/lib/validators/post';
+import {
+  postStatuses,
+  savePostSchema,
+  validatePrimaryCategory,
+  type SavePostInput,
+} from '@/lib/validators/post';
+
+/** 這些動作直接收 id，`string` 在執行期擋不住任何東西，因此逐一過 zod。 */
+const idSchema = z.string().uuid();
+const idListSchema = z.array(idSchema).max(500);
 
 export interface ActionResult {
   ok: boolean;
@@ -70,7 +80,8 @@ export async function savePost(input: SavePostInput): Promise<ActionResult> {
     : await supabase.from('posts').insert(postRow).select('id').single();
 
   if (saveError || !saved) {
-    return { ok: false, error: saveError?.message ?? '儲存失敗' };
+    console.error('[actions] savePost 失敗：', saveError);
+    return { ok: false, error: '儲存失敗' };
   }
 
   const postId = saved.id;
@@ -100,7 +111,10 @@ export async function savePost(input: SavePostInput): Promise<ActionResult> {
       { onConflict: 'post_id,locale' },
     );
 
-    if (error) return { ok: false, error: `${content.locale} 內容儲存失敗：${error.message}` };
+    if (error) {
+      console.error('[actions] savePost 內容儲存失敗：', error);
+      return { ok: false, error: `${content.locale} 內容儲存失敗` };
+    }
   }
 
   // 分類與標籤以「先刪後建」同步，避免殘留舊的關聯。
@@ -111,7 +125,10 @@ export async function savePost(input: SavePostInput): Promise<ActionResult> {
     is_primary: categoryId === data.primaryCategoryId,
   }));
   const { error: categoryError } = await supabase.from('post_categories').insert(categoryRows);
-  if (categoryError) return { ok: false, error: `分類儲存失敗：${categoryError.message}` };
+  if (categoryError) {
+    console.error('[actions] savePost 分類儲存失敗：', categoryError);
+    return { ok: false, error: '分類儲存失敗' };
+  }
 
   await supabase.from('post_tags').delete().eq('post_id', postId);
   if (data.tagIds.length > 0) {
@@ -157,6 +174,8 @@ export async function savePost(input: SavePostInput): Promise<ActionResult> {
 export async function deletePost(postId: string): Promise<ActionResult> {
   await requireRole('owner');
 
+  if (!idSchema.safeParse(postId).success) return { ok: false, error: '文章編號不正確' };
+
   const supabase = await createServerSupabase();
   const { data: post } = await supabase
     .from('posts')
@@ -165,7 +184,10 @@ export async function deletePost(postId: string): Promise<ActionResult> {
     .maybeSingle();
 
   const { error } = await supabase.from('posts').delete().eq('id', postId);
-  if (error) return { ok: false, error: error.message };
+  if (error) {
+    console.error('[actions] deletePost 失敗：', error);
+    return { ok: false, error: '刪除失敗' };
+  }
 
   await writeAuditLog({
     action: 'post.delete',
@@ -187,6 +209,10 @@ export async function bulkUpdateStatus(
   await requireRole('editor');
   if (postIds.length === 0) return { ok: true };
 
+  const parsedIds = idListSchema.safeParse(postIds);
+  if (!parsedIds.success) return { ok: false, error: '文章編號不正確' };
+  if (!postStatuses.includes(status)) return { ok: false, error: '狀態不正確' };
+
   const supabase = await createServerSupabase();
 
   // 發佈時補上發佈時間；其他狀態沿用原本的值。
@@ -195,13 +221,16 @@ export async function bulkUpdateStatus(
       ? { status, published_at: new Date().toISOString() }
       : { status };
 
-  const { error } = await supabase.from('posts').update(patch).in('id', postIds);
-  if (error) return { ok: false, error: error.message };
+  const { error } = await supabase.from('posts').update(patch).in('id', parsedIds.data);
+  if (error) {
+    console.error('[actions] bulkUpdateStatus 失敗：', error);
+    return { ok: false, error: '狀態更新失敗' };
+  }
 
   await writeAuditLog({
     action: 'post.bulk_status',
     entityType: 'post',
-    entityLabel: `${postIds.length} 篇 → ${status}`,
+    entityLabel: `${parsedIds.data.length} 篇 → ${status}`,
     severity: 'warning',
   });
 

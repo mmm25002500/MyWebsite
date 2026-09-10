@@ -2,6 +2,7 @@ import 'server-only';
 
 import { requireRole } from '@/lib/auth/session';
 import { createServerSupabase } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/service';
 
 export interface DashboardStats {
   viewsToday: number;
@@ -905,7 +906,9 @@ export interface AdminComment {
 
 export async function getAdminComments(status?: string): Promise<AdminComment[]> {
   await requireRole('editor');
-  const supabase = await createServerSupabase();
+  // 要一併帶出留言者的封鎖狀態，而 profiles 的敏感欄位已收回 authenticated
+  // 的讀取權，因此這裡走 service client；授權由上一行的 requireRole 負責。
+  const supabase = createServiceClient();
 
   let builder = supabase
     .from('comments')
@@ -976,7 +979,8 @@ export interface AdminUser {
 
 export async function getAdminUsers(): Promise<AdminUser[]> {
   await requireRole('admin');
-  const supabase = await createServerSupabase();
+  // 使用者列表本來就是 profiles 的全欄位，同樣改走 service client。
+  const supabase = createServiceClient();
 
   const { data, error } = await supabase
     .from('profiles')

@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidateTag } from 'next/cache';
+import { z } from 'zod';
 
 import { writeAuditLog } from '@/lib/audit';
 import { requireRole } from '@/lib/auth/session';
@@ -20,6 +21,10 @@ export interface ActionResult {
   error?: string;
   id?: string;
 }
+
+/** 這些動作直接收 id，`string` 在執行期擋不住任何東西，因此逐一過 zod。 */
+const idSchema = z.string().uuid();
+const idListSchema = z.array(idSchema).max(500);
 
 function invalidate() {
   revalidateTag(cacheTags.taxonomy);
@@ -81,7 +86,10 @@ export async function saveCategory(input: SaveCategoryInput): Promise<ActionResu
     ? await supabase.from('categories').update(row).eq('id', data.id).select('id').single()
     : await supabase.from('categories').insert(row).select('id').single();
 
-  if (error || !saved) return { ok: false, error: error?.message ?? '儲存失敗' };
+  if (error || !saved) {
+    console.error('[actions] saveCategory 失敗：', error);
+    return { ok: false, error: '儲存失敗' };
+  }
 
   for (const content of data.contents) {
     const { error: i18nError } = await supabase.from('categories_i18n').upsert(
@@ -93,7 +101,10 @@ export async function saveCategory(input: SaveCategoryInput): Promise<ActionResu
       },
       { onConflict: 'category_id,locale' },
     );
-    if (i18nError) return { ok: false, error: i18nError.message };
+    if (i18nError) {
+      console.error('[actions] saveCategory i18n 失敗：', i18nError);
+      return { ok: false, error: '儲存失敗' };
+    }
   }
 
   if (previousSlug) await recordSlugRedirect('/notes/c', previousSlug, data.slug);
@@ -118,6 +129,8 @@ export async function saveCategory(input: SaveCategoryInput): Promise<ActionResu
 export async function deleteCategory(categoryId: string): Promise<ActionResult> {
   await requireRole('admin');
 
+  if (!idSchema.safeParse(categoryId).success) return { ok: false, error: '分類編號不正確' };
+
   const supabase = await createServerSupabase();
   const { data: category } = await supabase
     .from('categories')
@@ -128,9 +141,12 @@ export async function deleteCategory(categoryId: string): Promise<ActionResult> 
   const { error } = await supabase.from('categories').delete().eq('id', categoryId);
 
   if (error) {
-    const friendly = error.message.includes('僅屬於此分類')
-      ? error.message
-      : `刪除失敗：${error.message}`;
+    console.error('[actions] deleteCategory 失敗：', error);
+    /*
+     * DB trigger 丟出的「僅屬於此分類」是寫給站長看的提示，照原樣轉出去；
+     * 其餘一律收斂成固定訊息，免得把 Postgres 的內部細節送到瀏覽器。
+     */
+    const friendly = error.message.includes('僅屬於此分類') ? error.message : '刪除失敗';
     return { ok: false, error: friendly };
   }
 
@@ -148,11 +164,18 @@ export async function deleteCategory(categoryId: string): Promise<ActionResult> 
 
 export async function reorderCategories(orderedIds: string[]): Promise<ActionResult> {
   await requireRole('editor');
+
+  const parsedIds = idListSchema.safeParse(orderedIds);
+  if (!parsedIds.success) return { ok: false, error: '排序資料不正確' };
+
   const supabase = await createServerSupabase();
 
-  for (const [index, id] of orderedIds.entries()) {
+  for (const [index, id] of parsedIds.data.entries()) {
     const { error } = await supabase.from('categories').update({ sort_order: index }).eq('id', id);
-    if (error) return { ok: false, error: error.message };
+    if (error) {
+      console.error('[actions] reorderCategories 失敗：', error);
+      return { ok: false, error: '排序儲存失敗' };
+    }
   }
 
   await writeAuditLog({ action: 'category.reorder', entityType: 'category' });
@@ -185,7 +208,10 @@ export async function saveTag(input: SaveTagInput): Promise<ActionResult> {
     ? await supabase.from('tags').update({ slug: data.slug }).eq('id', data.id).select('id').single()
     : await supabase.from('tags').insert({ slug: data.slug }).select('id').single();
 
-  if (error || !saved) return { ok: false, error: error?.message ?? '儲存失敗' };
+  if (error || !saved) {
+    console.error('[actions] saveTag 失敗：', error);
+    return { ok: false, error: '儲存失敗' };
+  }
 
   for (const content of data.contents) {
     const { error: i18nError } = await supabase
@@ -194,7 +220,10 @@ export async function saveTag(input: SaveTagInput): Promise<ActionResult> {
         { tag_id: saved.id, locale: content.locale, name: content.name },
         { onConflict: 'tag_id,locale' },
       );
-    if (i18nError) return { ok: false, error: i18nError.message };
+    if (i18nError) {
+      console.error('[actions] saveTag i18n 失敗：', i18nError);
+      return { ok: false, error: '儲存失敗' };
+    }
   }
 
   if (previousSlug) await recordSlugRedirect('/notes/tag', previousSlug, data.slug);
@@ -213,11 +242,16 @@ export async function saveTag(input: SaveTagInput): Promise<ActionResult> {
 export async function deleteTag(tagId: string): Promise<ActionResult> {
   await requireRole('admin');
 
+  if (!idSchema.safeParse(tagId).success) return { ok: false, error: '標籤編號不正確' };
+
   const supabase = await createServerSupabase();
   const { data: tag } = await supabase.from('tags').select('slug').eq('id', tagId).maybeSingle();
 
   const { error } = await supabase.from('tags').delete().eq('id', tagId);
-  if (error) return { ok: false, error: error.message };
+  if (error) {
+    console.error('[actions] deleteTag 失敗：', error);
+    return { ok: false, error: '刪除失敗' };
+  }
 
   await writeAuditLog({
     action: 'tag.delete',
@@ -240,6 +274,9 @@ export async function deleteTag(tagId: string): Promise<ActionResult> {
 export async function mergeTags(sourceId: string, targetId: string): Promise<ActionResult> {
   await requireRole('admin');
   if (sourceId === targetId) return { ok: false, error: '來源與目標不能相同' };
+  if (!idSchema.safeParse(sourceId).success || !idSchema.safeParse(targetId).success) {
+    return { ok: false, error: '標籤編號不正確' };
+  }
 
   const supabase = await createServerSupabase();
 
@@ -255,7 +292,10 @@ export async function mergeTags(sourceId: string, targetId: string): Promise<Act
         postLinks.map((row) => ({ post_id: row.post_id, tag_id: targetId })),
         { onConflict: 'post_id,tag_id', ignoreDuplicates: true },
       );
-    if (error) return { ok: false, error: error.message };
+    if (error) {
+      console.error('[actions] mergeTags post_tags 失敗：', error);
+      return { ok: false, error: '合併失敗' };
+    }
   }
 
   if (projectLinks && projectLinks.length > 0) {
@@ -265,11 +305,17 @@ export async function mergeTags(sourceId: string, targetId: string): Promise<Act
         projectLinks.map((row) => ({ project_id: row.project_id, tag_id: targetId })),
         { onConflict: 'project_id,tag_id', ignoreDuplicates: true },
       );
-    if (error) return { ok: false, error: error.message };
+    if (error) {
+      console.error('[actions] mergeTags project_tags 失敗：', error);
+      return { ok: false, error: '合併失敗' };
+    }
   }
 
   const { error: deleteError } = await supabase.from('tags').delete().eq('id', sourceId);
-  if (deleteError) return { ok: false, error: deleteError.message };
+  if (deleteError) {
+    console.error('[actions] mergeTags 刪除來源失敗：', deleteError);
+    return { ok: false, error: '合併失敗' };
+  }
 
   await writeAuditLog({
     action: 'tag.merge',
@@ -294,7 +340,10 @@ export async function pruneUnusedTags(): Promise<ActionResult & { removed?: numb
     .eq('post_count', 0)
     .eq('project_count', 0);
 
-  if (error) return { ok: false, error: error.message };
+  if (error) {
+    console.error('[actions] pruneUnusedTags 查詢失敗：', error);
+    return { ok: false, error: '查詢失敗' };
+  }
   if (!unused || unused.length === 0) return { ok: true, removed: 0 };
 
   const { error: deleteError } = await supabase
@@ -304,7 +353,10 @@ export async function pruneUnusedTags(): Promise<ActionResult & { removed?: numb
       'id',
       unused.map((row) => row.id),
     );
-  if (deleteError) return { ok: false, error: deleteError.message };
+  if (deleteError) {
+    console.error('[actions] pruneUnusedTags 刪除失敗：', deleteError);
+    return { ok: false, error: '清除失敗' };
+  }
 
   await writeAuditLog({
     action: 'tag.prune',
@@ -348,7 +400,10 @@ export async function saveSeries(input: SaveSeriesInput): Promise<ActionResult> 
     ? await supabase.from('series').update(row).eq('id', data.id).select('id').single()
     : await supabase.from('series').insert(row).select('id').single();
 
-  if (error || !saved) return { ok: false, error: error?.message ?? '儲存失敗' };
+  if (error || !saved) {
+    console.error('[actions] saveSeries 失敗：', error);
+    return { ok: false, error: '儲存失敗' };
+  }
 
   for (const content of data.contents) {
     const { error: i18nError } = await supabase.from('series_i18n').upsert(
@@ -360,7 +415,10 @@ export async function saveSeries(input: SaveSeriesInput): Promise<ActionResult> 
       },
       { onConflict: 'series_id,locale' },
     );
-    if (i18nError) return { ok: false, error: i18nError.message };
+    if (i18nError) {
+      console.error('[actions] saveSeries i18n 失敗：', i18nError);
+      return { ok: false, error: '儲存失敗' };
+    }
   }
 
   if (previousSlug) await recordSlugRedirect('/notes/series', previousSlug, data.slug);
@@ -379,6 +437,8 @@ export async function saveSeries(input: SaveSeriesInput): Promise<ActionResult> 
 export async function deleteSeries(seriesId: string): Promise<ActionResult> {
   await requireRole('admin');
 
+  if (!idSchema.safeParse(seriesId).success) return { ok: false, error: '系列編號不正確' };
+
   const supabase = await createServerSupabase();
   const { data: series } = await supabase
     .from('series')
@@ -388,7 +448,10 @@ export async function deleteSeries(seriesId: string): Promise<ActionResult> {
 
   // 文章的 series_id 是 on delete set null，刪掉系列不會連帶刪文章。
   const { error } = await supabase.from('series').delete().eq('id', seriesId);
-  if (error) return { ok: false, error: error.message };
+  if (error) {
+    console.error('[actions] deleteSeries 失敗：', error);
+    return { ok: false, error: '刪除失敗' };
+  }
 
   await writeAuditLog({
     action: 'series.delete',
@@ -408,15 +471,23 @@ export async function reorderSeriesPosts(
   orderedPostIds: string[],
 ): Promise<ActionResult> {
   await requireRole('editor');
+
+  if (!idSchema.safeParse(seriesId).success) return { ok: false, error: '系列編號不正確' };
+  const parsedIds = idListSchema.safeParse(orderedPostIds);
+  if (!parsedIds.success) return { ok: false, error: '排序資料不正確' };
+
   const supabase = await createServerSupabase();
 
-  for (const [index, postId] of orderedPostIds.entries()) {
+  for (const [index, postId] of parsedIds.data.entries()) {
     const { error } = await supabase
       .from('posts')
       .update({ series_order: index + 1 })
       .eq('id', postId)
       .eq('series_id', seriesId);
-    if (error) return { ok: false, error: error.message };
+    if (error) {
+      console.error('[actions] reorderSeriesPosts 失敗：', error);
+      return { ok: false, error: '排序儲存失敗' };
+    }
   }
 
   await writeAuditLog({ action: 'series.reorder', entityType: 'series', entityId: seriesId });

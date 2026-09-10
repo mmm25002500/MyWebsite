@@ -82,7 +82,10 @@ export async function saveExperience(input: SaveExperienceInput): Promise<Action
     ? await supabase.from('experiences').update(row).eq('id', data.id).select('id').single()
     : await supabase.from('experiences').insert(row).select('id').single();
 
-  if (error || !saved) return { ok: false, error: error?.message ?? '儲存失敗' };
+  if (error || !saved) {
+    console.error('[actions] saveExperience 失敗：', error);
+    return { ok: false, error: '儲存失敗' };
+  }
 
   for (const content of data.contents) {
     const { error: i18nError } = await supabase.from('experiences_i18n').upsert(
@@ -97,7 +100,10 @@ export async function saveExperience(input: SaveExperienceInput): Promise<Action
       },
       { onConflict: 'experience_id,locale' },
     );
-    if (i18nError) return { ok: false, error: i18nError.message };
+    if (i18nError) {
+      console.error('[actions] saveExperience i18n 失敗：', i18nError);
+      return { ok: false, error: '儲存失敗' };
+    }
   }
 
   await writeAuditLog({
@@ -159,7 +165,10 @@ export async function saveEducation(input: SaveEducationInput): Promise<ActionRe
     ? await supabase.from('education').update(row).eq('id', data.id).select('id').single()
     : await supabase.from('education').insert(row).select('id').single();
 
-  if (error || !saved) return { ok: false, error: error?.message ?? '儲存失敗' };
+  if (error || !saved) {
+    console.error('[actions] saveEducation 失敗：', error);
+    return { ok: false, error: '儲存失敗' };
+  }
 
   for (const content of data.contents) {
     const { error: i18nError } = await supabase.from('education_i18n').upsert(
@@ -172,7 +181,10 @@ export async function saveEducation(input: SaveEducationInput): Promise<ActionRe
       },
       { onConflict: 'education_id,locale' },
     );
-    if (i18nError) return { ok: false, error: i18nError.message };
+    if (i18nError) {
+      console.error('[actions] saveEducation i18n 失敗：', i18nError);
+      return { ok: false, error: '儲存失敗' };
+    }
   }
 
   await writeAuditLog({
@@ -228,7 +240,10 @@ export async function saveSkill(input: SaveSkillInput): Promise<ActionResult> {
     ? await supabase.from('skills').update(row).eq('id', data.id).select('id').single()
     : await supabase.from('skills').insert(row).select('id').single();
 
-  if (error || !saved) return { ok: false, error: error?.message ?? '儲存失敗' };
+  if (error || !saved) {
+    console.error('[actions] saveSkill 失敗：', error);
+    return { ok: false, error: '儲存失敗' };
+  }
 
   await writeAuditLog({
     action: data.id ? 'skill.update' : 'skill.create',
@@ -267,10 +282,17 @@ export async function deleteResumeItem(
   if (!deletableTables.includes(table)) {
     return { ok: false, error: '不允許刪除這個項目' };
   }
+  // 表名雖有白名單，id 仍是自由字串，另外過一次 uuid。
+  if (!z.string().uuid().safeParse(id).success) {
+    return { ok: false, error: '項目編號不正確' };
+  }
 
   const supabase = await createServerSupabase();
   const { error } = await supabase.from(table).delete().eq('id', id);
-  if (error) return { ok: false, error: error.message };
+  if (error) {
+    console.error('[actions] deleteResumeItem 失敗：', error);
+    return { ok: false, error: '刪除失敗' };
+  }
 
   await writeAuditLog({
     action: `${table}.delete`,
@@ -309,7 +331,10 @@ export async function saveResumeDisplaySettings(
     const { error } = await supabase
       .from('site_settings')
       .upsert({ key, value: value as Json }, { onConflict: 'key' });
-    if (error) return { ok: false, error: error.message };
+    if (error) {
+      console.error('[actions] saveResumeDisplaySettings 失敗：', error);
+      return { ok: false, error: '儲存失敗' };
+    }
   }
 
   await writeAuditLog({

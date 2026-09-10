@@ -26,17 +26,22 @@ export async function getAdminSession(): Promise<AdminSession | null> {
   } = await supabase.auth.getUser();
   if (!user) return null;
 
+  // profiles.role 已不對 authenticated 開放讀取（欄位級授權），改問
+  // auth_role()——security definer，只回傳呼叫者自己的角色。
+  const { data: role } = await supabase.rpc('auth_role');
+  if (!role || !isRole(role) || !atLeast(role, 'editor')) return null;
+
   const { data } = await supabase
     .from('profiles')
-    .select('role, display_name, avatar_url')
+    .select('display_name, avatar_url')
     .eq('user_id', user.id)
     .maybeSingle();
 
-  if (!data || !isRole(data.role) || !atLeast(data.role, 'editor')) return null;
+  if (!data) return null;
 
   return {
     user,
-    role: data.role,
+    role,
     displayName: data.display_name,
     avatarUrl: data.avatar_url,
   };

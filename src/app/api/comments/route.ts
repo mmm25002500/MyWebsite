@@ -7,6 +7,7 @@ import { checkRateLimit } from '@/lib/cache/ratelimit';
 import { hasSupabase } from '@/lib/env';
 import { createPublicClient } from '@/lib/supabase/public';
 import { createServerSupabase } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/service';
 import { rows } from '@/lib/data/source';
 
 export const runtime = 'nodejs';
@@ -41,6 +42,9 @@ export async function GET(request: NextRequest) {
   const parsed = listSchema.safeParse(Object.fromEntries(request.nextUrl.searchParams));
   if (!parsed.success) return NextResponse.json({ comments: [] }, { status: 400 });
 
+  const { success } = await checkRateLimit('comments-read', clientIp(request.headers), 60, 60);
+  if (!success) return NextResponse.json({ comments: [] }, { status: 429 });
+
   if (!hasSupabase) return NextResponse.json({ comments: [] });
 
   const { data, error } = await createPublicClient()
@@ -66,7 +70,6 @@ export async function GET(request: NextRequest) {
     status: row.status,
     authorName: row.profiles?.display_name ?? '',
     authorAvatarUrl: row.profiles?.avatar_url ?? null,
-    authorId: row.user_id,
     isPinned: row.is_pinned,
     replies: [],
   });
@@ -105,15 +108,28 @@ export async function POST(request: NextRequest) {
   }
 
   // 內容淨化與 IP 雜湊都在 DB function 內完成，應用層不接觸明文 IP 以外的東西。
-  const { error } = await supabase.rpc('create_comment', {
+  // 目標是否存在、是否開放留言、父留言是否合法，一律由 create_comment 檢查；
+  // 它只剩 service_role 呼叫得到，登入者身分由這裡驗過後傳進去。
+  const { error } = await createServiceClient().rpc('create_comment', {
     p_target_type: parsed.data.targetType,
     p_target_id: parsed.data.targetId,
-    p_parent_id: parsed.data.parentId ?? null,
+    p_parent_id: parsed.data.parentId ?? undefined,
     p_content: parsed.data.content,
     p_ip: clientIp(request.headers),
     p_user_agent: request.headers.get('user-agent') ?? '',
-  } as never);
+    p_user_id: user.id,
+  });
 
-  if (error) return NextResponse.json({ ok: false }, { status: 400 });
+  if (error) {
+    // Postgres 的原始訊息不回給前端，只留下對使用者有意義的那一句。
+    if (error.code === '42501') {
+      return NextResponse.json({ ok: false, error: '此帳號目前無法留言' }, { status: 403 });
+    }
+    if (error.code === '23514') {
+      return NextResponse.json({ ok: false, error: '無法對這篇內容留言' }, { status: 400 });
+    }
+    return NextResponse.json({ ok: false, error: '留言失敗，請稍後再試' }, { status: 400 });
+  }
+
   return NextResponse.json({ ok: true }, { status: 201 });
 }

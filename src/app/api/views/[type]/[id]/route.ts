@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { clientIp } from '@/lib/analytics/visitor';
 import { checkRateLimit } from '@/lib/cache/ratelimit';
 import { hasSupabase } from '@/lib/env';
-import { createPublicClient } from '@/lib/supabase/public';
+import { createServiceClient } from '@/lib/supabase/service';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -27,7 +27,7 @@ export async function POST(
 
   if (!hasSupabase) return NextResponse.json({ ok: true });
 
-  const { error } = await createPublicClient().rpc('increment_view', {
+  const { error } = await createServiceClient().rpc('increment_view', {
     p_type: parsed.data.type,
     p_id: parsed.data.id,
     p_ip: clientIp(request.headers),

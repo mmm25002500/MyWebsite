@@ -1,10 +1,10 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { z } from 'zod';
 
-import { clientIp } from '@/lib/analytics/visitor';
+import { clientIp, isSameOrigin } from '@/lib/analytics/request';
 import { checkRateLimit } from '@/lib/cache/ratelimit';
-import { hasSupabase, siteUrl } from '@/lib/env';
-import { createPublicClient } from '@/lib/supabase/public';
+import { hasSupabase } from '@/lib/env';
+import { createServiceClient } from '@/lib/supabase/service';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -17,10 +17,8 @@ const bodySchema = z.object({
 
 /** `navigator.sendBeacon` 回報停留時間（規格 §11.2）。 */
 export async function POST(request: NextRequest) {
-  const origin = request.headers.get('origin');
-  if (origin && new URL(origin).origin !== new URL(siteUrl).origin) {
-    return NextResponse.json({ ok: false }, { status: 403 });
-  }
+  // 沒有 Origin 時退而看 sec-fetch-site，畸形值一律當作跨站（見 isSameOrigin）。
+  if (!isSameOrigin(request)) return NextResponse.json({ ok: false }, { status: 403 });
 
   const { success } = await checkRateLimit('analytics', clientIp(request.headers), 60, 60);
   if (!success) return NextResponse.json({ ok: false }, { status: 429 });
@@ -30,7 +28,7 @@ export async function POST(request: NextRequest) {
 
   if (!hasSupabase) return NextResponse.json({ ok: true });
 
-  const { error } = await createPublicClient().rpc('record_duration', {
+  const { error } = await createServiceClient().rpc('record_duration', {
     p_session_id: parsed.data.sessionId,
     p_path: parsed.data.path,
     p_duration_sec: parsed.data.durationSec,

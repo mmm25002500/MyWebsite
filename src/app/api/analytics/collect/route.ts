@@ -2,10 +2,10 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { UAParser } from 'ua-parser-js';
 import { z } from 'zod';
 
-import { clientIp, isBot, referrerSource } from '@/lib/analytics/visitor';
+import { clientIp, isSameOrigin, isBot, referrerSource } from '@/lib/analytics/request';
 import { checkRateLimit } from '@/lib/cache/ratelimit';
 import { hasSupabase, siteUrl } from '@/lib/env';
-import { createPublicClient } from '@/lib/supabase/public';
+import { createServiceClient } from '@/lib/supabase/service';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -30,10 +30,8 @@ const bodySchema = z.object({
 
 /** 收 pageview（規格 §11.2）。Origin 檢查 + 速率限制。 */
 export async function POST(request: NextRequest) {
-  const origin = request.headers.get('origin');
-  if (origin && new URL(origin).origin !== new URL(siteUrl).origin) {
-    return NextResponse.json({ ok: false }, { status: 403 });
-  }
+  // 沒有 Origin 時退而看 sec-fetch-site，畸形值一律當作跨站（見 isSameOrigin）。
+  if (!isSameOrigin(request)) return NextResponse.json({ ok: false }, { status: 403 });
 
   const ip = clientIp(request.headers);
   const { success } = await checkRateLimit('analytics', ip, 60, 60);
@@ -57,7 +55,7 @@ export async function POST(request: NextRequest) {
   }
 
   // visitor_hash 由 DB 端的 function 以當日的鹽計算，鹽不外流到應用層。
-  const { error } = await createPublicClient().rpc('record_pageview', {
+  const { error } = await createServiceClient().rpc('record_pageview', {
     p_session_id: parsed.data.sessionId,
     p_ip: ip,
     p_user_agent: userAgent,

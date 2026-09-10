@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidateTag } from 'next/cache';
+import { z } from 'zod';
 
 import { writeAuditLog } from '@/lib/audit';
 import { requireRole } from '@/lib/auth/session';
@@ -15,6 +16,12 @@ export interface ActionResult {
   error?: string;
   projectId?: string;
 }
+
+/** 這些動作直接收 id 或自由字串，`string` 在執行期擋不住任何東西。 */
+const idSchema = z.string().uuid();
+const repoListSchema = z
+  .array(z.string().trim().regex(/^[\w.-]+\/[\w.-]+$/))
+  .max(100);
 
 /**
  * 儲存作品（規格 §8.4）。
@@ -63,7 +70,10 @@ export async function saveProject(input: SaveProjectInput): Promise<ActionResult
     ? await supabase.from('projects').update(projectRow).eq('id', data.id).select('id').single()
     : await supabase.from('projects').insert(projectRow).select('id').single();
 
-  if (error || !saved) return { ok: false, error: error?.message ?? '儲存失敗' };
+  if (error || !saved) {
+    console.error('[actions] saveProject 失敗：', error);
+    return { ok: false, error: '儲存失敗' };
+  }
   const projectId = saved.id;
 
   for (const content of data.contents) {
@@ -189,6 +199,8 @@ export async function saveProject(input: SaveProjectInput): Promise<ActionResult
 export async function deleteProject(projectId: string): Promise<ActionResult> {
   await requireRole('owner');
 
+  if (!idSchema.safeParse(projectId).success) return { ok: false, error: '作品編號不正確' };
+
   const supabase = await createServerSupabase();
   const { data: project } = await supabase
     .from('projects')
@@ -197,7 +209,10 @@ export async function deleteProject(projectId: string): Promise<ActionResult> {
     .maybeSingle();
 
   const { error } = await supabase.from('projects').delete().eq('id', projectId);
-  if (error) return { ok: false, error: error.message };
+  if (error) {
+    console.error('[actions] deleteProject 失敗：', error);
+    return { ok: false, error: '刪除失敗' };
+  }
 
   await writeAuditLog({
     action: 'project.delete',
@@ -234,12 +249,15 @@ export async function importFromGithub(
   await requireRole('editor');
   if (repoFullNames.length === 0) return { ok: true, created: 0 };
 
+  const parsedRepos = repoListSchema.safeParse(repoFullNames);
+  if (!parsedRepos.success) return { ok: false, error: 'repo 名稱格式不正確' };
+
   const { siteUrl } = await import('@/lib/env');
   const response = await fetch(`${siteUrl}/api/github`, { next: { revalidate: 21600 } });
   if (!response.ok) return { ok: false, error: '無法取得 GitHub 資料' };
 
   const payload = (await response.json()) as { repos: GithubRepoSummary[] };
-  const wanted = new Set(repoFullNames);
+  const wanted = new Set(parsedRepos.data);
   const repos = payload.repos.filter((repo) => wanted.has(repo.fullName));
 
   const supabase = await createServerSupabase();

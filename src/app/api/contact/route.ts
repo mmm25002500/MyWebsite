@@ -22,13 +22,20 @@ const bodySchema = z.object({
 /**
  * Cloudflare Turnstile 驗證（規格 §13.3）。
  *
- * 未設定 `TURNSTILE_SECRET_KEY` 時一律放行——本機開發與尚未申請 widget 的
- * 環境不會因此卡住。前端在沒有 site key 時同樣不渲染 widget，兩邊預設一致。
- * **正式環境務必設定**，否則聯絡表單只剩速率限制在擋。
+ * 未設定 `TURNSTILE_SECRET_KEY` 時，development 一律放行——本機開發與尚未
+ * 申請 widget 的環境不會因此卡住，前端在沒有 site key 時同樣不渲染 widget。
+ * 正式環境則一律拒收：少了這道驗證聯絡表單只剩速率限制在擋，靜默放行等於
+ * 把表單開放給機器人，寧可讓它壞掉被發現。
  */
 async function verifyTurnstile(token: string | undefined, ip: string): Promise<boolean> {
   const secret = process.env.TURNSTILE_SECRET_KEY;
-  if (!secret) return true;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'production') {
+      console.error('[contact] 未設定 TURNSTILE_SECRET_KEY，正式環境拒收聯絡表單。');
+      return false;
+    }
+    return true;
+  }
   if (!token) return false;
 
   const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {

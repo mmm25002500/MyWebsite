@@ -32,11 +32,8 @@ export async function refreshSession(
 
   if (!user) return { userId: null, role: null };
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('user_id', user.id)
-    .maybeSingle();
+  // 角色改問 auth_role()：profiles.role 已收回 authenticated 的讀取權。
+  const { data: role } = await supabase.rpc('auth_role');
 
-  return { userId: user.id, role: profile?.role ?? null };
+  return { userId: user.id, role: role ?? null };
 }

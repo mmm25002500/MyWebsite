@@ -5,7 +5,7 @@ import { revalidateTag } from 'next/cache';
 import { writeAuditLog } from '@/lib/audit';
 import { requireRole } from '@/lib/auth/session';
 import { cacheTags } from '@/lib/data/cache';
-import { createServerSupabase } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/service';
 
 export interface ToolResult {
   ok: boolean;
@@ -42,7 +42,9 @@ export async function runCronJob(job: CronJob): Promise<ToolResult> {
 
   if (!(job in cronJobs)) return { ok: false, message: '不允許執行這個工作' };
 
-  const supabase = await createServerSupabase();
+  // 這幾支函式已經收回 anon／authenticated 的執行權（會清空或改寫分析資料），
+  // 只剩 service_role 進得去；授權由上面的 requireRole('admin') 負責。
+  const supabase = createServiceClient();
 
   const args =
     job === 'rollup_analytics'
@@ -70,7 +72,7 @@ export async function getCronStatus(): Promise<
 > {
   await requireRole('admin');
 
-  const supabase = await createServerSupabase();
+  const supabase = createServiceClient();
   const { data, error } = await supabase.rpc('list_cron_jobs' as never);
 
   if (error) {

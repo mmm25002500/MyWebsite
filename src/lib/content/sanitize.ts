@@ -9,6 +9,55 @@ const contentClass = /^content-/;
 /** Shiki 產生的行 class 與 remark-math 交給 KaTeX 的標記。 */
 const generatedClass = /^(line|highlighted|diff|add|remove|math-inline|math-display|language-)/;
 
+/**
+ * `id` 白名單。
+ *
+ * `clobberPrefix` 必須留空（目錄連結要對得上標題 id），代價是內容可以指定
+ * 任意 id——而具名元素會掛到 `document` 與 `window` 上，`<a id="location">`
+ * 這種寫法就能蓋掉 `document.location`（DOM clobbering），把腳本讀到的值換掉。
+ * 因此限制形狀，並排掉會撞到 DOM／原型鏈的那些名字。
+ */
+const safeId = /^[a-z0-9][a-z0-9-]*$/i;
+
+const clobberableIds = new Set([
+  'location',
+  'document',
+  'cookie',
+  'domain',
+  'forms',
+  'body',
+  'head',
+  'title',
+  'images',
+  'scripts',
+  'links',
+  'anchors',
+  'embeds',
+  'all',
+  'turnstile',
+  'self',
+  'top',
+  'window',
+  'parent',
+  'frames',
+  'name',
+  'defaultView',
+  'currentScript',
+  '__proto__',
+  'constructor',
+  'prototype',
+]);
+
+/**
+ * rehype-sanitize 的 `[屬性, 允許值…]` 形式接受 RegExp，但沒辦法表達「符合
+ * 這個樣式**且不在**黑名單裡」，因此把兩個條件合成一個 RegExp：先排掉
+ * 敏感名稱（不分大小寫），再要求整體符合 `safeId`。
+ */
+const idPattern = new RegExp(
+  `^(?!(?:${[...clobberableIds].join('|')})$)${safeId.source.slice(1, -1)}$`,
+  'i',
+);
+
 const starAttributes = (defaultSchema.attributes?.['*'] ?? []).filter(
   (item) => item !== 'id' && !(Array.isArray(item) && item[0] === 'className'),
 );
@@ -27,7 +76,7 @@ const iframeSrcPatterns = iframeAllowlist.map(
  * - 只留白名單標籤，`<script>`、`on*` 事件屬性與 `javascript:` URL 一律移除
  * - `class` 只接受 `content-` 前綴與管線自己產生的少數 class
  * - `iframe` 只接受 §9.3 的內嵌網域
- * - `clobberPrefix` 清空，讓標題 id 與目錄連結一致
+ * - `clobberPrefix` 清空，讓標題 id 與目錄連結一致；`id` 另以白名單把關
  */
 export const sanitizeSchema: SanitizeOptions = {
   ...defaultSchema,
@@ -46,7 +95,7 @@ export const sanitizeSchema: SanitizeOptions = {
   ],
   attributes: {
     ...defaultSchema.attributes,
-    '*': [...starAttributes, 'id', ['className', contentClass, generatedClass]],
+    '*': [...starAttributes, ['id', idPattern], ['className', contentClass, generatedClass]],
     a: [
       ...anchorAttributes,
       'href',

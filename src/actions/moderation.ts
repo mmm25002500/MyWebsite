@@ -7,6 +7,7 @@ import { writeAuditLog } from '@/lib/audit';
 import { requireRole } from '@/lib/auth/session';
 import { cacheTags } from '@/lib/data/cache';
 import { createServerSupabase } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/service';
 import type { Json } from '@/types/database';
 
 export interface ActionResult {
@@ -107,7 +108,9 @@ export async function setUserRole(
   const parsed = roleSchema.safeParse(role);
   if (!parsed.success) return { ok: false, error: '角色不正確' };
 
-  const supabase = await createServerSupabase();
+  // profiles 的 role／封鎖欄位已經收回 authenticated 的讀寫權（欄位級授權），
+  // 後台這幾條路徑改走 service client；授權在上面的 requireRole 就做完了。
+  const supabase = createServiceClient();
   const { data: target } = await supabase
     .from('profiles')
     .select('role, display_name')
@@ -146,7 +149,7 @@ export async function banUser(input: z.infer<typeof banSchema>): Promise<ActionR
   const parsed = banSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: '欄位驗證失敗' };
 
-  const supabase = await createServerSupabase();
+  const supabase = createServiceClient();
   const { data: target } = await supabase
     .from('profiles')
     .select('role, display_name')
@@ -190,7 +193,7 @@ export async function banUser(input: z.infer<typeof banSchema>): Promise<ActionR
 export async function unbanUser(userId: string): Promise<ActionResult> {
   await requireRole('admin');
 
-  const supabase = await createServerSupabase();
+  const supabase = createServiceClient();
   const { error } = await supabase
     .from('profiles')
     .update({ is_banned: false, banned_until: null, ban_reason: null })
@@ -217,7 +220,7 @@ export async function updateDisplayName(userId: string, displayName: string): Pr
   const parsed = z.string().trim().min(1).max(40).safeParse(displayName);
   if (!parsed.success) return { ok: false, error: '暱稱長度需在 1 到 40 字之間' };
 
-  const supabase = await createServerSupabase();
+  const supabase = createServiceClient();
   const { data: before } = await supabase
     .from('profiles')
     .select('display_name')

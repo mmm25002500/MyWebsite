@@ -3158,6 +3158,7 @@ export type Database = {
           p_target_id: string
           p_target_type: string
           p_user_agent?: string
+          p_user_id?: string
         }
         Returns: string
       }
@@ -3248,6 +3249,8 @@ export type Database = {
       write_audit_log: {
         Args: {
           p_action: string
+          p_actor_id?: string
+          p_actor_name?: string
           p_diff?: Json
           p_entity_id?: string
           p_entity_label?: string

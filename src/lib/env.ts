@@ -1,6 +1,7 @@
 /**
  * 環境變數存取。前台只讀 `NEXT_PUBLIC_*`；service role key 一律不在此檔出現，
- * 依規格僅由 Supabase Edge Function 使用。
+ * 它只由 server-only 的 `src/lib/supabase/service.ts` 直接讀取，避免任何
+ * 被 client bundle 引用到的可能。
  */
 
 export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
