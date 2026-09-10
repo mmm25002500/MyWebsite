@@ -27,7 +27,8 @@
     "account": "Account",
     "login": "Sign in",
     "register": "Sign up",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "menu": "Menu"
   },
   "common": {
     "skipToContent": "Skip to content",
@@ -263,7 +264,8 @@
     "noComments": "You have not commented yet",
     "viewPost": "View post",
     "profile": "Profile",
-    "activity": "Activity"
+    "activity": "Activity",
+    "security": "Account security"
   },
   "footer": {
     "builtWith": "Built with Next.js and Supabase",

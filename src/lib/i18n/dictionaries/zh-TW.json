@@ -27,7 +27,8 @@
     "account": "我的帳號",
     "login": "登入",
     "register": "註冊",
-    "logout": "登出"
+    "logout": "登出",
+    "menu": "選單"
   },
   "common": {
     "skipToContent": "跳到主要內容",
@@ -263,7 +264,8 @@
     "noComments": "你還沒有留過言",
     "viewPost": "查看文章",
     "profile": "個人資料",
-    "activity": "我的活動"
+    "activity": "我的活動",
+    "security": "帳號安全"
   },
   "footer": {
     "builtWith": "以 Next.js 與 Supabase 打造",

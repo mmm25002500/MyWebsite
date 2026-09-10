@@ -19,8 +19,9 @@ interface Factor {
  * `verify` 確認使用者的驗證器真的對得上。**綁定完成前不會生效**，所以掃了
  * QR code 卻沒輸入驗證碼並不會把自己鎖在門外。
  *
- * 後台登入表單（admin-login-form）已經處理過登入時的 MFA 挑戰，這裡補上
- * 綁定的那一半。
+ * 放在前台的帳號設定而不是後台：兩步驟驗證是每個人自己的帳號保護，不該只有
+ * 有後台權限的人才能開。後台登入表單（admin-login-form）已經處理過登入時的
+ * MFA 挑戰，這裡補上綁定的那一半。
  */
 export function TotpSetup() {
   const [pending, startTransition] = useTransition();
@@ -67,7 +68,7 @@ export function TotpSetup() {
       const { data, error } = await supabase.auth.mfa.enroll({
         factorType: 'totp',
         // 名稱帶到分鐘，避免同一天重複綁定時撞名。
-        friendlyName: `後台 ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`,
+        friendlyName: `${new Date().toISOString().slice(0, 16).replace('T', ' ')}`,
       });
 
       if (error || !data) {
@@ -129,7 +130,7 @@ export function TotpSetup() {
       {verified.length > 0 ? (
         <>
           <p className="text-[15px]">
-            已啟用兩步驟驗證。下次登入後台時會要求輸入驗證器上的六位數字。
+            已啟用兩步驟驗證。下次登入時會要求輸入驗證器上的六位數字。
           </p>
           {verified.map((factor) => (
             <div key={factor.id} className="flex flex-wrap items-center gap-3">
@@ -175,7 +176,7 @@ export function TotpSetup() {
 
           <div className="flex flex-wrap items-end gap-3">
             <div>
-              <label className="admin-label" htmlFor="totp-code">
+              <label className="mb-1.5 block text-[13px] text-ink-70" htmlFor="totp-code">
                 驗證碼
               </label>
               <input

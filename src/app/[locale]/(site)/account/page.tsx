@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound, redirect } from 'next/navigation';
 
 import { AccountPanel } from '@/components/site/auth/account-panel';
+import { TotpSetup } from '@/components/site/auth/totp-setup';
 import { PageHeader } from '@/components/site/page-header';
 import { Container, Display } from '@/components/ui/typography';
 import { getViewerProfile } from '@/lib/data/queries/viewer';
@@ -57,6 +58,15 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
             <p className="text-[16px]">{formatDate(viewer.joinedAt, locale)}</p>
             <p className="mt-1.5 text-[14px] text-ink-70">{t('auth.joinedAt')}</p>
           </div>
+        </div>
+      </Container>
+
+      <Container className="pt-14">
+        <Display level={2} className="mb-4">
+          {t('auth.security')}
+        </Display>
+        <div className="max-w-[60ch] rounded-lg border border-divider bg-surface p-5">
+          <TotpSetup />
         </div>
       </Container>
 
