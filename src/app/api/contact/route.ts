@@ -89,7 +89,6 @@ export async function POST(request: NextRequest) {
    */
   const notified = await sendOwnerNotification({
     subject: `[聯絡表單] ${parsed.data.subject}`,
-    replyTo: parsed.data.email,
     lines: [
       ['姓名', parsed.data.name],
       ['Email', parsed.data.email],

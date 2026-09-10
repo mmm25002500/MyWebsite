@@ -70,23 +70,30 @@ function escapeHtml(value: string): string {
   return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+/**
+ * 刻意不設 `Reply-To`。
+ *
+ * 通知信的收件人是站長自己，按「回覆」時預期的對象也是自己的信箱而不是訪客。
+ * 訪客的 Email 在內文裡是可點的 mailto 連結，真要回信點一下就會開好新信。
+ */
 export async function sendOwnerNotification({
   subject,
   lines,
-  replyTo,
 }: {
   subject: string;
   lines: [string, string][];
-  replyTo?: string;
 }): Promise<{ sent: boolean; error?: string }> {
   const config = readConfig();
   if (!config) return { sent: false, error: 'not configured' };
 
   const html = `<table cellpadding="6" style="font-family:system-ui,sans-serif;font-size:15px">${lines
-    .map(
-      ([label, value]) =>
-        `<tr><td style="color:#666;vertical-align:top">${escapeHtml(label)}</td><td style="white-space:pre-wrap">${escapeHtml(value)}</td></tr>`,
-    )
+    .map(([label, value]) => {
+      // 看起來是 Email 的值做成 mailto 連結，點一下就能回給訪客。
+      const cell = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
+        ? `<a href="mailto:${escapeHtml(value.trim())}">${escapeHtml(value)}</a>`
+        : escapeHtml(value);
+      return `<tr><td style="color:#666;vertical-align:top">${escapeHtml(label)}</td><td style="white-space:pre-wrap">${cell}</td></tr>`;
+    })
     .join('')}</table>`;
 
   const text = lines.map(([label, value]) => `${label}：${value}`).join('\n');
@@ -98,10 +105,7 @@ export async function sendOwnerNotification({
       subject,
       text,
       html,
-      // 直接回信就是回給訪客，不必再從後台複製 email。
-      ...(replyTo ? { replyTo } : {}),
-      // 信封寄件人固定是自己的網域。訪客的信箱只出現在 Reply-To，
-      // 拿它當寄件人會被對方伺服器判定為冒用網域而退信。
+      // 信封寄件人固定是自己的網域，避免被對方伺服器判定為冒用而退信。
       envelope: { from: config.from, to: config.to },
     });
     return { sent: true };
