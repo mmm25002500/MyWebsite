@@ -1,8 +1,8 @@
 import { cache } from 'react';
 
 import { navItems, type NavKey } from '@/components/site/nav-items';
-import { siteUrl } from '@/lib/env';
 import { cacheTags, cached } from '@/lib/data/cache';
+import { fetchYoutubeVideos } from '@/lib/data/youtube';
 
 import {
   seedChangelog,
@@ -370,9 +370,10 @@ export const getChangelog = cached(
  * 影片本體（標題、縮圖、觀看數、長度）來自 YouTube，站台這邊只存覆寫設定：
  * 分類、精選、隱藏、排序與標題覆寫。兩者在這裡合併。
  *
- * YouTube 那半走自家的 `/api/youtube` 代理而不是直接打 Google：金鑰只能留在
- * server 端，而且代理那層已經有六小時的 fetch 快取，兩邊共用同一份。
- * 沒有設定 `YOUTUBE_API_KEY` 時代理回傳空陣列，整頁就只是沒有影片。
+ * YouTube 那半與 `/api/youtube` 共用同一支 `fetchYoutubeVideos()`，六小時的
+ * fetch 快取也共用。**不要改成打自己的 `/api/youtube`**：建置與 ISR 重新產生
+ * 頁面時沒有伺服器在監聽，會拿到 HTML 而不是 JSON。
+ * 沒有設定 `YOUTUBE_API_KEY` 時回傳空陣列，整頁就只是沒有影片。
  */
 export const getVideos = cached(
   ['getVideos'],
@@ -395,14 +396,9 @@ export const getVideos = cached(
       }>(data).map((row) => [row.youtube_id, row]),
     );
 
-    const response = await fetch(`${siteUrl}/api/youtube`, { next: { revalidate: 21600 } }).catch(
-      () => null,
-    );
-    const payload = response?.ok
-      ? ((await response.json()) as { videos?: VideoItem[] })
-      : { videos: [] };
+    const { videos } = await fetchYoutubeVideos();
 
-    return (payload.videos ?? [])
+    return videos
       .filter((video) => !overrides.get(video.youtubeId)?.is_hidden)
       .map((video) => {
         const override = overrides.get(video.youtubeId);

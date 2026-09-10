@@ -12,6 +12,7 @@ import {
   type SaveEducationInput,
   type SaveExperienceInput,
 } from '@/actions/resume';
+import { CertificationList, LanguageList, SkillGroupForm } from '@/components/admin/resume-lists';
 import { Button } from '@/components/ui/button';
 import type { AdminEducation, AdminExperience, AdminSkillGroup } from '@/lib/data/queries/admin';
 import { locales } from '@/lib/i18n/config';
@@ -31,6 +32,8 @@ const employmentLabels: Record<string, string> = {
 
 type Tab = 'experience' | 'education' | 'skills' | 'languages' | 'certifications' | 'display';
 
+type GroupEditing = string | 'new' | null;
+
 interface Props {
   data: Awaited<ReturnType<typeof import('@/lib/data/queries/admin').getAdminResume>>;
   canEditSettings: boolean;
@@ -40,6 +43,7 @@ interface Props {
 export function ResumeManager({ data, canEditSettings }: Props) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>('experience');
+  const [editingGroup, setEditingGroup] = useState<GroupEditing>(null);
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
 
@@ -130,7 +134,7 @@ export function ResumeManager({ data, canEditSettings }: Props) {
   const tabs: [Tab, string][] = [
     ['experience', `工作經歷 ${data.experiences.length}`],
     ['education', `學歷 ${data.education.length}`],
-    ['skills', '技能'],
+    ['skills', `技能 ${data.skillGroups.length} 組`],
     ['languages', `語言 ${data.languages.length}`],
     ['certifications', `證照 ${data.certifications.length}`],
     ['display', '顯示設定'],
@@ -247,7 +251,10 @@ export function ResumeManager({ data, canEditSettings }: Props) {
                                 ...d,
                                 contents: d.contents.map((row, i) =>
                                   i === index
-                                    ? { ...row, tech: e.target.value.split(',').map((t) => t.trim()) }
+                                    ? {
+                                        ...row,
+                                        tech: e.target.value.split(',').map((t) => t.trim()),
+                                      }
                                     : row,
                                 ),
                               }
@@ -262,27 +269,79 @@ export function ResumeManager({ data, canEditSettings }: Props) {
 
               <div className="grid gap-3 md:grid-cols-4">
                 <div>
-                  <label className={label} htmlFor="e-start">開始</label>
-                  <input id="e-start" type="date" value={experienceDraft.startedAt} onChange={(e) => setExperienceDraft((d) => (d ? { ...d, startedAt: e.target.value } : d))} className={field} />
+                  <label className={label} htmlFor="e-start">
+                    開始
+                  </label>
+                  <input
+                    id="e-start"
+                    type="date"
+                    value={experienceDraft.startedAt}
+                    onChange={(e) =>
+                      setExperienceDraft((d) => (d ? { ...d, startedAt: e.target.value } : d))
+                    }
+                    className={field}
+                  />
                 </div>
                 <div>
-                  <label className={label} htmlFor="e-end">結束</label>
-                  <input id="e-end" type="date" value={experienceDraft.endedAt ?? ''} onChange={(e) => setExperienceDraft((d) => (d ? { ...d, endedAt: e.target.value || null } : d))} className={field} />
+                  <label className={label} htmlFor="e-end">
+                    結束
+                  </label>
+                  <input
+                    id="e-end"
+                    type="date"
+                    value={experienceDraft.endedAt ?? ''}
+                    onChange={(e) =>
+                      setExperienceDraft((d) => (d ? { ...d, endedAt: e.target.value || null } : d))
+                    }
+                    className={field}
+                  />
                 </div>
                 <div>
-                  <label className={label} htmlFor="e-type">類型</label>
-                  <select id="e-type" value={experienceDraft.employmentType} onChange={(e) => setExperienceDraft((d) => (d ? { ...d, employmentType: e.target.value as SaveExperienceInput['employmentType'] } : d))} className={field}>
+                  <label className={label} htmlFor="e-type">
+                    類型
+                  </label>
+                  <select
+                    id="e-type"
+                    value={experienceDraft.employmentType}
+                    onChange={(e) =>
+                      setExperienceDraft((d) =>
+                        d
+                          ? {
+                              ...d,
+                              employmentType: e.target
+                                .value as SaveExperienceInput['employmentType'],
+                            }
+                          : d,
+                      )
+                    }
+                    className={field}
+                  >
                     {Object.entries(employmentLabels).map(([value, text]) => (
-                      <option key={value} value={value}>{text}</option>
+                      <option key={value} value={value}>
+                        {text}
+                      </option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className={label} htmlFor="e-org">關聯團隊</label>
-                  <select id="e-org" value={experienceDraft.organizationId ?? ''} onChange={(e) => setExperienceDraft((d) => (d ? { ...d, organizationId: e.target.value || null } : d))} className={field}>
+                  <label className={label} htmlFor="e-org">
+                    關聯團隊
+                  </label>
+                  <select
+                    id="e-org"
+                    value={experienceDraft.organizationId ?? ''}
+                    onChange={(e) =>
+                      setExperienceDraft((d) =>
+                        d ? { ...d, organizationId: e.target.value || null } : d,
+                      )
+                    }
+                    className={field}
+                  >
                     <option value="">無</option>
                     {data.organizations.map((org) => (
-                      <option key={org.id} value={org.id}>{org.name}</option>
+                      <option key={org.id} value={org.id}>
+                        {org.name}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -297,24 +356,45 @@ export function ResumeManager({ data, canEditSettings }: Props) {
                   ] as const
                 ).map(([key, text]) => (
                   <label key={key} className="flex items-center gap-2.5 text-[15px]">
-                    <input type="checkbox" checked={experienceDraft[key]} onChange={(e) => setExperienceDraft((d) => (d ? { ...d, [key]: e.target.checked } : d))} className="size-4 accent-[var(--color-accent)]" />
+                    <input
+                      type="checkbox"
+                      checked={experienceDraft[key]}
+                      onChange={(e) =>
+                        setExperienceDraft((d) => (d ? { ...d, [key]: e.target.checked } : d))
+                      }
+                      className="size-4 accent-[var(--color-accent)]"
+                    />
                     {text}
                   </label>
                 ))}
               </div>
 
               <div className="flex gap-2">
-                <Button size="sm" disabled={pending} onClick={() => run(() => saveExperience(experienceDraft), () => setExperienceDraft(null))}>
+                <Button
+                  size="sm"
+                  disabled={pending}
+                  onClick={() =>
+                    run(
+                      () => saveExperience(experienceDraft),
+                      () => setExperienceDraft(null),
+                    )
+                  }
+                >
                   儲存
                 </Button>
-                <Button size="sm" variant="secondary" onClick={() => setExperienceDraft(null)}>取消</Button>
+                <Button size="sm" variant="secondary" onClick={() => setExperienceDraft(null)}>
+                  取消
+                </Button>
               </div>
             </div>
           ) : null}
 
           <ul className="space-y-2">
             {data.experiences.map((row) => (
-              <li key={row.id} className="flex flex-wrap items-baseline gap-3 rounded-lg border border-divider bg-surface p-3.5">
+              <li
+                key={row.id}
+                className="flex flex-wrap items-baseline gap-3 rounded-lg border border-divider bg-surface p-3.5"
+              >
                 <span className="w-32 shrink-0 text-[14px] text-ink-70">
                   {formatPeriod(row.startedAt, row.endedAt, '至今')}
                 </span>
@@ -326,8 +406,21 @@ export function ResumeManager({ data, canEditSettings }: Props) {
                     {!row.showCompanyName ? ' · 隱藏公司名' : ''}
                   </p>
                 </div>
-                <button type="button" onClick={() => setExperienceDraft(toExperienceDraft(row))} className="cursor-pointer text-[14px] text-ink-70 hover:text-accent">編輯</button>
-                <button type="button" disabled={pending} onClick={() => run(() => deleteResumeItem('experiences', row.id))} className="cursor-pointer text-[14px] text-ink-70 hover:text-accent-2-700">刪除</button>
+                <button
+                  type="button"
+                  onClick={() => setExperienceDraft(toExperienceDraft(row))}
+                  className="cursor-pointer text-[14px] text-ink-70 hover:text-accent"
+                >
+                  編輯
+                </button>
+                <button
+                  type="button"
+                  disabled={pending}
+                  onClick={() => run(() => deleteResumeItem('experiences', row.id))}
+                  className="cursor-pointer text-[14px] text-ink-70 hover:text-accent-2-700"
+                >
+                  刪除
+                </button>
               </li>
             ))}
           </ul>
@@ -336,53 +429,165 @@ export function ResumeManager({ data, canEditSettings }: Props) {
 
       {tab === 'education' ? (
         <div className="space-y-4">
-          <Button size="sm" onClick={() => setEducationDraft(emptyEducation())}>新增學歷</Button>
+          <Button size="sm" onClick={() => setEducationDraft(emptyEducation())}>
+            新增學歷
+          </Button>
 
           {educationDraft ? (
             <div className="space-y-4 rounded-lg border border-accent bg-surface p-4">
               <div className="grid gap-4 md:grid-cols-2">
                 {educationDraft.contents.map((content, index) => (
                   <div key={content.locale} className="space-y-2">
-                    <p className="text-[14px] font-bold text-ink-70">{content.locale === 'zh-TW' ? '中文' : 'English'}</p>
-                    <input value={content.school} placeholder="學校" onChange={(e) => setEducationDraft((d) => (d ? { ...d, contents: d.contents.map((row, i) => (i === index ? { ...row, school: e.target.value } : row)) } : d))} className={field} />
-                    <input value={content.field ?? ''} placeholder="科系" onChange={(e) => setEducationDraft((d) => (d ? { ...d, contents: d.contents.map((row, i) => (i === index ? { ...row, field: e.target.value || null } : row)) } : d))} className={field} />
-                    <input value={content.degree ?? ''} placeholder="學位" onChange={(e) => setEducationDraft((d) => (d ? { ...d, contents: d.contents.map((row, i) => (i === index ? { ...row, degree: e.target.value || null } : row)) } : d))} className={field} />
+                    <p className="text-[14px] font-bold text-ink-70">
+                      {content.locale === 'zh-TW' ? '中文' : 'English'}
+                    </p>
+                    <input
+                      value={content.school}
+                      placeholder="學校"
+                      onChange={(e) =>
+                        setEducationDraft((d) =>
+                          d
+                            ? {
+                                ...d,
+                                contents: d.contents.map((row, i) =>
+                                  i === index ? { ...row, school: e.target.value } : row,
+                                ),
+                              }
+                            : d,
+                        )
+                      }
+                      className={field}
+                    />
+                    <input
+                      value={content.field ?? ''}
+                      placeholder="科系"
+                      onChange={(e) =>
+                        setEducationDraft((d) =>
+                          d
+                            ? {
+                                ...d,
+                                contents: d.contents.map((row, i) =>
+                                  i === index ? { ...row, field: e.target.value || null } : row,
+                                ),
+                              }
+                            : d,
+                        )
+                      }
+                      className={field}
+                    />
+                    <input
+                      value={content.degree ?? ''}
+                      placeholder="學位"
+                      onChange={(e) =>
+                        setEducationDraft((d) =>
+                          d
+                            ? {
+                                ...d,
+                                contents: d.contents.map((row, i) =>
+                                  i === index ? { ...row, degree: e.target.value || null } : row,
+                                ),
+                              }
+                            : d,
+                        )
+                      }
+                      className={field}
+                    />
                   </div>
                 ))}
               </div>
               <div className="grid gap-3 md:grid-cols-3">
                 <div>
-                  <label className={label} htmlFor="edu-start">開始</label>
-                  <input id="edu-start" type="date" value={educationDraft.startedAt} onChange={(e) => setEducationDraft((d) => (d ? { ...d, startedAt: e.target.value } : d))} className={field} />
+                  <label className={label} htmlFor="edu-start">
+                    開始
+                  </label>
+                  <input
+                    id="edu-start"
+                    type="date"
+                    value={educationDraft.startedAt}
+                    onChange={(e) =>
+                      setEducationDraft((d) => (d ? { ...d, startedAt: e.target.value } : d))
+                    }
+                    className={field}
+                  />
                 </div>
                 <div>
-                  <label className={label} htmlFor="edu-end">結束</label>
-                  <input id="edu-end" type="date" value={educationDraft.endedAt ?? ''} onChange={(e) => setEducationDraft((d) => (d ? { ...d, endedAt: e.target.value || null } : d))} className={field} />
+                  <label className={label} htmlFor="edu-end">
+                    結束
+                  </label>
+                  <input
+                    id="edu-end"
+                    type="date"
+                    value={educationDraft.endedAt ?? ''}
+                    onChange={(e) =>
+                      setEducationDraft((d) => (d ? { ...d, endedAt: e.target.value || null } : d))
+                    }
+                    className={field}
+                  />
                 </div>
                 <label className="flex items-end gap-2.5 pb-2 text-[15px]">
-                  <input type="checkbox" checked={educationDraft.isVisible} onChange={(e) => setEducationDraft((d) => (d ? { ...d, isVisible: e.target.checked } : d))} className="size-4 accent-[var(--color-accent)]" />
+                  <input
+                    type="checkbox"
+                    checked={educationDraft.isVisible}
+                    onChange={(e) =>
+                      setEducationDraft((d) => (d ? { ...d, isVisible: e.target.checked } : d))
+                    }
+                    className="size-4 accent-[var(--color-accent)]"
+                  />
                   在前台顯示
                 </label>
               </div>
               <div className="flex gap-2">
-                <Button size="sm" disabled={pending} onClick={() => run(() => saveEducation(educationDraft), () => setEducationDraft(null))}>儲存</Button>
-                <Button size="sm" variant="secondary" onClick={() => setEducationDraft(null)}>取消</Button>
+                <Button
+                  size="sm"
+                  disabled={pending}
+                  onClick={() =>
+                    run(
+                      () => saveEducation(educationDraft),
+                      () => setEducationDraft(null),
+                    )
+                  }
+                >
+                  儲存
+                </Button>
+                <Button size="sm" variant="secondary" onClick={() => setEducationDraft(null)}>
+                  取消
+                </Button>
               </div>
             </div>
           ) : null}
 
           <ul className="space-y-2">
             {data.education.map((row) => (
-              <li key={row.id} className="flex flex-wrap items-baseline gap-3 rounded-lg border border-divider bg-surface p-3.5">
-                <span className="w-32 shrink-0 text-[14px] text-ink-70">{formatPeriod(row.startedAt, row.endedAt, '至今')}</span>
+              <li
+                key={row.id}
+                className="flex flex-wrap items-baseline gap-3 rounded-lg border border-divider bg-surface p-3.5"
+              >
+                <span className="w-32 shrink-0 text-[14px] text-ink-70">
+                  {formatPeriod(row.startedAt, row.endedAt, '至今')}
+                </span>
                 <div className="min-w-0 flex-1">
                   <p className="font-bold">{row.contents['zh-TW']?.school}</p>
                   <p className="text-[14px] text-ink-70">
-                    {[row.contents['zh-TW']?.field, row.contents['zh-TW']?.degree].filter(Boolean).join(' · ')}
+                    {[row.contents['zh-TW']?.field, row.contents['zh-TW']?.degree]
+                      .filter(Boolean)
+                      .join(' · ')}
                   </p>
                 </div>
-                <button type="button" onClick={() => setEducationDraft(toEducationDraft(row))} className="cursor-pointer text-[14px] text-ink-70 hover:text-accent">編輯</button>
-                <button type="button" disabled={pending} onClick={() => run(() => deleteResumeItem('education', row.id))} className="cursor-pointer text-[14px] text-ink-70 hover:text-accent-2-700">刪除</button>
+                <button
+                  type="button"
+                  onClick={() => setEducationDraft(toEducationDraft(row))}
+                  className="cursor-pointer text-[14px] text-ink-70 hover:text-accent"
+                >
+                  編輯
+                </button>
+                <button
+                  type="button"
+                  disabled={pending}
+                  onClick={() => run(() => deleteResumeItem('education', row.id))}
+                  className="cursor-pointer text-[14px] text-ink-70 hover:text-accent-2-700"
+                >
+                  刪除
+                </button>
               </li>
             ))}
           </ul>
@@ -391,36 +596,60 @@ export function ResumeManager({ data, canEditSettings }: Props) {
 
       {tab === 'skills' ? (
         <div className="space-y-5">
-          {data.skillGroups.map((group) => (
-            <SkillGroupEditor key={group.id} group={group} pending={pending} onRun={run} />
-          ))}
+          {data.skillGroups.map((group) =>
+            editingGroup === group.id ? (
+              <div
+                key={group.id}
+                className="space-y-3 rounded-lg border border-accent bg-surface p-4"
+              >
+                <SkillGroupForm
+                  group={group}
+                  nextSortOrder={group.sortOrder}
+                  pending={pending}
+                  onRun={run}
+                  onClose={() => setEditingGroup(null)}
+                />
+              </div>
+            ) : (
+              <SkillGroupEditor
+                key={group.id}
+                group={group}
+                pending={pending}
+                onRun={run}
+                onEdit={() => setEditingGroup(group.id)}
+              />
+            ),
+          )}
+
+          {editingGroup === 'new' ? (
+            <div className="space-y-3 rounded-lg border border-accent bg-surface p-4">
+              <SkillGroupForm
+                nextSortOrder={data.skillGroups.length}
+                pending={pending}
+                onRun={run}
+                onClose={() => setEditingGroup(null)}
+              />
+            </div>
+          ) : (
+            <Button type="button" variant="secondary" onClick={() => setEditingGroup('new')}>
+              新增技能分組
+            </Button>
+          )}
         </div>
       ) : null}
 
       {tab === 'languages' ? (
-        <ul className="space-y-2">
-          {data.languages.map((row) => (
-            <li key={row.id} className="flex items-baseline gap-3 rounded-lg border border-divider bg-surface p-3.5">
-              <span className="font-bold">{row.name}</span>
-              <span className="text-[14px] text-ink-70">{row.proficiency}</span>
-            </li>
-          ))}
-        </ul>
+        <LanguageList rows={data.languages} pending={pending} onRun={run} />
       ) : null}
 
       {tab === 'certifications' ? (
         <div className="space-y-3">
           <p className="text-[14px] text-ink-70">
-            {settings.showCertifications ? '證照區目前顯示於前台。' : '證照區目前隱藏，可在「顯示設定」開啟。'}
+            {settings.showCertifications
+              ? '證照區目前顯示於前台。'
+              : '證照區目前隱藏，可在「顯示設定」開啟。'}
           </p>
-          <ul className="space-y-2">
-            {data.certifications.map((row) => (
-              <li key={row.id} className="flex items-baseline gap-3 rounded-lg border border-divider bg-surface p-3.5">
-                <span className="font-bold">{row.name}</span>
-                <span className="text-[14px] text-ink-70">{row.issuer}</span>
-              </li>
-            ))}
-          </ul>
+          <CertificationList rows={data.certifications} pending={pending} onRun={run} />
         </div>
       ) : null}
 
@@ -430,14 +659,30 @@ export function ResumeManager({ data, canEditSettings }: Props) {
             <p className="text-[14px] text-accent-2-700">只有站長可以修改顯示設定。</p>
           ) : null}
           <label className="flex items-center gap-2.5 text-[15px]">
-            <input type="checkbox" disabled={!canEditSettings} checked={settings.showCompanyName} onChange={(e) => setSettings((s) => ({ ...s, showCompanyName: e.target.checked }))} className="size-4 accent-[var(--color-accent)]" />
+            <input
+              type="checkbox"
+              disabled={!canEditSettings}
+              checked={settings.showCompanyName}
+              onChange={(e) => setSettings((s) => ({ ...s, showCompanyName: e.target.checked }))}
+              className="size-4 accent-[var(--color-accent)]"
+            />
             顯示現職公司名稱
           </label>
           <label className="flex items-center gap-2.5 text-[15px]">
-            <input type="checkbox" disabled={!canEditSettings} checked={settings.showCertifications} onChange={(e) => setSettings((s) => ({ ...s, showCertifications: e.target.checked }))} className="size-4 accent-[var(--color-accent)]" />
+            <input
+              type="checkbox"
+              disabled={!canEditSettings}
+              checked={settings.showCertifications}
+              onChange={(e) => setSettings((s) => ({ ...s, showCertifications: e.target.checked }))}
+              className="size-4 accent-[var(--color-accent)]"
+            />
             顯示證照區
           </label>
-          <Button size="sm" disabled={pending || !canEditSettings} onClick={() => run(() => saveResumeDisplaySettings(settings))}>
+          <Button
+            size="sm"
+            disabled={pending || !canEditSettings}
+            onClick={() => run(() => saveResumeDisplaySettings(settings))}
+          >
             儲存設定
           </Button>
         </div>
@@ -450,8 +695,10 @@ function SkillGroupEditor({
   group,
   pending,
   onRun,
+  onEdit,
 }: {
   group: AdminSkillGroup;
+  onEdit: () => void;
   pending: boolean;
   onRun: (fn: () => Promise<{ ok: boolean; error?: string }>, done?: () => void) => void;
 }) {
@@ -459,7 +706,25 @@ function SkillGroupEditor({
 
   return (
     <section className="rounded-lg border border-divider bg-surface p-4">
-      <h2 className="text-[16px] font-bold">{group.name}</h2>
+      <div className="flex items-baseline gap-3">
+        <h2 className="text-[16px] font-bold">{group.name}</h2>
+        <span className="text-[14px] text-ink-55">{group.key}</span>
+        <button
+          type="button"
+          onClick={onEdit}
+          className="ml-auto cursor-pointer text-[14px] text-ink-70 hover:text-accent"
+        >
+          編輯分組
+        </button>
+        <button
+          type="button"
+          disabled={pending}
+          onClick={() => onRun(() => deleteResumeItem('skill_groups', group.id))}
+          className="cursor-pointer text-[14px] text-ink-70 hover:text-accent-2-700"
+        >
+          刪除分組
+        </button>
+      </div>
 
       <div className="mt-3 space-y-1.5">
         {group.skills.map((skill) => (

@@ -765,7 +765,11 @@ export interface AdminEducation {
 export interface AdminSkillGroup {
   id: string;
   key: string;
+  icon: string | null;
+  isVisible: boolean;
+  sortOrder: number;
   name: string;
+  contents: Partial<Record<Locale, { name: string; description: string | null }>>;
   skills: {
     id: string;
     name: string;
@@ -798,19 +802,19 @@ export async function getAdminResume() {
       supabase
         .from('skill_groups')
         .select(
-          'id, key, sort_order, skill_groups_i18n(locale, name), skills(id, name, level, is_primary, show_on_home, is_visible, sort_order)',
+          'id, key, icon, is_visible, sort_order, skill_groups_i18n(locale, name, description), skills(id, name, level, is_primary, show_on_home, is_visible, sort_order)',
         )
         .order('sort_order'),
       supabase
         .from('certifications')
         .select(
-          'id, issued_at, credential_url, is_visible, sort_order, certifications_i18n(locale, name, issuer)',
+          'id, issued_at, expires_at, credential_id, credential_url, is_visible, sort_order, certifications_i18n(locale, name, issuer, description)',
         )
         .order('sort_order'),
       supabase
         .from('languages_spoken')
         .select(
-          'id, code, proficiency, is_visible, sort_order, languages_spoken_i18n(locale, name)',
+          'id, code, proficiency, is_visible, sort_order, languages_spoken_i18n(locale, name, note)',
         )
         .order('sort_order'),
       supabase
@@ -867,7 +871,16 @@ export async function getAdminResume() {
     skillGroups: (skillGroups.data ?? []).map<AdminSkillGroup>((row) => ({
       id: row.id,
       key: row.key,
+      icon: row.icon,
+      isVisible: row.is_visible,
+      sortOrder: row.sort_order,
       name: row.skill_groups_i18n.find((item) => item.locale === 'zh-TW')?.name ?? row.key,
+      contents: Object.fromEntries(
+        row.skill_groups_i18n.map((item) => [
+          item.locale,
+          { name: item.name, description: item.description },
+        ]),
+      ),
       skills: row.skills
         .sort((a, b) => a.sort_order - b.sort_order)
         .map((skill) => ({
@@ -883,17 +896,33 @@ export async function getAdminResume() {
     certifications: (certifications.data ?? []).map((row) => ({
       id: row.id,
       issuedAt: row.issued_at,
+      expiresAt: row.expires_at,
+      credentialId: row.credential_id,
       credentialUrl: row.credential_url,
       isVisible: row.is_visible,
+      sortOrder: row.sort_order,
       name: row.certifications_i18n.find((item) => item.locale === 'zh-TW')?.name ?? '',
       issuer: row.certifications_i18n.find((item) => item.locale === 'zh-TW')?.issuer ?? '',
+      contents: Object.fromEntries(
+        row.certifications_i18n.map((item) => [
+          item.locale,
+          { name: item.name, issuer: item.issuer, description: item.description },
+        ]),
+      ) as Partial<Record<Locale, { name: string; issuer: string; description: string | null }>>,
     })),
     languages: (languages.data ?? []).map((row) => ({
       id: row.id,
       code: row.code,
       proficiency: row.proficiency,
       isVisible: row.is_visible,
+      sortOrder: row.sort_order,
       name: row.languages_spoken_i18n.find((item) => item.locale === 'zh-TW')?.name ?? row.code,
+      contents: Object.fromEntries(
+        row.languages_spoken_i18n.map((item) => [
+          item.locale,
+          { name: item.name, note: item.note },
+        ]),
+      ) as Partial<Record<Locale, { name: string; note: string | null }>>,
     })),
     organizations: (organizations.data ?? []).map((row) => ({
       id: row.id,

@@ -258,6 +258,244 @@ export async function saveSkill(input: SaveSkillInput): Promise<ActionResult> {
 }
 
 // ---------------------------------------------------------------------------
+// 技能分組
+// ---------------------------------------------------------------------------
+
+const skillGroupSchema = z.object({
+  id: z.string().uuid().nullable(),
+  /** 程式用的識別鍵，只允許小寫英數與連字號。 */
+  key: z
+    .string()
+    .trim()
+    .min(1, '識別鍵不能空白')
+    .max(40)
+    .regex(/^[a-z0-9-]+$/, '識別鍵只能用小寫英文、數字與連字號'),
+  icon: nullable(z.string().trim().max(60)),
+  sortOrder: z.number().int().min(0).max(999),
+  isVisible: z.boolean(),
+  contents: z
+    .array(
+      z.object({
+        locale: z.enum(locales),
+        name: z.string().trim().min(1, '名稱不能空白').max(80),
+        description: nullable(z.string().trim().max(300)),
+      }),
+    )
+    .min(1),
+});
+
+export type SaveSkillGroupInput = z.input<typeof skillGroupSchema>;
+
+export async function saveSkillGroup(input: SaveSkillGroupInput): Promise<ActionResult> {
+  await requireRole('editor');
+
+  const parsed = skillGroupSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? '欄位驗證失敗' };
+  }
+
+  const data = parsed.data;
+  const supabase = await createServerSupabase();
+  const row = {
+    key: data.key,
+    icon: data.icon,
+    sort_order: data.sortOrder,
+    is_visible: data.isVisible,
+  };
+
+  const { data: saved, error } = data.id
+    ? await supabase.from('skill_groups').update(row).eq('id', data.id).select('id').single()
+    : await supabase.from('skill_groups').insert(row).select('id').single();
+
+  if (error || !saved) {
+    console.error('[actions] saveSkillGroup 失敗：', error);
+    // key 有 unique 限制，重複時給得出所以然的訊息。
+    return { ok: false, error: error?.code === '23505' ? '這個識別鍵已經有人用了' : '儲存失敗' };
+  }
+
+  for (const content of data.contents) {
+    const { error: i18nError } = await supabase.from('skill_groups_i18n').upsert(
+      {
+        group_id: saved.id,
+        locale: content.locale,
+        name: content.name,
+        description: content.description,
+      },
+      { onConflict: 'group_id,locale' },
+    );
+    if (i18nError) {
+      console.error('[actions] saveSkillGroup 內容失敗：', i18nError);
+      return { ok: false, error: `${content.locale} 內容儲存失敗` };
+    }
+  }
+
+  await writeAuditLog({
+    action: data.id ? 'skill_group.update' : 'skill_group.create',
+    entityType: 'resume',
+    entityId: saved.id,
+    entityLabel: data.contents[0]?.name,
+  });
+
+  invalidate();
+  return { ok: true, id: saved.id };
+}
+
+// ---------------------------------------------------------------------------
+// 語言
+// ---------------------------------------------------------------------------
+
+const languageSchema = z.object({
+  id: z.string().uuid().nullable(),
+  code: z.string().trim().min(2, '語言代碼至少兩碼').max(10),
+  proficiency: z.enum(['native', 'fluent', 'intermediate', 'basic']),
+  sortOrder: z.number().int().min(0).max(999),
+  isVisible: z.boolean(),
+  contents: z
+    .array(
+      z.object({
+        locale: z.enum(locales),
+        name: z.string().trim().min(1, '名稱不能空白').max(60),
+        note: nullable(z.string().trim().max(200)),
+      }),
+    )
+    .min(1),
+});
+
+export type SaveLanguageInput = z.input<typeof languageSchema>;
+
+export async function saveLanguage(input: SaveLanguageInput): Promise<ActionResult> {
+  await requireRole('editor');
+
+  const parsed = languageSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? '欄位驗證失敗' };
+  }
+
+  const data = parsed.data;
+  const supabase = await createServerSupabase();
+  const row = {
+    code: data.code,
+    proficiency: data.proficiency,
+    sort_order: data.sortOrder,
+    is_visible: data.isVisible,
+  };
+
+  const { data: saved, error } = data.id
+    ? await supabase.from('languages_spoken').update(row).eq('id', data.id).select('id').single()
+    : await supabase.from('languages_spoken').insert(row).select('id').single();
+
+  if (error || !saved) {
+    console.error('[actions] saveLanguage 失敗：', error);
+    return { ok: false, error: '儲存失敗' };
+  }
+
+  for (const content of data.contents) {
+    const { error: i18nError } = await supabase
+      .from('languages_spoken_i18n')
+      .upsert(
+        { language_id: saved.id, locale: content.locale, name: content.name, note: content.note },
+        { onConflict: 'language_id,locale' },
+      );
+    if (i18nError) {
+      console.error('[actions] saveLanguage 內容失敗：', i18nError);
+      return { ok: false, error: `${content.locale} 內容儲存失敗` };
+    }
+  }
+
+  await writeAuditLog({
+    action: data.id ? 'language.update' : 'language.create',
+    entityType: 'resume',
+    entityId: saved.id,
+    entityLabel: data.contents[0]?.name,
+  });
+
+  invalidate();
+  return { ok: true, id: saved.id };
+}
+
+// ---------------------------------------------------------------------------
+// 證照
+// ---------------------------------------------------------------------------
+
+const certificationSchema = z.object({
+  id: z.string().uuid().nullable(),
+  issuedAt: nullable(z.string().trim().max(10)),
+  expiresAt: nullable(z.string().trim().max(10)),
+  credentialId: nullable(z.string().trim().max(120)),
+  credentialUrl: nullable(z.string().max(500).pipe(linkTarget)),
+  sortOrder: z.number().int().min(0).max(999),
+  isVisible: z.boolean(),
+  contents: z
+    .array(
+      z.object({
+        locale: z.enum(locales),
+        name: z.string().trim().min(1, '名稱不能空白').max(120),
+        issuer: z.string().trim().min(1, '發證單位不能空白').max(120),
+        description: nullable(z.string().trim().max(300)),
+      }),
+    )
+    .min(1),
+});
+
+export type SaveCertificationInput = z.input<typeof certificationSchema>;
+
+export async function saveCertification(input: SaveCertificationInput): Promise<ActionResult> {
+  await requireRole('editor');
+
+  const parsed = certificationSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? '欄位驗證失敗' };
+  }
+
+  const data = parsed.data;
+  const supabase = await createServerSupabase();
+  const row = {
+    issued_at: data.issuedAt,
+    expires_at: data.expiresAt,
+    credential_id: data.credentialId,
+    credential_url: data.credentialUrl,
+    sort_order: data.sortOrder,
+    is_visible: data.isVisible,
+  };
+
+  const { data: saved, error } = data.id
+    ? await supabase.from('certifications').update(row).eq('id', data.id).select('id').single()
+    : await supabase.from('certifications').insert(row).select('id').single();
+
+  if (error || !saved) {
+    console.error('[actions] saveCertification 失敗：', error);
+    return { ok: false, error: '儲存失敗' };
+  }
+
+  for (const content of data.contents) {
+    const { error: i18nError } = await supabase.from('certifications_i18n').upsert(
+      {
+        certification_id: saved.id,
+        locale: content.locale,
+        name: content.name,
+        issuer: content.issuer,
+        description: content.description,
+      },
+      { onConflict: 'certification_id,locale' },
+    );
+    if (i18nError) {
+      console.error('[actions] saveCertification 內容失敗：', i18nError);
+      return { ok: false, error: `${content.locale} 內容儲存失敗` };
+    }
+  }
+
+  await writeAuditLog({
+    action: data.id ? 'certification.update' : 'certification.create',
+    entityType: 'resume',
+    entityId: saved.id,
+    entityLabel: data.contents[0]?.name,
+  });
+
+  invalidate();
+  return { ok: true, id: saved.id };
+}
+
+// ---------------------------------------------------------------------------
 // 通用刪除
 //
 // 履歷的子表結構相同（都是 id + i18n 子表，且 on delete cascade），
