@@ -868,3 +868,10 @@
     height: 280px;
   }
 }
+
+/* AdSense 沒有廣告可投時會在 <ins> 上標記 `data-ad-status="unfilled"`，但版位的
+   高度已經先佔住了，畫面上就是一塊什麼都沒有的空白。連同外層的標籤與間距一起
+   收掉——Google 明確允許在無廣告時收合版位，這與「裁切廣告」是兩回事。 */
+aside:has(> .ad-unit[data-ad-status='unfilled']) {
+  display: none;
+}
