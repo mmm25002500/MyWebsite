@@ -347,6 +347,48 @@ async function matchRedirect(request: NextRequest): Promise<{ url: URL; status: 
   return { url: new URL(`${prefix}${rule.to}${search}`, request.url), status };
 }
 
+/**
+ * 分頁網址的正規化。做兩件事：
+ *
+ * 1. **舊的 `?page=N` 轉到路徑形式。** 筆記與分類的分頁改走 `/notes/page/2`，
+ *    但舊連結、書籤與既有的搜尋結果還指著 `?page=2`。轉址放在中介層而不是
+ *    頁面裡：頁面只要讀一次 `searchParams`，整條路由就會被迫逐請求渲染，那
+ *    正是這次要消滅的東西。
+ * 2. **`/page/1` 轉回不帶頁碼的網址。** 同一份內容不該有兩個網址。頁面裡雖然
+ *    也有一行 `redirect()`，但那時 shell 已經串流出去、狀態列早就送出，改不
+ *    回 308——擋在這裡才有正確的狀態碼。
+ *
+ * 只處理筆記與分類。作品集有分類、標籤、狀態、年份等篩選，那些本來就只能放在
+ * 查詢字串，分頁跟著用同一種形式。
+ */
+function normalizePageUrl(request: NextRequest): URL | null {
+  const { pathname } = request.nextUrl;
+  const segments = pathname.split('/');
+  const prefix = isLocale(segments[1] ?? '') ? `/${segments[1]}` : '';
+  const bare = prefix ? pathname.slice(prefix.length) || '/' : pathname;
+
+  // `/notes/page/1` → `/notes`；分類同理。
+  const firstPage = bare.match(/^(\/notes(?:\/c\/[^/]+)?)\/page\/1$/);
+  if (firstPage) {
+    const target = new URL(request.url);
+    target.pathname = `${prefix}${firstPage[1]}`;
+    return target;
+  }
+
+  const params = request.nextUrl.searchParams;
+  const page = params.get('page');
+  const sort = params.get('sort');
+  if (page === null && sort === null) return null;
+  if (page !== null && !/^[1-9][0-9]*$/.test(page)) return null;
+  if (bare !== '/notes' && !/^\/notes\/c\/[^/]+$/.test(bare)) return null;
+
+  const target = new URL(request.url);
+  target.searchParams.delete('page');
+  target.searchParams.delete('sort');
+  target.pathname = page && page !== '1' ? `${prefix}${bare}/page/${page}` : `${prefix}${bare}`;
+  return target;
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -364,6 +406,9 @@ export async function middleware(request: NextRequest) {
 
     return applySecurityHeaders(request, response, pathname);
   }
+
+  const normalized = normalizePageUrl(request);
+  if (normalized) return NextResponse.redirect(normalized, 308);
 
   // 轉址在 i18n 之前：命中就直接送走，不必再跑語系協商與 session 刷新。
   const redirect = await matchRedirect(request);

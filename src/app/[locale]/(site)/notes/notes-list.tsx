@@ -44,7 +44,6 @@ export async function NotesList({
             page={result.page}
             totalPages={result.totalPages}
             basePath={basePath}
-            query={{ sort: query.sort }}
             previousLabel={t('common.previous')}
             nextLabel={t('common.next')}
           />

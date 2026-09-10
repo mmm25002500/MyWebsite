@@ -2,14 +2,10 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
-import { CategoryTabs } from '@/components/site/category-tabs';
-import { PageHeader } from '@/components/site/page-header';
-import { Container } from '@/components/ui/typography';
-import { getCategories } from '@/lib/data';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { pageAlternates } from '@/lib/seo';
 
-import { NotesList } from './notes-list';
+import { NotesIndex } from './notes-index';
 
 export const revalidate = 3600;
 
@@ -28,40 +24,11 @@ export async function generateMetadata({
   };
 }
 
-export default async function NotesPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ locale: string }>;
-  searchParams: Promise<{ page?: string; sort?: string }>;
-}) {
+export default async function NotesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;
   if (!isLocale(raw)) notFound();
   const locale: Locale = raw;
   setRequestLocale(locale);
 
-  const { page, sort } = await searchParams;
-  const t = await getTranslations({ locale });
-  const categories = await getCategories(locale);
-
-  return (
-    <>
-      <PageHeader
-        kicker={t('nav.notes')}
-        title={t('notes.title')}
-        description={t('notes.description')}
-      />
-      <Container className="mt-8">
-        <CategoryTabs categories={categories} allLabel={t('notes.allCategories')} />
-      </Container>
-      <NotesList
-        locale={locale}
-        basePath="/notes"
-        query={{
-          page: page ? Number(page) : 1,
-          sort: sort === 'popular' ? 'popular' : 'latest',
-        }}
-      />
-    </>
-  );
+  return <NotesIndex locale={locale} page={1} />;
 }

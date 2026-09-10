@@ -6,13 +6,20 @@ export function Pagination({
   page,
   totalPages,
   basePath,
-  query = {},
+  query,
   previousLabel,
   nextLabel,
 }: {
   page: number;
   totalPages: number;
   basePath: string;
+  /**
+   * 要一併帶著走的篩選條件。
+   *
+   * **給定時分頁會退回 `?page=N` 的查詢字串形式。** 篩選條件本來就只能放在查詢
+   * 字串，那樣的路由無論如何都得逐請求渲染，分頁跟著用同一種形式沒有損失。
+   * 不給的話走 `${basePath}/page/N`，那些路由才能預先產生並被邊緣快取。
+   */
   query?: Record<string, string | undefined>;
   previousLabel: string;
   nextLabel: string;
@@ -20,9 +27,11 @@ export function Pagination({
   if (totalPages <= 1) return null;
 
   const href = (targetPage: number) => {
+    if (!query) return targetPage > 1 ? `${basePath}/page/${targetPage}` : basePath;
+
     const params = new URLSearchParams();
     for (const [key, value] of Object.entries(query)) {
-      if (value) params.set(key, value);
+      if (value && key !== 'page') params.set(key, value);
     }
     if (targetPage > 1) params.set('page', String(targetPage));
     const search = params.toString();
