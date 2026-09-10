@@ -2,28 +2,23 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound, redirect } from 'next/navigation';
 
-import { isLocale, locales, type Locale } from '@/lib/i18n/config';
+import { isLocale, type Locale } from '@/lib/i18n/config';
 import { localePath, pageAlternates } from '@/lib/seo';
 
 import { NotesIndex, notesPageCount } from '../../notes-index';
 
 export const revalidate = 3600;
 
-/**
- * 分頁走路徑而不是 `?page=`。
+/*
+ * 刻意不寫 `generateStaticParams`。
  *
- * 讀 `searchParams` 會讓整個路由被迫逐請求渲染，Vercel 的邊緣快取一路 MISS；
- * 改成路徑之後每一頁都能預先產生。第一頁不在這裡——它是 `/notes` 本身，這條
- * 路由收到 `page/1` 會轉回去，避免同一份內容有兩個網址。
+ * 建置時逐一數頁數，等於每個語系（乘上每個分類）都打一次資料庫，實測會把
+ * Supabase 打到 Gateway Timeout、整個建置失敗。這些頁面有 `revalidate`，
+ * 第一次被造訪時產生並快取就夠了。
+ *
+ * 附帶的好處：沒有預先產生的參數，`notFound()` 才回得了真正的 404——有預先
+ * 渲染參數的路由會先把 shell 串流出去，狀態列那時就送出了，改不回來。
  */
-export async function generateStaticParams() {
-  const params: { locale: string; page: string }[] = [];
-  for (const locale of locales) {
-    const total = await notesPageCount(locale);
-    for (let page = 2; page <= total; page += 1) params.push({ locale, page: String(page) });
-  }
-  return params;
-}
 
 function parsePage(value: string): number | null {
   if (!/^[1-9][0-9]*$/.test(value)) return null;
