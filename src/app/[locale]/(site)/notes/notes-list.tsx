@@ -35,7 +35,7 @@ export async function NotesList({
               <Fragment key={post.id}>
                 <PostListRow post={post} locale={locale} />
                 {/* 第四篇之後插一個版位，位置固定才不會每次換頁跳來跳去。 */}
-                {index === 3 ? <AdSlot name="list" format="fluid" label={t('ads.label')} /> : null}
+                {index === 3 ? <AdSlot name="list" label={t('ads.label')} /> : null}
               </Fragment>
             ))
           )}

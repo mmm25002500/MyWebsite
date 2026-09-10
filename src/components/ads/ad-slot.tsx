@@ -52,8 +52,7 @@ export function AdSlot({
       ) : null}
       <ins
         ref={insRef}
-        className="adsbygoogle block"
-        style={{ display: 'block' }}
+        className="adsbygoogle ad-unit"
         data-ad-client={adsenseClient}
         data-ad-slot={slot}
         data-ad-format={format}
