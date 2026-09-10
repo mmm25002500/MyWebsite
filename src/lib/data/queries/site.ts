@@ -1,6 +1,7 @@
 import { cache } from 'react';
 
 import { navItems, type NavKey } from '@/components/site/nav-items';
+import { siteUrl } from '@/lib/env';
 import { cacheTags, cached } from '@/lib/data/cache';
 
 import {
@@ -363,6 +364,16 @@ export const getChangelog = cached(
  * 影片來自 YouTube Data API 的伺服器端代理（規格 §5.5），後台覆寫存在 `video_meta`。
  * 尚未設定 `YOUTUBE_API_KEY` 時回傳空陣列，頁面顯示空狀態而非報錯。
  */
+/**
+ * 影片清單。
+ *
+ * 影片本體（標題、縮圖、觀看數、長度）來自 YouTube，站台這邊只存覆寫設定：
+ * 分類、精選、隱藏、排序與標題覆寫。兩者在這裡合併。
+ *
+ * YouTube 那半走自家的 `/api/youtube` 代理而不是直接打 Google：金鑰只能留在
+ * server 端，而且代理那層已經有六小時的 fetch 快取，兩邊共用同一份。
+ * 沒有設定 `YOUTUBE_API_KEY` 時代理回傳空陣列，整頁就只是沒有影片。
+ */
 export const getVideos = cached(
   ['getVideos'],
   async (): Promise<VideoItem[]> => {
@@ -371,25 +382,45 @@ export const getVideos = cached(
     const { data, error } = await publicClient()
       .from('video_meta')
       .select('youtube_id, category, is_featured, is_hidden, sort_order')
-      .eq('is_hidden', false)
       .order('sort_order');
     if (error) throw new Error(`[data] video_meta: ${error.message}`);
 
-    // 影片本體（標題、縮圖、觀看數）由 /api/youtube 代理提供；此處僅回傳覆寫設定，
-    // 實際合併在 `/videos` 頁完成。
-    return rows<{ youtube_id: string; category: string | null; is_featured: boolean }>(data).map(
-      (row) => ({
-        youtubeId: row.youtube_id,
-        title: '',
-        description: '',
-        publishedAt: '',
-        viewCount: 0,
-        durationSeconds: 0,
-        thumbnailUrl: '',
-        category: row.category,
-        isFeatured: row.is_featured,
-      }),
+    const overrides = new Map(
+      rows<{
+        youtube_id: string;
+        category: string | null;
+        is_featured: boolean;
+        is_hidden: boolean;
+        sort_order: number;
+      }>(data).map((row) => [row.youtube_id, row]),
     );
+
+    const response = await fetch(`${siteUrl}/api/youtube`, { next: { revalidate: 21600 } }).catch(
+      () => null,
+    );
+    const payload = response?.ok
+      ? ((await response.json()) as { videos?: VideoItem[] })
+      : { videos: [] };
+
+    return (payload.videos ?? [])
+      .filter((video) => !overrides.get(video.youtubeId)?.is_hidden)
+      .map((video) => {
+        const override = overrides.get(video.youtubeId);
+        return {
+          ...video,
+          category: override?.category ?? null,
+          isFeatured: override?.is_featured ?? false,
+        };
+      })
+      .sort((a, b) => {
+        const orderA = overrides.get(a.youtubeId)?.sort_order;
+        const orderB = overrides.get(b.youtubeId)?.sort_order;
+        // 有指定排序的排在前面，其餘依發佈時間新到舊。
+        if (orderA !== undefined && orderB !== undefined) return orderA - orderB;
+        if (orderA !== undefined) return -1;
+        if (orderB !== undefined) return 1;
+        return b.publishedAt.localeCompare(a.publishedAt);
+      });
   },
   { tags: [cacheTags.site] },
 );

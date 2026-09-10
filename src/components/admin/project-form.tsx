@@ -311,83 +311,184 @@ export function ProjectForm({
         <div className="grid max-w-5xl gap-6 md:grid-cols-2">
           <div className="space-y-4">
             <div>
-              <label className={label} htmlFor="p-name">名稱</label>
-              <input id="p-name" value={current.name} onChange={(e) => patchContent({ name: e.target.value })} className={field} />
+              <label className={label} htmlFor="p-name">
+                名稱
+              </label>
+              <input
+                id="p-name"
+                value={current.name}
+                onChange={(e) => patchContent({ name: e.target.value })}
+                className={field}
+              />
             </div>
             <div>
-              <label className={label} htmlFor="p-tagline">一句話</label>
-              <input id="p-tagline" value={current.tagline} onChange={(e) => patchContent({ tagline: e.target.value })} className={field} />
+              <label className={label} htmlFor="p-tagline">
+                一句話
+              </label>
+              <input
+                id="p-tagline"
+                value={current.tagline}
+                onChange={(e) => patchContent({ tagline: e.target.value })}
+                className={field}
+              />
             </div>
             <div>
-              <label className={label} htmlFor="p-summary">摘要</label>
-              <textarea id="p-summary" rows={3} value={current.summary} onChange={(e) => patchContent({ summary: e.target.value })} className={`${field} resize-y`} />
+              <label className={label} htmlFor="p-summary">
+                摘要
+              </label>
+              <textarea
+                id="p-summary"
+                rows={3}
+                value={current.summary}
+                onChange={(e) => patchContent({ summary: e.target.value })}
+                className={`${field} resize-y`}
+              />
             </div>
             <div>
-              <label className={label} htmlFor="p-role">我的角色</label>
-              <input id="p-role" value={current.role} onChange={(e) => patchContent({ role: e.target.value })} className={field} />
+              <label className={label} htmlFor="p-role">
+                我的角色
+              </label>
+              <input
+                id="p-role"
+                value={current.role}
+                onChange={(e) => patchContent({ role: e.target.value })}
+                className={field}
+              />
             </div>
             <div>
-              <label className={label} htmlFor="p-slug">slug</label>
-              <input id="p-slug" value={slug} onChange={(e) => setSlug(e.target.value)} className={field} />
+              <label className={label} htmlFor="p-slug">
+                slug
+              </label>
+              <input
+                id="p-slug"
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                className={field}
+              />
             </div>
           </div>
 
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className={label} htmlFor="p-start">開始日期</label>
-                <input id="p-start" type="date" value={startedAt} onChange={(e) => setStartedAt(e.target.value)} className={field} />
+                <label className={label} htmlFor="p-start">
+                  開始日期
+                </label>
+                <input
+                  id="p-start"
+                  type="date"
+                  value={startedAt}
+                  onChange={(e) => setStartedAt(e.target.value)}
+                  className={field}
+                />
               </div>
               <div>
-                <label className={label} htmlFor="p-end">結束日期（留空＝進行中）</label>
-                <input id="p-end" type="date" value={endedAt} onChange={(e) => setEndedAt(e.target.value)} className={field} />
+                <label className={label} htmlFor="p-end">
+                  結束日期（留空＝進行中）
+                </label>
+                <input
+                  id="p-end"
+                  type="date"
+                  value={endedAt}
+                  onChange={(e) => setEndedAt(e.target.value)}
+                  className={field}
+                />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className={label} htmlFor="p-status">狀態</label>
-                <select id="p-status" value={status} onChange={(e) => setStatus(e.target.value)} className={field}>
+                <label className={label} htmlFor="p-status">
+                  狀態
+                </label>
+                <select
+                  id="p-status"
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                  className={field}
+                >
                   {projectStatuses.map((value) => (
-                    <option key={value} value={value}>{statusLabels[value]}</option>
+                    <option key={value} value={value}>
+                      {statusLabels[value]}
+                    </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className={label} htmlFor="p-order">排序</label>
-                <input id="p-order" type="number" value={sortOrder} onChange={(e) => setSortOrder(Number(e.target.value))} className={field} />
+                <label className={label} htmlFor="p-order">
+                  排序
+                </label>
+                <input
+                  id="p-order"
+                  type="number"
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(Number(e.target.value))}
+                  className={field}
+                />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className={label} htmlFor="p-category">分類</label>
-                <select id="p-category" value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className={field}>
+                <label className={label} htmlFor="p-category">
+                  分類
+                </label>
+                <select
+                  id="p-category"
+                  value={categoryId}
+                  onChange={(e) => setCategoryId(e.target.value)}
+                  className={field}
+                >
                   <option value="">未分類</option>
                   {options.categories.map((option) => (
-                    <option key={option.id} value={option.id}>{option.name}</option>
+                    <option key={option.id} value={option.id}>
+                      {option.name}
+                    </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className={label} htmlFor="p-org">所屬團隊</label>
-                <select id="p-org" value={organizationId} onChange={(e) => setOrganizationId(e.target.value)} className={field}>
+                <label className={label} htmlFor="p-org">
+                  所屬團隊
+                </label>
+                <select
+                  id="p-org"
+                  value={organizationId}
+                  onChange={(e) => setOrganizationId(e.target.value)}
+                  className={field}
+                >
                   <option value="">無</option>
                   {options.organizations.map((option) => (
-                    <option key={option.id} value={option.id}>{option.name}</option>
+                    <option key={option.id} value={option.id}>
+                      {option.name}
+                    </option>
                   ))}
                 </select>
               </div>
             </div>
 
             <div>
-              <label className={label} htmlFor="p-github">GitHub repo（owner/name）</label>
-              <input id="p-github" value={githubRepo} onChange={(e) => setGithubRepo(e.target.value)} className={field} />
+              <label className={label} htmlFor="p-github">
+                GitHub（owner 或 owner/repo）
+              </label>
+              <input
+                id="p-github"
+                value={githubRepo}
+                onChange={(e) => setGithubRepo(e.target.value)}
+                className={field}
+              />
             </div>
 
             <div>
-              <label className={label} htmlFor="p-cover">封面圖網址</label>
-              <input id="p-cover" value={coverUrl} onChange={(e) => setCoverUrl(e.target.value)} className={field} />
+              <label className={label} htmlFor="p-cover">
+                封面圖網址
+              </label>
+              <input
+                id="p-cover"
+                value={coverUrl}
+                onChange={(e) => setCoverUrl(e.target.value)}
+                className={field}
+              />
             </div>
 
             <div className="space-y-2">
@@ -399,7 +500,12 @@ export function ProjectForm({
                 ] as const
               ).map(([checked, setter, text]) => (
                 <label key={text} className="flex items-center gap-2.5 text-[15px]">
-                  <input type="checkbox" checked={checked} onChange={(e) => setter(e.target.checked)} className="size-4 accent-[var(--color-accent)]" />
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={(e) => setter(e.target.checked)}
+                    className="size-4 accent-[var(--color-accent)]"
+                  />
                   {text}
                 </label>
               ))}
@@ -414,7 +520,11 @@ export function ProjectForm({
                       value={metric.key}
                       placeholder="項目"
                       onChange={(e) =>
-                        setMetrics((rows) => rows.map((row, i) => (i === index ? { ...row, key: e.target.value } : row)))
+                        setMetrics((rows) =>
+                          rows.map((row, i) =>
+                            i === index ? { ...row, key: e.target.value } : row,
+                          ),
+                        )
                       }
                       className={field}
                     />
@@ -422,16 +532,28 @@ export function ProjectForm({
                       value={metric.value}
                       placeholder="數值"
                       onChange={(e) =>
-                        setMetrics((rows) => rows.map((row, i) => (i === index ? { ...row, value: e.target.value } : row)))
+                        setMetrics((rows) =>
+                          rows.map((row, i) =>
+                            i === index ? { ...row, value: e.target.value } : row,
+                          ),
+                        )
                       }
                       className={field}
                     />
-                    <button type="button" onClick={() => setMetrics((rows) => rows.filter((_, i) => i !== index))} className="shrink-0 cursor-pointer px-2 text-[14px] text-ink-70 hover:text-accent-2-700">
+                    <button
+                      type="button"
+                      onClick={() => setMetrics((rows) => rows.filter((_, i) => i !== index))}
+                      className="shrink-0 cursor-pointer px-2 text-[14px] text-ink-70 hover:text-accent-2-700"
+                    >
                       移除
                     </button>
                   </div>
                 ))}
-                <Button size="sm" variant="secondary" onClick={() => setMetrics((rows) => [...rows, { key: '', value: '' }])}>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => setMetrics((rows) => [...rows, { key: '', value: '' }])}
+                >
                   新增數據
                 </Button>
               </div>
@@ -439,7 +561,9 @@ export function ProjectForm({
 
             {project && canDelete ? (
               <div className="border-t border-divider pt-4">
-                <Button variant="secondary" onClick={remove} disabled={pending}>刪除這個作品</Button>
+                <Button variant="secondary" onClick={remove} disabled={pending}>
+                  刪除這個作品
+                </Button>
               </div>
             ) : null}
           </div>
@@ -452,7 +576,10 @@ export function ProjectForm({
             最多 {MAX_IMAGES} 張。第一張若未指定封面則作為封面。
           </p>
           {images.map((image, index) => (
-            <div key={index} className="flex flex-wrap items-start gap-3 rounded-lg border border-divider bg-surface p-3">
+            <div
+              key={index}
+              className="flex flex-wrap items-start gap-3 rounded-lg border border-divider bg-surface p-3"
+            >
               <div className="size-16 shrink-0 overflow-hidden rounded-md media-slot">
                 {image.url ? (
                   // 圖片來源可能是任意 Storage 路徑，不走 next/image 的最佳化。
@@ -461,19 +588,76 @@ export function ProjectForm({
                 ) : null}
               </div>
               <div className="flex-1 space-y-2">
-                <input value={image.url} placeholder="圖片網址" onChange={(e) => setImages((rows) => rows.map((row, i) => (i === index ? { ...row, url: e.target.value } : row)))} className={field} />
+                <input
+                  value={image.url}
+                  placeholder="圖片網址"
+                  onChange={(e) =>
+                    setImages((rows) =>
+                      rows.map((row, i) => (i === index ? { ...row, url: e.target.value } : row)),
+                    )
+                  }
+                  className={field}
+                />
                 <div className="grid grid-cols-2 gap-2">
-                  <input value={image.alt} placeholder="替代文字" onChange={(e) => setImages((rows) => rows.map((row, i) => (i === index ? { ...row, alt: e.target.value } : row)))} className={field} />
-                  <input value={image.caption} placeholder="圖說" onChange={(e) => setImages((rows) => rows.map((row, i) => (i === index ? { ...row, caption: e.target.value } : row)))} className={field} />
+                  <input
+                    value={image.alt}
+                    placeholder="替代文字"
+                    onChange={(e) =>
+                      setImages((rows) =>
+                        rows.map((row, i) => (i === index ? { ...row, alt: e.target.value } : row)),
+                      )
+                    }
+                    className={field}
+                  />
+                  <input
+                    value={image.caption}
+                    placeholder="圖說"
+                    onChange={(e) =>
+                      setImages((rows) =>
+                        rows.map((row, i) =>
+                          i === index ? { ...row, caption: e.target.value } : row,
+                        ),
+                      )
+                    }
+                    className={field}
+                  />
                 </div>
                 <div className="flex flex-wrap items-center gap-3 text-[14px]">
                   <label className="flex items-center gap-2">
-                    <input type="radio" name="cover" checked={image.isCover} onChange={() => setImages((rows) => rows.map((row, i) => ({ ...row, isCover: i === index })))} className="size-4 accent-[var(--color-accent)]" />
+                    <input
+                      type="radio"
+                      name="cover"
+                      checked={image.isCover}
+                      onChange={() =>
+                        setImages((rows) =>
+                          rows.map((row, i) => ({ ...row, isCover: i === index })),
+                        )
+                      }
+                      className="size-4 accent-[var(--color-accent)]"
+                    />
                     設為封面
                   </label>
-                  <button type="button" onClick={() => setImages((rows) => move(rows, index, index - 1))} className="cursor-pointer text-ink-70 hover:text-accent">上移</button>
-                  <button type="button" onClick={() => setImages((rows) => move(rows, index, index + 1))} className="cursor-pointer text-ink-70 hover:text-accent">下移</button>
-                  <button type="button" onClick={() => setImages((rows) => rows.filter((_, i) => i !== index))} className="cursor-pointer text-ink-70 hover:text-accent-2-700">移除</button>
+                  <button
+                    type="button"
+                    onClick={() => setImages((rows) => move(rows, index, index - 1))}
+                    className="cursor-pointer text-ink-70 hover:text-accent"
+                  >
+                    上移
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setImages((rows) => move(rows, index, index + 1))}
+                    className="cursor-pointer text-ink-70 hover:text-accent"
+                  >
+                    下移
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setImages((rows) => rows.filter((_, i) => i !== index))}
+                    className="cursor-pointer text-ink-70 hover:text-accent-2-700"
+                  >
+                    移除
+                  </button>
                 </div>
               </div>
             </div>
@@ -482,7 +666,12 @@ export function ProjectForm({
             size="sm"
             variant="secondary"
             disabled={images.length >= MAX_IMAGES}
-            onClick={() => setImages((rows) => [...rows, { id: null, url: '', alt: '', caption: '', isCover: rows.length === 0 }])}
+            onClick={() =>
+              setImages((rows) => [
+                ...rows,
+                { id: null, url: '', alt: '', caption: '', isCover: rows.length === 0 },
+              ])
+            }
           >
             新增圖片
           </Button>
@@ -492,25 +681,76 @@ export function ProjectForm({
       {tab === 'links' ? (
         <div className="max-w-3xl space-y-3">
           {links.map((link, index) => (
-            <div key={index} className="flex flex-wrap items-center gap-2 rounded-lg border border-divider bg-surface p-3">
-              <select value={link.type} onChange={(e) => setLinks((rows) => rows.map((row, i) => (i === index ? { ...row, type: e.target.value as (typeof projectLinkTypes)[number] } : row)))} className={`${field} w-32`}>
+            <div
+              key={index}
+              className="flex flex-wrap items-center gap-2 rounded-lg border border-divider bg-surface p-3"
+            >
+              <select
+                value={link.type}
+                onChange={(e) =>
+                  setLinks((rows) =>
+                    rows.map((row, i) =>
+                      i === index
+                        ? { ...row, type: e.target.value as (typeof projectLinkTypes)[number] }
+                        : row,
+                    ),
+                  )
+                }
+                className={`${field} w-32`}
+              >
                 {projectLinkTypes.map((value) => (
-                  <option key={value} value={value}>{linkTypeLabels[value]}</option>
+                  <option key={value} value={value}>
+                    {linkTypeLabels[value]}
+                  </option>
                 ))}
               </select>
-              <input value={link.label} placeholder="標籤" onChange={(e) => setLinks((rows) => rows.map((row, i) => (i === index ? { ...row, label: e.target.value } : row)))} className={`${field} w-40`} />
-              <input value={link.url} placeholder="https://" onChange={(e) => setLinks((rows) => rows.map((row, i) => (i === index ? { ...row, url: e.target.value } : row)))} className={`${field} flex-1`} />
-              <button type="button" onClick={() => setLinks((rows) => rows.filter((_, i) => i !== index))} className="cursor-pointer px-2 text-[14px] text-ink-70 hover:text-accent-2-700">移除</button>
+              <input
+                value={link.label}
+                placeholder="標籤"
+                onChange={(e) =>
+                  setLinks((rows) =>
+                    rows.map((row, i) => (i === index ? { ...row, label: e.target.value } : row)),
+                  )
+                }
+                className={`${field} w-40`}
+              />
+              <input
+                value={link.url}
+                placeholder="https://"
+                onChange={(e) =>
+                  setLinks((rows) =>
+                    rows.map((row, i) => (i === index ? { ...row, url: e.target.value } : row)),
+                  )
+                }
+                className={`${field} flex-1`}
+              />
+              <button
+                type="button"
+                onClick={() => setLinks((rows) => rows.filter((_, i) => i !== index))}
+                className="cursor-pointer px-2 text-[14px] text-ink-70 hover:text-accent-2-700"
+              >
+                移除
+              </button>
             </div>
           ))}
-          <Button size="sm" variant="secondary" onClick={() => setLinks((rows) => [...rows, { id: null, type: 'demo' as const, url: '', label: '' }])}>
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() =>
+              setLinks((rows) => [...rows, { id: null, type: 'demo' as const, url: '', label: '' }])
+            }
+          >
             新增連結
           </Button>
         </div>
       ) : null}
 
       {tab === 'content' ? (
-        <MarkdownEditor value={current.contentMd} onChange={(value) => patchContent({ contentMd: value })} onSave={submit} />
+        <MarkdownEditor
+          value={current.contentMd}
+          onChange={(value) => patchContent({ contentMd: value })}
+          onSave={submit}
+        />
       ) : null}
 
       {tab === 'related' ? (
@@ -521,7 +761,21 @@ export function ProjectForm({
               {options.tags.map((tag) => {
                 const checked = tagIds.includes(tag.id);
                 return (
-                  <button key={tag.id} type="button" onClick={() => setTagIds((ids) => (checked ? ids.filter((id) => id !== tag.id) : [...ids, tag.id]))} className={cn('cursor-pointer rounded-md border px-2.5 py-1 text-[14px] transition-colors', checked ? 'border-accent bg-accent-100 text-accent-800' : 'border-divider text-text hover:bg-ink-8')}>
+                  <button
+                    key={tag.id}
+                    type="button"
+                    onClick={() =>
+                      setTagIds((ids) =>
+                        checked ? ids.filter((id) => id !== tag.id) : [...ids, tag.id],
+                      )
+                    }
+                    className={cn(
+                      'cursor-pointer rounded-md border px-2.5 py-1 text-[14px] transition-colors',
+                      checked
+                        ? 'border-accent bg-accent-100 text-accent-800'
+                        : 'border-divider text-text hover:bg-ink-8',
+                    )}
+                  >
                     {tag.name}
                   </button>
                 );
@@ -533,7 +787,16 @@ export function ProjectForm({
             <div className="max-h-80 space-y-1.5 overflow-y-auto">
               {options.posts.map((post) => (
                 <label key={post.id} className="flex items-center gap-2.5 text-[15px]">
-                  <input type="checkbox" checked={relatedPostIds.includes(post.id)} onChange={(e) => setRelatedPostIds((ids) => (e.target.checked ? [...ids, post.id] : ids.filter((id) => id !== post.id)))} className="size-4 accent-[var(--color-accent)]" />
+                  <input
+                    type="checkbox"
+                    checked={relatedPostIds.includes(post.id)}
+                    onChange={(e) =>
+                      setRelatedPostIds((ids) =>
+                        e.target.checked ? [...ids, post.id] : ids.filter((id) => id !== post.id),
+                      )
+                    }
+                    className="size-4 accent-[var(--color-accent)]"
+                  />
                   {post.name}
                 </label>
               ))}
