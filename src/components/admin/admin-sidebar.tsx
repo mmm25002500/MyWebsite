@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { AdminIcon } from '@/components/admin/admin-icon';
 import { adminNav } from '@/components/admin/nav-items';
 import { atLeast, type Role } from '@/lib/auth/roles';
+import { useExitTransition } from '@/lib/hooks/use-exit-transition';
 import { cn } from '@/lib/utils';
 
 const COLLAPSED_KEY = 'tershi.admin.sidebarCollapsed';
@@ -81,6 +82,8 @@ export function AdminMobileNav({
   open: boolean;
   onClose: () => void;
 }) {
+  // 關閉時要把退場動畫播完才卸載。
+  const drawer = useExitTransition(open, 220);
   // 抽屜開著時鎖住背景捲動，避免手指滑到底下的頁面。
   useEffect(() => {
     if (!open) return;
@@ -100,7 +103,7 @@ export function AdminMobileNav({
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [open, onClose]);
 
-  if (!open) return null;
+  if (!drawer.mounted) return null;
 
   return (
     <div className="fixed inset-0 z-50 md:hidden">
@@ -108,9 +111,17 @@ export function AdminMobileNav({
         type="button"
         aria-label="關閉導覽"
         onClick={onClose}
-        className="animate-backdrop absolute inset-0 bg-black/50"
+        className={cn(
+          'absolute inset-0 bg-black/50',
+          drawer.closing ? 'animate-backdrop-out' : 'animate-backdrop',
+        )}
       />
-      <div className="animate-drawer-left absolute inset-y-0 left-0 flex w-64 flex-col border-r border-divider bg-surface">
+      <div
+        className={cn(
+          'absolute inset-y-0 left-0 flex w-64 flex-col border-r border-divider bg-surface',
+          drawer.closing ? 'animate-drawer-out-left' : 'animate-drawer-left',
+        )}
+      >
         <div className="flex items-center gap-2 px-3 py-3.5">
           <Link
             href="/admin"

@@ -283,6 +283,19 @@
     animation: drawer-in-left 0.24s cubic-bezier(0.32, 0.72, 0, 1) both;
   }
 
+  /* 退場：反向滑出。曲線改成前段快，收起來才不拖泥帶水。 */
+  .animate-backdrop-out {
+    animation: backdrop-in 0.18s ease-in reverse both;
+  }
+
+  .animate-drawer-out-right {
+    animation: drawer-in-right 0.22s cubic-bezier(0.4, 0, 1, 1) reverse both;
+  }
+
+  .animate-drawer-out-left {
+    animation: drawer-in-left 0.22s cubic-bezier(0.4, 0, 1, 1) reverse both;
+  }
+
   /* 報紙網點：介面影像的處理方式。 */
   .halftone {
     position: relative;
@@ -370,7 +383,10 @@
   .animate-rise,
   .animate-backdrop,
   .animate-drawer-right,
-  .animate-drawer-left {
+  .animate-drawer-left,
+  .animate-backdrop-out,
+  .animate-drawer-out-right,
+  .animate-drawer-out-left {
     animation: none;
   }
 

@@ -10,6 +10,7 @@ import { UserMenu } from '@/components/site/user-menu';
 import type { NavKey } from '@/components/site/nav-items';
 import type { Locale } from '@/lib/i18n/config';
 import { Link, usePathname } from '@/lib/i18n/routing';
+import { useExitTransition } from '@/lib/hooks/use-exit-transition';
 import { cn } from '@/lib/utils';
 
 export interface NavEntry {
@@ -30,6 +31,8 @@ export function SiteHeader({
   const t = useTranslations();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  // 關閉時要把退場動畫播完才卸載。
+  const menu = useExitTransition(menuOpen, 220);
 
   const isCurrent = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
 
@@ -113,15 +116,23 @@ export function SiteHeader({
         手機的導覽抽屜。原本是把十個項目擠成一條可橫向捲動的列，滑到後面幾項
         很吃力，也看不出總共有哪些頁。
       */}
-      {menuOpen ? (
+      {menu.mounted ? (
         <div className="fixed inset-0 z-50 md:hidden">
           <button
             type="button"
             aria-label={t('common.close')}
             onClick={() => setMenuOpen(false)}
-            className="animate-backdrop absolute inset-0 bg-black/50"
+            className={cn(
+              'absolute inset-0 bg-black/50',
+              menu.closing ? 'animate-backdrop-out' : 'animate-backdrop',
+            )}
           />
-          <div className="animate-drawer-right absolute inset-y-0 right-0 flex w-64 flex-col border-l border-divider bg-bg">
+          <div
+            className={cn(
+              'absolute inset-y-0 right-0 flex w-64 flex-col border-l border-divider bg-bg',
+              menu.closing ? 'animate-drawer-out-right' : 'animate-drawer-right',
+            )}
+          >
             <div className="flex items-center gap-2 px-5 py-3.5">
               <span className="font-heading text-[18px] font-bold tracking-[0.06em]">TSX</span>
               <button
