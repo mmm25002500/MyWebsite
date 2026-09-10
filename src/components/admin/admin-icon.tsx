@@ -18,6 +18,7 @@ import {
   LinkIcon,
   ListMagnifyingGlassIcon,
   PaperPlaneTiltIcon,
+  ShieldCheckIcon,
   StackIcon,
   TagIcon,
   UsersIcon,
@@ -28,6 +29,7 @@ import {
 /** 側欄圖示。以名稱對應，避免在資料裡放元件。 */
 const icons: Record<string, typeof ArticleIcon> = {
   gauge: GaugeIcon,
+  'shield-check': ShieldCheckIcon,
   article: ArticleIcon,
   folders: FoldersIcon,
   tag: TagIcon,

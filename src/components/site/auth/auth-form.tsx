@@ -8,6 +8,7 @@ import { hasSupabase, siteUrl } from '@/lib/env';
 import { Link } from '@/lib/i18n/routing';
 import { createBrowserSupabase } from '@/lib/supabase/client';
 import { setFlash, toast } from '@/lib/toast';
+import { PASSWORD_MIN_LENGTH, passwordSchema } from '@/lib/validators/password';
 
 type Mode = 'login' | 'register';
 
@@ -33,6 +34,15 @@ export function AuthForm({ mode, nextPath }: { mode: Mode; nextPath?: string }) 
     if (!hasSupabase) {
       setError(t('common.error'));
       return;
+    }
+
+    // 註冊才檢查長度：既有帳號的舊密碼可能比現在的規則短，登入不該被擋。
+    if (mode === 'register') {
+      const check = passwordSchema.safeParse(password);
+      if (!check.success) {
+        setError(check.error.issues[0]?.message ?? '密碼不符合規則');
+        return;
+      }
     }
 
     setPending(true);
@@ -154,7 +164,7 @@ export function AuthForm({ mode, nextPath }: { mode: Mode; nextPath?: string }) 
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             required
-            minLength={10}
+            minLength={PASSWORD_MIN_LENGTH}
             className={fieldClass}
           />
         </div>
