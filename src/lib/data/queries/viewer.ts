@@ -38,15 +38,18 @@ export async function getViewerProfile(): Promise<ViewerProfile | null> {
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('display_name, avatar_url, notify_reply, created_at')
-    .eq('user_id', user.id)
-    .maybeSingle();
-
-  if (!profile) return null;
-
-  const [{ data: comments }, { count: likeCount }] = await Promise.all([
+  /*
+   * 三個查詢一起發，不要接力。
+   *
+   * 函式跑在東京、資料庫也在東京，但每一趟往返仍有固定成本；原本是先等 profile
+   * 回來才發後面兩個，等於白白多一趟。三者互不依賴，profile 不存在時再放棄即可。
+   */
+  const [{ data: profile }, { data: comments }, { count: likeCount }] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select('display_name, avatar_url, notify_reply, created_at')
+      .eq('user_id', user.id)
+      .maybeSingle(),
     supabase
       .from('comments')
       .select('id, content, created_at, status, target_type, target_id')
@@ -58,6 +61,8 @@ export async function getViewerProfile(): Promise<ViewerProfile | null> {
       .select('post_id', { count: 'exact', head: true })
       .eq('user_id', user.id),
   ]);
+
+  if (!profile) return null;
 
   const rows = comments ?? [];
 

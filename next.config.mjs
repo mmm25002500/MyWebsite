@@ -1,3 +1,10 @@
+/*
+ * 函式區域固定在東京（vercel.json 的 `regions: ["hnd1"]`）。
+ *
+ * Supabase 專案在 ap-northeast-1，而 Vercel 預設把函式跑在 iad1（美東）——每一次
+ * 查資料庫都要跨一趟太平洋。帳號設定頁有四到五次接續的往返，實測 TTFB 要三到五
+ * 秒；後台的查詢更多，更慢。讀者也多在台灣，東京同時縮短了兩邊的距離。
+ */
 import bundleAnalyzer from '@next/bundle-analyzer';
 import createNextIntlPlugin from 'next-intl/plugin';
 
