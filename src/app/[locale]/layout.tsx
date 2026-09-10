@@ -10,7 +10,6 @@ import { siteUrl } from '@/lib/env';
 import { htmlLang, isLocale, locales, type Locale } from '@/lib/i18n/config';
 
 import '@/styles/globals.css';
-import 'katex/dist/katex.min.css';
 
 /**
  * 台灣圓體（jf open 粉圓 2.0）。
