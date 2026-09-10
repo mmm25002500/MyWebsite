@@ -3,6 +3,7 @@ import createIntlMiddleware from 'next-intl/middleware';
 import { NextResponse, type NextRequest } from 'next/server';
 
 import { themeScriptSource } from '@/components/site/theme-script';
+import { adsEnabled, adsenseHosts, isAdRoute } from '@/lib/ads/config';
 import { isLocale } from '@/lib/i18n/config';
 import { routing } from '@/lib/i18n/routing';
 import { refreshSession } from '@/lib/supabase/middleware';
@@ -24,10 +25,7 @@ let themeScriptHash: string | null = null;
 async function getThemeScriptHash(): Promise<string> {
   if (themeScriptHash) return themeScriptHash;
 
-  const digest = await crypto.subtle.digest(
-    'SHA-256',
-    new TextEncoder().encode(themeScriptSource),
-  );
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(themeScriptSource));
   themeScriptHash = `'sha256-${btoa(String.fromCharCode(...new Uint8Array(digest)))}'`;
   return themeScriptHash;
 }
@@ -44,9 +42,62 @@ async function getThemeScriptHash(): Promise<string> {
  * 開發模式額外放行 `'unsafe-eval'` 與 websocket：Next.js 的 dev server 以
  * `eval` 產生 source map、以 websocket 做 HMR，擋掉的話 webpack runtime 會
  * 直接拋 EvalError，整個頁面不會 hydrate。正式環境不含這兩項。
+ *
+ * `ads` 為真時（只有設定了 AdSense、而且是會出現廣告的路徑）改用一份放寬的
+ * 政策：**這是一個明確的取捨**。AdSense 的廣告框會自己注入行內腳本，帶
+ * nonce 的政策擋得死死的，因此那些路徑改成 `'unsafe-inline'` 加網域白名單。
+ * 首頁、聯絡表單、登入註冊與整個後台不在其中，維持原本的嚴格政策。
  */
-function contentSecurityPolicy(nonce: string, scriptHash: string, supabaseHost: string): string {
+function contentSecurityPolicy(
+  nonce: string,
+  scriptHash: string,
+  supabaseHost: string,
+  ads: boolean,
+): string {
   const isDev = process.env.NODE_ENV === 'development';
+
+  if (ads) {
+    return [
+      "default-src 'self'",
+      // 有 nonce 時瀏覽器會忽略 'unsafe-inline'，因此這份政策不帶 nonce。
+      [
+        "script-src 'self' 'unsafe-inline'",
+        isDev ? "'unsafe-eval'" : null,
+        'https://challenges.cloudflare.com',
+        ...adsenseHosts.script,
+      ]
+        .filter(Boolean)
+        .join(' '),
+      "style-src 'self' 'unsafe-inline'",
+      [
+        `img-src 'self' data: blob: https://${supabaseHost}`,
+        'https://i.ytimg.com',
+        'https://avatars.githubusercontent.com',
+        'https://lh3.googleusercontent.com',
+        ...adsenseHosts.image,
+      ].join(' '),
+      [
+        'frame-src https://www.youtube-nocookie.com https://challenges.cloudflare.com',
+        ...adsenseHosts.frame,
+      ].join(' '),
+      [
+        "connect-src 'self'",
+        `https://${supabaseHost}`,
+        `wss://${supabaseHost}`,
+        ...adsenseHosts.connect,
+        isDev ? 'ws://localhost:* http://localhost:*' : null,
+      ]
+        .filter(Boolean)
+        .join(' '),
+      "font-src 'self' data:",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "frame-ancestors 'none'",
+      isDev ? null : 'upgrade-insecure-requests',
+    ]
+      .filter(Boolean)
+      .join('; ');
+  }
 
   return [
     "default-src 'self'",
@@ -80,14 +131,18 @@ function contentSecurityPolicy(nonce: string, scriptHash: string, supabaseHost: 
     .join('; ');
 }
 
-async function applySecurityHeaders(response: NextResponse): Promise<NextResponse> {
+async function applySecurityHeaders(
+  response: NextResponse,
+  pathname: string,
+): Promise<NextResponse> {
   const nonce = crypto.randomUUID().replace(/-/g, '');
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseHost = supabaseUrl ? new URL(supabaseUrl).hostname : '*.supabase.co';
+  const ads = adsEnabled && isAdRoute(pathname);
 
   response.headers.set(
     'content-security-policy',
-    contentSecurityPolicy(nonce, await getThemeScriptHash(), supabaseHost),
+    contentSecurityPolicy(nonce, await getThemeScriptHash(), supabaseHost, ads),
   );
   return response;
 }
@@ -152,7 +207,11 @@ async function getRedirects(): Promise<Map<string, RedirectRule>> {
 
     if (error) console.error('[middleware] 讀取轉址表失敗：', error.message);
 
-    for (const row of (data ?? []) as { from_path: string; to_path: string; status_code: number }[]) {
+    for (const row of (data ?? []) as {
+      from_path: string;
+      to_path: string;
+      status_code: number;
+    }[]) {
       map.set(row.from_path, { to: row.to_path, status: row.status_code });
     }
   }
@@ -172,9 +231,7 @@ const redirectStatuses = new Set([301, 302, 307, 308]);
  * 前綴拆下來，命中後再接回去，英文頁不會被轉回中文版。
  * query string 不參與比對，但會原樣帶到新網址。
  */
-async function matchRedirect(
-  request: NextRequest,
-): Promise<{ url: URL; status: number } | null> {
+async function matchRedirect(request: NextRequest): Promise<{ url: URL; status: number } | null> {
   const { pathname, search } = request.nextUrl;
 
   const segments = pathname.split('/');
@@ -208,7 +265,7 @@ export async function middleware(request: NextRequest) {
     const response = NextResponse.next();
     const { role } = await refreshSession(request, response);
 
-    if (pathname === '/admin/login') return applySecurityHeaders(response);
+    if (pathname === '/admin/login') return applySecurityHeaders(response, pathname);
 
     if (!role || !adminRoles.has(role)) {
       const loginUrl = new URL('/admin/login', request.url);
@@ -216,7 +273,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
 
-    return applySecurityHeaders(response);
+    return applySecurityHeaders(response, pathname);
   }
 
   // 轉址在 i18n 之前：命中就直接送走，不必再跑語系協商與 session 刷新。
@@ -226,7 +283,7 @@ export async function middleware(request: NextRequest) {
   const response = handleI18n(request);
   // 前台仍需刷新 session，留言與帳號頁才拿得到登入狀態。
   await refreshSession(request, response);
-  return applySecurityHeaders(response);
+  return applySecurityHeaders(response, pathname);
 }
 
 export const config = {

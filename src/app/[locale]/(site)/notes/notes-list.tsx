@@ -1,5 +1,7 @@
 import { getTranslations } from 'next-intl/server';
+import { Fragment } from 'react';
 
+import { AdSlot } from '@/components/ads/ad-slot';
 import { NotesSidebar } from '@/components/site/notes-sidebar';
 import { Pagination } from '@/components/site/pagination';
 import { PostListRow } from '@/components/site/post-list-row';
@@ -29,7 +31,13 @@ export async function NotesList({
           {result.items.length === 0 ? (
             <p className="py-16 text-center text-[15px] text-ink-55">{t('common.empty')}</p>
           ) : (
-            result.items.map((post) => <PostListRow key={post.id} post={post} locale={locale} />)
+            result.items.map((post, index) => (
+              <Fragment key={post.id}>
+                <PostListRow post={post} locale={locale} />
+                {/* 第四篇之後插一個版位，位置固定才不會每次換頁跳來跳去。 */}
+                {index === 3 ? <AdSlot name="list" format="fluid" label={t('ads.label')} /> : null}
+              </Fragment>
+            ))
           )}
 
           <Pagination

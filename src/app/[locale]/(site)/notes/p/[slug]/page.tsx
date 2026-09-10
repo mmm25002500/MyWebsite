@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
+import { AdSlot } from '@/components/ads/ad-slot';
 import { CodeCopyButtons } from '@/components/content/code-copy';
 import { MarkdownContent } from '@/components/content/markdown-content';
 import { TableOfContents } from '@/components/content/table-of-contents';
@@ -209,6 +210,8 @@ export default async function PostPage({
             <MarkdownContent html={post.contentHtml} />
             <CodeCopyButtons label={t('common.copy')} copiedLabel={t('common.copied')} />
 
+            <AdSlot name="article" label={t('ads.label')} />
+
             {post.tags.length > 0 ? (
               <div className="mt-10 flex flex-wrap gap-1.5">
                 {post.tags.map((tag) => (
@@ -288,6 +291,7 @@ export default async function PostPage({
           <div className="hidden md:block">
             <div className="sticky top-24">
               <TableOfContents items={post.toc} label={t('notes.toc')} />
+              <AdSlot name="sidebar" format="rectangle" label={t('ads.label')} className="mt-6" />
             </div>
           </div>
         </div>

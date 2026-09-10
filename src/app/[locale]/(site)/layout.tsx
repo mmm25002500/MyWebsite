@@ -3,6 +3,8 @@ import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Suspense, type ReactNode } from 'react';
 
+import { AdsConsentBanner } from '@/components/ads/consent-banner';
+import { AdsenseScript } from '@/components/ads/adsense-script';
 import { AnalyticsTracker } from '@/components/site/analytics-tracker';
 import { RouteProgress } from '@/components/site/route-progress';
 import { SiteChrome } from '@/components/site/site-chrome';
@@ -37,6 +39,15 @@ export default async function SiteLayout({
       </Suspense>
       <main id="main">{children}</main>
       <SiteFooter locale={locale} />
+      <AdsenseScript />
+      <AdsConsentBanner
+        title={t('ads.consentTitle')}
+        description={t('ads.consentDescription')}
+        accept={t('ads.consentAccept')}
+        decline={t('ads.consentDecline')}
+        privacyHref={locale === 'zh-TW' ? '/privacy' : `/${locale}/privacy`}
+        privacyLabel={t('ads.consentPrivacy')}
+      />
     </div>
   );
 }

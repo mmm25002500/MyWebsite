@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
+import { AdSlot } from '@/components/ads/ad-slot';
 import { CodeCopyButtons } from '@/components/content/code-copy';
 import { MarkdownContent } from '@/components/content/markdown-content';
 import { CommentSection } from '@/components/site/comments/comment-section';
@@ -196,6 +197,8 @@ export default async function ProjectPage({
                 <CodeCopyButtons label={t('common.copy')} copiedLabel={t('common.copied')} />
               </>
             ) : null}
+
+            <AdSlot name="article" label={t('ads.label')} />
 
             {project.tags.length > 0 ? (
               <div className="mt-10 flex flex-wrap gap-1.5">

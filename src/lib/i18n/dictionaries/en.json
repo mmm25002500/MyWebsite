@@ -268,5 +268,13 @@
   "footer": {
     "builtWith": "Built with Next.js and Supabase",
     "rights": "All rights reserved"
+  },
+  "ads": {
+    "label": "Advertisement",
+    "consentTitle": "This site shows ads",
+    "consentDescription": "Ads are served by Google and use cookies. You can let them be tailored to your interests, or see non-personalised ads only.",
+    "consentAccept": "Allow personalised ads",
+    "consentDecline": "Non-personalised only",
+    "consentPrivacy": "Privacy policy"
   }
 }

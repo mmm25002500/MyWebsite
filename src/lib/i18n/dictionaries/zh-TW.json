@@ -268,5 +268,13 @@
   "footer": {
     "builtWith": "以 Next.js 與 Supabase 打造",
     "rights": "版權所有"
+  },
+  "ads": {
+    "label": "廣告",
+    "consentTitle": "這個網站會顯示廣告",
+    "consentDescription": "廣告由 Google 提供，會使用 cookie。你可以選擇讓廣告依你的興趣調整，或只看不個人化的廣告。",
+    "consentAccept": "同意個人化廣告",
+    "consentDecline": "只看非個人化廣告",
+    "consentPrivacy": "隱私權政策"
   }
 }
