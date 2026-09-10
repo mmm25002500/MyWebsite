@@ -1,3 +1,4 @@
+import { notFoundMetadata } from '@/lib/seo';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -52,7 +53,7 @@ export async function generateMetadata({
   if (!isLocale(locale)) return {};
 
   const post = await getPostBySlug(locale, slug);
-  if (!post) return {};
+  if (!post) return notFoundMetadata;
 
   const title = post.seoTitle ?? post.title;
   const description = post.seoDescription ?? post.excerpt ?? undefined;

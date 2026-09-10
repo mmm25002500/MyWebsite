@@ -19,7 +19,7 @@ import { getAllProjectSlugs, getProjectBySlug } from '@/lib/data';
 import { isLocale, locales, type Locale } from '@/lib/i18n/config';
 import { Link } from '@/lib/i18n/routing';
 import { formatPeriod } from '@/lib/utils';
-import { pageAlternates } from '@/lib/seo';
+import { notFoundMetadata, pageAlternates } from '@/lib/seo';
 import type { ProjectStatus } from '@/types/content';
 
 export const revalidate = 3600;
@@ -41,7 +41,7 @@ export async function generateMetadata({
   if (!isLocale(locale)) return {};
 
   const project = await getProjectBySlug(locale, slug);
-  if (!project) return {};
+  if (!project) return notFoundMetadata;
 
   const title = project.seoTitle ?? project.name;
   const description = project.seoDescription ?? project.tagline ?? undefined;

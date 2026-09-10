@@ -8,7 +8,7 @@ import { ProjectCard } from '@/components/site/project-card';
 import { Container, Display } from '@/components/ui/typography';
 import { getPosts, getProjects, getTags } from '@/lib/data';
 import { isLocale, locales, type Locale } from '@/lib/i18n/config';
-import { pageAlternates } from '@/lib/seo';
+import { notFoundMetadata, pageAlternates } from '@/lib/seo';
 
 export const revalidate = 3600;
 
@@ -28,7 +28,7 @@ export async function generateMetadata({
   const { locale, tag: slug } = await params;
   if (!isLocale(locale)) return {};
   const tag = (await getTags(locale)).find((item) => item.slug === slug);
-  return tag ? { title: tag.name, alternates: pageAlternates(locale, `/notes/tag/${slug}`) } : {};
+  return tag ? { title: tag.name, alternates: pageAlternates(locale, `/notes/tag/${slug}`) } : notFoundMetadata;
 }
 
 /** 標籤全站共用，因此同時列出相關文章與相關作品（規格 §3.1）。 */

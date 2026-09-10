@@ -32,3 +32,13 @@ export const noIndex = {
   follow: true,
   googleBot: { index: false, follow: true },
 } as const;
+
+/**
+ * 找不到內容時的 metadata。
+ *
+ * 這些頁面雖然呼叫了 `notFound()`，HTTP 狀態卻仍然是 200：路由有預先渲染的
+ * 參數時，Next.js 會先把 shell 串流出去，狀態列在那一刻就送出了，之後頁面才
+ * 決定要 404，改不回來。因此改以 noindex 明說「別收錄」，免得 Google 把它當
+ * 成正常頁面（soft 404）收進索引。
+ */
+export const notFoundMetadata = { title: '404', robots: noIndex } as const;

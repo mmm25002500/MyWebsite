@@ -7,13 +7,13 @@ import { PageHeader } from '@/components/site/page-header';
 import { Container } from '@/components/ui/typography';
 import { getStaticPage } from '@/lib/data';
 import { isLocale, type Locale } from '@/lib/i18n/config';
-import { pageAlternates } from '@/lib/seo';
+import { notFoundMetadata, pageAlternates } from '@/lib/seo';
 
 /** `pages` 表驅動的單頁（privacy、terms…）共用的呈現與 metadata。 */
 export async function staticPageMetadata(locale: string, slug: string): Promise<Metadata> {
   if (!isLocale(locale)) return {};
   const page = await getStaticPage(locale, slug);
-  if (!page) return {};
+  if (!page) return notFoundMetadata;
   return {
     title: page.seoTitle ?? page.title,
     description: page.seoDescription ?? undefined,
