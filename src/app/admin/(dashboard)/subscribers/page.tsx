@@ -19,7 +19,7 @@ export default async function AdminSubscribersPage() {
 
       {subscribers.length === 0 ? (
         <p className="rounded-lg border border-divider py-16 text-center text-[15px] text-ink-70">
-          還沒有訂閱者。訂閱功能需要設定 RESEND_API_KEY 才會寄出確認信。
+          還沒有訂閱者。訂閱功能需要設定 SMTP_* 才會寄出確認信。
         </p>
       ) : (
         <div className="overflow-x-auto rounded-lg border border-divider">
