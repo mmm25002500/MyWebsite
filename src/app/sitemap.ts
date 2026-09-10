@@ -9,7 +9,7 @@ import {
   getSeriesList,
   getTags,
 } from '@/lib/data';
-import { defaultLocale, locales, type Locale } from '@/lib/i18n/config';
+import { defaultLocale, htmlLang, locales, type Locale } from '@/lib/i18n/config';
 
 export const revalidate = 3600;
 
@@ -65,7 +65,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: path === '' || path === '/notes' ? 'daily' : 'weekly',
         priority: path === '' ? 1 : path.startsWith('/notes/p/') ? 0.8 : 0.6,
         alternates: {
-          languages: Object.fromEntries(locales.map((item) => [item, url(item, path)])),
+          // 用 `htmlLang` 而不是語系代碼本身，才會與頁面 <link rel="alternate">
+          // 標的值一致（zh-Hant-TW，不是 zh-TW）；兩邊對不上，Google 有機會
+          // 只採信其中一組。`x-default` 也要跟著補，同樣比照頁面上的宣告。
+          languages: {
+            ...Object.fromEntries(locales.map((item) => [htmlLang[item], url(item, path)])),
+            'x-default': url(defaultLocale, path),
+          },
         },
       });
     }
