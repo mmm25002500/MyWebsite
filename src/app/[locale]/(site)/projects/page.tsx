@@ -1,12 +1,10 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
 
 import { PageHeader } from '@/components/site/page-header';
-import { Pagination } from '@/components/site/pagination';
+import { ProjectBrowser } from '@/components/site/project-browser';
 import { ProjectCard } from '@/components/site/project-card';
-import { ProjectFilters } from '@/components/site/project-filters';
 import { Container } from '@/components/ui/typography';
 import { getProjectFilters, getProjects } from '@/lib/data';
 import { isLocale, type Locale } from '@/lib/i18n/config';
@@ -32,37 +30,27 @@ export async function generateMetadata({
   };
 }
 
-export default async function ProjectsPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ locale: string }>;
-  searchParams: Promise<{
-    category?: string;
-    tag?: string;
-    status?: string;
-    year?: string;
-    page?: string;
-  }>;
-}) {
+/** 專案涵蓋的每一年。CSS 的屬性選擇器不會比大小，只能逐年列出來讓 `~=` 比對。 */
+function projectYears(startedAt: string, endedAt: string | null): number[] {
+  const start = Number(startedAt.slice(0, 4));
+  const end = endedAt ? Number(endedAt.slice(0, 4)) : new Date().getFullYear();
+  const years: number[] = [];
+  for (let year = start; year <= end; year += 1) years.push(year);
+  return years;
+}
+
+export default async function ProjectsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;
   if (!isLocale(raw)) notFound();
   const locale: Locale = raw;
   setRequestLocale(locale);
 
-  const query = await searchParams;
   const t = await getTranslations({ locale });
-  const filters = await getProjectFilters(locale);
-
-  const status = statuses.find((item) => item === query.status);
-  const result = await getProjects({
-    locale,
-    categorySlug: query.category,
-    tagSlug: query.tag,
-    status,
-    year: query.year ? Number(query.year) : undefined,
-    page: query.page ? Number(query.page) : 1,
-  });
+  const [filters, result] = await Promise.all([
+    getProjectFilters(locale),
+    // 全部撈回來交給瀏覽器篩選，這一頁才能是靜態的；篩選邏輯見 ProjectBrowser。
+    getProjects({ locale, pageSize: 500 }),
+  ]);
 
   const statusLabel: Record<ProjectStatus, string> = {
     idea: t('projects.statusIdea'),
@@ -81,61 +69,64 @@ export default async function ProjectsPage({
       />
 
       <Container className="pt-8">
-        <Suspense fallback={null}>
-          <ProjectFilters
-            groups={[
-              {
-                key: 'category',
-                label: t('projects.filterCategory'),
-                allLabel: t('projects.all'),
-                options: filters.categories.map((item) => ({ value: item.slug, label: item.name })),
-              },
-              {
-                key: 'tag',
-                label: t('projects.filterTag'),
-                allLabel: t('projects.all'),
-                options: filters.tags.map((item) => ({ value: item.slug, label: item.name })),
-              },
-              {
-                key: 'status',
-                label: t('projects.filterStatus'),
-                allLabel: t('projects.all'),
-                options: statuses.map((item) => ({ value: item, label: statusLabel[item] })),
-              },
-              {
-                key: 'year',
-                label: t('projects.filterYear'),
-                allLabel: t('projects.all'),
-                options: filters.years.map((year) => ({
-                  value: String(year),
-                  label: String(year),
-                })),
-              },
-            ]}
-          />
-        </Suspense>
+        <ProjectBrowser
+          groups={[
+            {
+              key: 'category',
+              label: t('projects.filterCategory'),
+              allLabel: t('projects.all'),
+              options: filters.categories.map((item) => ({ value: item.slug, label: item.name })),
+            },
+            {
+              key: 'tag',
+              label: t('projects.filterTag'),
+              allLabel: t('projects.all'),
+              options: filters.tags.map((item) => ({ value: item.slug, label: item.name })),
+            },
+            {
+              key: 'status',
+              label: t('projects.filterStatus'),
+              allLabel: t('projects.all'),
+              options: statuses.map((item) => ({ value: item, label: statusLabel[item] })),
+            },
+            {
+              key: 'year',
+              label: t('projects.filterYear'),
+              allLabel: t('projects.all'),
+              options: filters.years.map((year) => ({ value: String(year), label: String(year) })),
+            },
+          ]}
+          meta={result.items.map((project) => ({
+            category: project.categorySlug ?? '',
+            tags: project.tags.map((tag) => tag.slug),
+            status: project.status,
+            years: projectYears(project.startedAt, project.endedAt),
+          }))}
+          gridId="project-grid"
+          emptyLabel={t('common.empty')}
+        />
       </Container>
 
       <Container className="pt-10">
-        {result.items.length === 0 ? (
-          <p className="py-16 text-center text-[15px] text-ink-55">{t('common.empty')}</p>
-        ) : (
-          <div className="grid gap-9 md:grid-cols-3">
-            {result.items.map((project) => (
-              <ProjectCard key={project.id} project={project} present={t('common.present')} />
-            ))}
-          </div>
-        )}
-
-        <Pagination
-          page={result.page}
-          totalPages={result.totalPages}
-          basePath="/projects"
-          query={query}
-          previousLabel={t('common.previous')}
-          nextLabel={t('common.next')}
-        />
+        {/*
+          卡片由伺服器輸出，篩選只靠 ProjectBrowser 送出的 CSS 規則把不符合的藏起來。
+          年份要比對區間而 CSS 不會比大小，因此把專案涵蓋的每一年都展開寫進 data-years。
+        */}
+        <div id="project-grid" className="grid gap-9 md:grid-cols-3">
+          {result.items.map((project) => (
+            <div
+              key={project.id}
+              data-category={project.categorySlug ?? ''}
+              data-tags={project.tags.map((tag) => tag.slug).join(' ')}
+              data-status={project.status}
+              data-years={projectYears(project.startedAt, project.endedAt).join(' ')}
+            >
+              <ProjectCard project={project} present={t('common.present')} />
+            </div>
+          ))}
+        </div>
       </Container>
+
     </>
   );
 }
