@@ -11,7 +11,7 @@
   --color-bg: #f3f2f2;
   --color-surface: #eae9e9;
   --color-text: #201e1d;
-  --color-accent: #0088b0;
+  --color-accent: #0090ad;
   --color-accent-2: #d6006c;
   --color-divider: color-mix(in srgb, #201e1d 16%, transparent);
 
@@ -25,15 +25,15 @@
   --color-neutral-800: #444141;
   --color-neutral-900: #2d2b2b;
 
-  --color-accent-100: #e9f8ff;
-  --color-accent-200: #cbeeff;
-  --color-accent-300: #99e0ff;
-  --color-accent-400: #62c5ee;
-  --color-accent-500: #38a6cf;
-  --color-accent-600: #1186ac;
-  --color-accent-700: #006786;
-  --color-accent-800: #004961;
-  --color-accent-900: #0a303e;
+  --color-accent-100: #ecfcfe;
+  --color-accent-200: #cff6fc;
+  --color-accent-300: #a1ecf7;
+  --color-accent-400: #61dcef;
+  --color-accent-500: #0dc9e6;
+  --color-accent-600: #009fbc;
+  --color-accent-700: #00778f;
+  --color-accent-800: #005a6d;
+  --color-accent-900: #0a373d;
 
   --color-accent-2-100: #fff1f4;
   --color-accent-2-200: #ffdee6;
@@ -75,30 +75,30 @@
 [data-theme='dark'] {
   --color-bg: #191817;
   --color-surface: #232120;
-  --color-text: #f1ede8;
-  --color-accent: #4fc3ea;
+  --color-text: #fafafa;
+  --color-accent: #00ddff;
   --color-accent-2: #ff7fab;
-  --color-divider: color-mix(in srgb, #f1ede8 18%, transparent);
+  --color-divider: color-mix(in srgb, #fafafa 18%, transparent);
 
-  --color-neutral-100: #2d2b2b;
-  --color-neutral-200: #3b3837;
-  --color-neutral-300: #4f4c4b;
-  --color-neutral-400: #6b6766;
-  --color-neutral-500: #8c8887;
-  --color-neutral-600: #b0acab;
-  --color-neutral-700: #d7d3d3;
-  --color-neutral-800: #eae7e7;
-  --color-neutral-900: #f8f4f4;
+  --color-neutral-100: #2b2b2c;
+  --color-neutral-200: #3a3a3b;
+  --color-neutral-300: #4e4e50;
+  --color-neutral-400: #6a6a6c;
+  --color-neutral-500: #8b8b8d;
+  --color-neutral-600: #afafb1;
+  --color-neutral-700: #d6d6d8;
+  --color-neutral-800: #eaeaeb;
+  --color-neutral-900: #f8f8f9;
 
-  --color-accent-100: #0d3140;
-  --color-accent-200: #004961;
-  --color-accent-300: #006786;
-  --color-accent-400: #1186ac;
-  --color-accent-500: #38a6cf;
-  --color-accent-600: #62c5ee;
-  --color-accent-700: #99e0ff;
-  --color-accent-800: #cbeeff;
-  --color-accent-900: #e9f8ff;
+  --color-accent-100: #0a373d;
+  --color-accent-200: #005a6d;
+  --color-accent-300: #00778f;
+  --color-accent-400: #00a4c2;
+  --color-accent-500: #00c4e5;
+  --color-accent-600: #00ddff;
+  --color-accent-700: #3ce6ff;
+  --color-accent-800: #8cefff;
+  --color-accent-900: #d6faff;
 
   --color-accent-2-100: #3f1522;
   --color-accent-2-200: #790e3d;
