@@ -31,6 +31,20 @@ async function getThemeScriptHash(): Promise<string> {
 }
 
 /**
+ * Cloudflare Web Analytics 的 beacon。
+ *
+ * 由 Cloudflare 在邊緣自動注入，沒有 nonce，所以要靠來源網域放行——nonce 不會
+ * 讓 script-src 裡的網域白名單失效（會讓它失效的是 'strict-dynamic'，而我們刻意
+ * 沒有用）。回報打到 cloudflareinsights.com，connect-src 也要一併開。
+ *
+ * 不想載入的話，關掉的地方在 Cloudflare 的 Web Analytics，不是這裡。
+ */
+const cloudflareInsights = {
+  script: 'https://static.cloudflareinsights.com',
+  connect: 'https://cloudflareinsights.com',
+} as const;
+
+/**
  * Content-Security-Policy（規格 §13.4）。
  *
  * `script-src` 帶每個請求現產的 nonce，Next.js 會自動把它加到自己輸出的
@@ -64,6 +78,7 @@ function contentSecurityPolicy(
         "script-src 'self' 'unsafe-inline'",
         isDev ? "'unsafe-eval'" : null,
         'https://challenges.cloudflare.com',
+        cloudflareInsights.script,
         ...(ads ? adsenseHosts.script : []),
       ]
         .filter(Boolean)
@@ -84,6 +99,7 @@ function contentSecurityPolicy(
         "connect-src 'self'",
         `https://${supabaseHost}`,
         `wss://${supabaseHost}`,
+        cloudflareInsights.connect,
         ...(ads ? adsenseHosts.connect : []),
         isDev ? 'ws://localhost:* http://localhost:*' : null,
       ]
@@ -107,6 +123,7 @@ function contentSecurityPolicy(
       scriptHash,
       isDev ? "'unsafe-eval'" : null,
       'https://challenges.cloudflare.com',
+      cloudflareInsights.script,
     ]
       .filter(Boolean)
       .join(' '),
@@ -117,6 +134,7 @@ function contentSecurityPolicy(
       "connect-src 'self'",
       `https://${supabaseHost}`,
       `wss://${supabaseHost}`,
+      cloudflareInsights.connect,
       isDev ? 'ws://localhost:* http://localhost:*' : null,
     ]
       .filter(Boolean)
