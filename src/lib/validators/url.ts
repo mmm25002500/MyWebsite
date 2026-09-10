@@ -31,10 +31,30 @@ export const internalPath = z
   .regex(/^\/(?!\/)/, '路徑必須以 / 開頭')
   .refine((value) => !value.includes('://'), '路徑不可包含協定');
 
+/**
+ * 連結目標：站內路徑或 http(s) 網址。
+ *
+ * 後台大部分的網址欄位都該用這個而不是 `httpUrl`——時間軸的連結指向
+ * `/projects/xxx`、圖片可能是 `/images/xxx.webp`，限死成絕對網址會讓這些
+ * 既有資料存不回去。真正要擋的是 `javascript:` 與 `data:`，兩者都不符合
+ * 「以單一 / 開頭」也不符合 http(s)。
+ */
+export const linkTarget = z.union([internalPath, httpUrl]);
+
+/** 同上，但允許留白（空字串一律轉成 null）。 */
+export const optionalLinkTarget = z.preprocess(
+  (value) => (typeof value === 'string' && value.trim() === '' ? null : value),
+  linkTarget.nullable(),
+);
+
 /** 轉址目的地：站內路徑或 https 網址。 */
 export const redirectTarget = z.union([
   internalPath,
-  z.string().trim().url().refine((value) => /^https:\/\//i.test(value), '外部轉址只接受 https'),
+  z
+    .string()
+    .trim()
+    .url()
+    .refine((value) => /^https:\/\//i.test(value), '外部轉址只接受 https'),
 ]);
 
 /** 轉址來源：一定是站內路徑，且不可指向後台。 */

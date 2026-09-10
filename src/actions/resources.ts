@@ -7,12 +7,7 @@ import { writeAuditLog } from '@/lib/audit';
 import { requireRole } from '@/lib/auth/session';
 import { cacheTags } from '@/lib/data/cache';
 import { createServerSupabase } from '@/lib/supabase/server';
-import {
-  httpUrl,
-  optionalHttpUrl,
-  redirectSource,
-  redirectTarget,
-} from '@/lib/validators/url';
+import { httpUrl, optionalLinkTarget, redirectSource, redirectTarget } from '@/lib/validators/url';
 import type { Json } from '@/types/database';
 
 export interface ActionResult {
@@ -33,7 +28,17 @@ const resourceConfig = {
   organizations: {
     i18nTable: 'organizations_i18n',
     i18nKey: 'org_id',
-    columns: ['slug', 'logo_url', 'website_url', 'github_org', 'started_at', 'ended_at', 'status', 'sort_order', 'is_visible'],
+    columns: [
+      'slug',
+      'logo_url',
+      'website_url',
+      'github_org',
+      'started_at',
+      'ended_at',
+      'status',
+      'sort_order',
+      'is_visible',
+    ],
     i18nColumns: ['name', 'role', 'description_md', 'description_html'],
     urlColumns: ['logo_url', 'website_url'],
     minRole: 'editor',
@@ -42,7 +47,19 @@ const resourceConfig = {
   timeline_events: {
     i18nTable: 'timeline_events_i18n',
     i18nKey: 'event_id',
-    columns: ['event_date', 'end_date', 'branch', 'type', 'icon', 'color', 'image_url', 'link_url', 'is_milestone', 'is_visible', 'sort_order'],
+    columns: [
+      'event_date',
+      'end_date',
+      'branch',
+      'type',
+      'icon',
+      'color',
+      'image_url',
+      'link_url',
+      'is_milestone',
+      'is_visible',
+      'sort_order',
+    ],
     i18nColumns: ['title', 'subtitle', 'description'],
     urlColumns: ['image_url', 'link_url'],
     minRole: 'editor',
@@ -60,7 +77,17 @@ const resourceConfig = {
   link_buttons: {
     i18nTable: 'link_buttons_i18n',
     i18nKey: 'button_id',
-    columns: ['group_id', 'url', 'image_url', 'icon', 'bg_color', 'text_color', 'is_highlighted', 'sort_order', 'is_visible'],
+    columns: [
+      'group_id',
+      'url',
+      'image_url',
+      'icon',
+      'bg_color',
+      'text_color',
+      'is_highlighted',
+      'sort_order',
+      'is_visible',
+    ],
     i18nColumns: ['label', 'description'],
     urlColumns: ['url', 'image_url'],
     minRole: 'editor',
@@ -69,7 +96,16 @@ const resourceConfig = {
   sponsor_methods: {
     i18nTable: 'sponsor_methods_i18n',
     i18nKey: 'method_id',
-    columns: ['key', 'type', 'address_or_url', 'qr_image_url', 'network', 'icon', 'sort_order', 'is_visible'],
+    columns: [
+      'key',
+      'type',
+      'address_or_url',
+      'qr_image_url',
+      'network',
+      'icon',
+      'sort_order',
+      'is_visible',
+    ],
     i18nColumns: ['label', 'note'],
     urlColumns: ['qr_image_url'],
     minRole: 'editor',
@@ -78,7 +114,17 @@ const resourceConfig = {
   sponsors: {
     i18nTable: 'sponsors_i18n',
     i18nKey: 'sponsor_id',
-    columns: ['display_name', 'avatar_url', 'url', 'tier', 'amount_note', 'sponsored_at', 'is_anonymous', 'is_visible', 'sort_order'],
+    columns: [
+      'display_name',
+      'avatar_url',
+      'url',
+      'tier',
+      'amount_note',
+      'sponsored_at',
+      'is_anonymous',
+      'is_visible',
+      'sort_order',
+    ],
     i18nColumns: ['message'],
     urlColumns: ['avatar_url', 'url'],
     minRole: 'editor',
@@ -153,7 +199,7 @@ function pick(values: Record<string, unknown>, allowed: readonly string[]) {
 /** 空值（未填）一律放行，其餘必須是 http/https 網址。 */
 function isValidUrlValue(value: unknown): boolean {
   if (value === null || value === undefined || value === '') return true;
-  return typeof value === 'string' && optionalHttpUrl.safeParse(value).success;
+  return typeof value === 'string' && optionalLinkTarget.safeParse(value).success;
 }
 
 /**
@@ -211,10 +257,16 @@ export async function saveResource(input: SaveResourceInput): Promise<ActionResu
   if (config.i18nTable && config.i18nKey) {
     for (const content of i18n) {
       const { locale, ...rest } = content;
-      const { error: i18nError } = await supabase.from(config.i18nTable).upsert(
-        { [config.i18nKey]: saved.id, locale, ...(pick(rest, config.i18nColumns) as object) } as never,
-        { onConflict: `${config.i18nKey},locale` },
-      );
+      const { error: i18nError } = await supabase
+        .from(config.i18nTable)
+        .upsert(
+          {
+            [config.i18nKey]: saved.id,
+            locale,
+            ...(pick(rest, config.i18nColumns) as object),
+          } as never,
+          { onConflict: `${config.i18nKey},locale` },
+        );
       if (i18nError) {
         console.error('[actions] saveResource i18n 失敗：', i18nError);
         return { ok: false, error: '儲存失敗' };

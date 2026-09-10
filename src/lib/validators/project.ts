@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { locales } from '@/lib/i18n/config';
-import { httpUrl } from '@/lib/validators/url';
+import { linkTarget } from '@/lib/validators/url';
 
 export const projectStatuses = [
   'idea',
@@ -38,8 +38,8 @@ export const projectContentSchema = z.object({
 
 export const projectImageSchema = z.object({
   id: z.string().uuid().nullable(),
-  // 輪播的圖片來源，同樣只接受 http(s)。
-  url: z.string().max(500).pipe(httpUrl),
+  // 輪播的圖片來源：站內路徑或 http(s)。
+  url: z.string().max(500).pipe(linkTarget),
   alt: z.string().trim().max(300),
   caption: z.string().trim().max(300),
   isCover: z.boolean(),
@@ -48,8 +48,8 @@ export const projectImageSchema = z.object({
 export const projectLinkSchema = z.object({
   id: z.string().uuid().nullable(),
   type: z.enum(projectLinkTypes),
-  // 這個值會直接變成前台的 `href`，只接受 http/https。
-  url: z.string().max(500).pipe(httpUrl),
+  // 這個值會直接變成前台的 `href`，只接受站內路徑或 http(s)。
+  url: z.string().max(500).pipe(linkTarget),
   label: z.string().trim().min(1, '連結需要標籤').max(80),
 });
 
@@ -66,14 +66,21 @@ export const saveProjectSchema = z.object({
   endedAt: nullable(z.string()),
   categoryId: nullable(z.string().uuid()),
   organizationId: nullable(z.string().uuid()),
-  coverUrl: nullable(z.string().max(500).pipe(httpUrl)),
-  // GitHub repo 存的是 `owner/repo`，不是網址；限成這個形狀免得被塞進別的東西。
+  coverUrl: nullable(z.string().max(500).pipe(linkTarget)),
+  /*
+   * GitHub 位置。存的是路徑而不是完整網址，前台以 `https://github.com/<值>`
+   * 組出連結。
+   *
+   * `owner/repo` 與只有 `owner` 都接受——有些作品指向的是整個組織而不是單一
+   * repo（例如 iRiver-music、Sunary-Trading），限死成兩段會讓那些既有資料
+   * 存不回去。限制形狀只是為了擋掉被塞進網址或別的東西。
+   */
   githubRepo: nullable(
     z
       .string()
       .trim()
       .max(200)
-      .regex(/^[\w.-]+\/[\w.-]+$/, 'GitHub repo 需為 owner/repo 格式'),
+      .regex(/^[\w.-]+(\/[\w.-]+)?$/, 'GitHub 位置需為 owner 或 owner/repo'),
   ),
   isFeatured: z.boolean(),
   isVisible: z.boolean(),
