@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { AdsPrivacyNotice } from '@/components/ads/ads-privacy-notice';
 import { MarkdownContent } from '@/components/content/markdown-content';
 import { PageHeader } from '@/components/site/page-header';
 import { Container } from '@/components/ui/typography';
@@ -28,7 +29,10 @@ export async function StaticPageView({ locale, slug }: { locale: Locale; slug: s
     <>
       <PageHeader title={page.title} />
       <Container className="pt-10">
-        <MarkdownContent html={page.contentHtml} className="max-w-[70ch]" />
+        <div className="max-w-[70ch]">
+          <MarkdownContent html={page.contentHtml} />
+          {slug === 'privacy' ? <AdsPrivacyNotice locale={locale} /> : null}
+        </div>
       </Container>
     </>
   );
