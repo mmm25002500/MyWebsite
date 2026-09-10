@@ -42,10 +42,18 @@ export function AuthForm({ mode, nextPath }: { mode: Mode; nextPath?: string }) 
       if (mode === 'login') {
         const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
         if (signInError) throw signInError;
+
+        // 記錄這次登入的裝置與地區，失敗不影響登入本身。
+        void fetch('/api/auth/record', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ action: 'login' }),
+        }).catch(() => undefined);
         // 只接受站內的相對路徑，避免被帶去外部網站（open redirect）。
-        const target = nextPath && nextPath.startsWith('/') && !nextPath.startsWith('//')
-          ? nextPath
-          : '/account';
+        const target =
+          nextPath && nextPath.startsWith('/') && !nextPath.startsWith('//')
+            ? nextPath
+            : '/account';
         window.location.assign(target);
       } else {
         const { error: signUpError } = await supabase.auth.signUp({

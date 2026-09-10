@@ -3,7 +3,7 @@
 import { revalidateTag } from 'next/cache';
 import { z } from 'zod';
 
-import { writeAuditLog } from '@/lib/audit';
+import { buildDiff, writeAuditLog } from '@/lib/audit';
 import { requireRole } from '@/lib/auth/session';
 import { cacheTags } from '@/lib/data/cache';
 import { createServerSupabase } from '@/lib/supabase/server';
@@ -80,7 +80,10 @@ export async function pinComment(commentId: string, pinned: boolean): Promise<Ac
   await requireRole('editor');
 
   const supabase = await createServerSupabase();
-  const { error } = await supabase.from('comments').update({ is_pinned: pinned }).eq('id', commentId);
+  const { error } = await supabase
+    .from('comments')
+    .update({ is_pinned: pinned })
+    .eq('id', commentId);
   if (error) return { ok: false, error: error.message };
 
   await writeAuditLog({ action: 'comment.pin', entityType: 'comment', entityId: commentId });
@@ -121,7 +124,10 @@ export async function setUserRole(
   if (target.role === 'owner') return { ok: false, error: '站長帳號不可變更角色' };
   if (userId === session.user.id) return { ok: false, error: '不能變更自己的角色' };
 
-  const { error } = await supabase.from('profiles').update({ role: parsed.data }).eq('user_id', userId);
+  const { error } = await supabase
+    .from('profiles')
+    .update({ role: parsed.data })
+    .eq('user_id', userId);
   if (error) return { ok: false, error: error.message };
 
   await writeAuditLog({
@@ -213,8 +219,87 @@ export async function unbanUser(userId: string): Promise<ActionResult> {
   return { ok: true };
 }
 
+const profileSchema = z.object({
+  userId: z.string().uuid(),
+  displayName: z.string().trim().min(1, '暱稱不能空白').max(40),
+  bio: z.preprocess((v) => (v === '' ? null : v), z.string().trim().max(500).nullable()),
+  website: z.preprocess(
+    (v) => (v === '' ? null : v),
+    z.string().trim().max(300).url('網址格式不正確').nullable(),
+  ),
+  notifyReply: z.boolean(),
+});
+
+/**
+ * 修改使用者資料（規格 §8.7）。
+ *
+ * 頭像不在其中——它由 OAuth 帶入或系統產生，不開放上傳也不開放改（§5.3）。
+ * 角色與封鎖各自有專用的動作，避免在同一支裡混用不同的權限門檻。
+ */
+export async function updateUserProfile(
+  input: z.input<typeof profileSchema>,
+): Promise<ActionResult> {
+  await requireRole('admin');
+
+  const parsed = profileSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? '欄位驗證失敗' };
+  }
+
+  const supabase = createServiceClient();
+  const { data: before } = await supabase
+    .from('profiles')
+    .select('display_name, bio, website, notify_reply')
+    .eq('user_id', parsed.data.userId)
+    .maybeSingle();
+
+  if (!before) return { ok: false, error: '找不到使用者' };
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({
+      display_name: parsed.data.displayName,
+      bio: parsed.data.bio,
+      website: parsed.data.website,
+      notify_reply: parsed.data.notifyReply,
+    })
+    .eq('user_id', parsed.data.userId);
+
+  if (error) {
+    console.error('[actions] updateUserProfile 失敗：', error);
+    return { ok: false, error: '儲存失敗' };
+  }
+
+  await writeAuditLog({
+    action: 'user.profile_update',
+    entityType: 'user',
+    entityId: parsed.data.userId,
+    entityLabel: parsed.data.displayName,
+    diff: buildDiff(
+      {
+        display_name: before.display_name,
+        bio: before.bio,
+        website: before.website,
+        notify_reply: before.notify_reply,
+      },
+      {
+        display_name: parsed.data.displayName,
+        bio: parsed.data.bio,
+        website: parsed.data.website,
+        notify_reply: parsed.data.notifyReply,
+      },
+    ) as Json,
+    severity: 'warning',
+  });
+
+  return { ok: true };
+}
+
 /** 修改不當暱稱（規格 §8.7）。頭像不可編輯，它來自 OAuth。 */
-export async function updateDisplayName(userId: string, displayName: string): Promise<ActionResult> {
+export async function updateDisplayName(
+  userId: string,
+  displayName: string,
+): Promise<ActionResult> {
   await requireRole('admin');
 
   const parsed = z.string().trim().min(1).max(40).safeParse(displayName);

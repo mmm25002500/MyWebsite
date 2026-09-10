@@ -118,6 +118,48 @@ export async function savePage(input: SavePageInput): Promise<ActionResult> {
   return { ok: true, issues };
 }
 
+const navSchema = z.object({
+  key: z.string().min(1).max(40),
+  isVisible: z.boolean(),
+});
+
+/**
+ * 導覽列的顯示與順序。
+ *
+ * 存進 `site_settings.nav_items`，前台由 `getNavItems()` 讀回來。項目本身
+ * 是固定的十個路由，這裡只決定「顯示哪些、照什麼順序」——新增路由要改程式碼。
+ */
+export async function saveNavItems(items: z.input<typeof navSchema>[]): Promise<ActionResult> {
+  await requireRole('editor');
+
+  const parsed = z.array(navSchema).min(1).max(40).safeParse(items);
+  if (!parsed.success) return { ok: false, error: '欄位驗證失敗' };
+
+  if (!parsed.data.some((item) => item.isVisible)) {
+    return { ok: false, error: '至少要保留一個顯示的項目' };
+  }
+
+  const supabase = await createServerSupabase();
+  const { error } = await supabase
+    .from('site_settings')
+    .upsert({ key: 'nav_items', value: parsed.data as unknown as Json }, { onConflict: 'key' });
+
+  if (error) {
+    console.error('[actions] saveNavItems 儲存失敗：', error);
+    return { ok: false, error: '儲存失敗' };
+  }
+
+  await writeAuditLog({
+    action: 'page.nav',
+    entityType: 'page',
+    entityLabel: '導覽列',
+    severity: 'warning',
+  });
+
+  revalidateTag(cacheTags.site);
+  return { ok: true };
+}
+
 const sectionSchema = z.object({
   id: z.string().uuid(),
   isVisible: z.boolean(),

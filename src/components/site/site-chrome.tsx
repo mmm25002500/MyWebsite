@@ -3,11 +3,11 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { SearchDialog } from '@/components/site/search-dialog';
-import { SiteHeader } from '@/components/site/site-header';
+import { SiteHeader, type NavEntry } from '@/components/site/site-header';
 import type { Locale } from '@/lib/i18n/config';
 
 /** 頁首與 ⌘K 搜尋共用同一份開關狀態，因此包在同一個 client 邊界內。 */
-export function SiteChrome({ locale }: { locale: Locale }) {
+export function SiteChrome({ locale, navItems }: { locale: Locale; navItems: NavEntry[] }) {
   const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export function SiteChrome({ locale }: { locale: Locale }) {
 
   return (
     <>
-      <SiteHeader locale={locale} onOpenSearch={openSearch} />
+      <SiteHeader locale={locale} navItems={navItems} onOpenSearch={openSearch} />
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} locale={locale} />
     </>
   );

@@ -9,6 +9,7 @@ import { AnalyticsTracker } from '@/components/site/analytics-tracker';
 import { RouteProgress } from '@/components/site/route-progress';
 import { SiteChrome } from '@/components/site/site-chrome';
 import { SiteFooter } from '@/components/site/site-footer';
+import { getNavItems } from '@/lib/data';
 import { isLocale } from '@/lib/i18n/config';
 
 export default async function SiteLayout({
@@ -23,6 +24,7 @@ export default async function SiteLayout({
 
   setRequestLocale(locale);
   const t = await getTranslations({ locale });
+  const nav = (await getNavItems()).filter((item) => item.isVisible);
 
   return (
     <div className="min-h-screen bg-bg text-text">
@@ -33,7 +35,7 @@ export default async function SiteLayout({
         {t('common.skipToContent')}
       </a>
       <RouteProgress />
-      <SiteChrome locale={locale} />
+      <SiteChrome locale={locale} navItems={nav.map(({ key, href }) => ({ key, href }))} />
       <Suspense fallback={null}>
         <AnalyticsTracker locale={locale} />
       </Suspense>

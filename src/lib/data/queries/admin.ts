@@ -1206,6 +1206,82 @@ export async function getAdminPage(slug: string): Promise<AdminPageDetailRow | n
   };
 }
 
+export interface AdminUserDetail {
+  userId: string;
+  displayName: string;
+  avatarUrl: string | null;
+  role: string;
+  email: string | null;
+  emailConfirmedAt: string | null;
+  provider: string | null;
+  isBanned: boolean;
+  bannedUntil: string | null;
+  banReason: string | null;
+  bio: string | null;
+  website: string | null;
+  notifyReply: boolean;
+  createdAt: string;
+  lastSeenAt: string | null;
+  commentCount: number;
+  sessions: { id: string; action: string; userAgent: string | null; createdAt: string }[];
+}
+
+/**
+ * 單一使用者的完整資料。
+ *
+ * email 與註冊時間存在 `auth.users`，PostgREST 不會把 auth schema 開出來，
+ * 因此走 service role 的 Admin API 取。
+ */
+export async function getAdminUser(userId: string): Promise<AdminUserDetail | null> {
+  await requireRole('admin');
+  const supabase = createServiceClient();
+
+  const [{ data: profile }, { data: authUser }, { data: sessions }, { count }] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select(
+        'user_id, display_name, avatar_url, role, is_banned, banned_until, ban_reason, bio, website, notify_reply, created_at, last_seen_at',
+      )
+      .eq('user_id', userId)
+      .maybeSingle(),
+    supabase.auth.admin.getUserById(userId),
+    supabase
+      .from('user_sessions_meta')
+      .select('id, action, user_agent, created_at')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(50),
+    supabase.from('comments').select('id', { count: 'exact', head: true }).eq('user_id', userId),
+  ]);
+
+  if (!profile) return null;
+
+  return {
+    userId: profile.user_id,
+    displayName: profile.display_name,
+    avatarUrl: profile.avatar_url,
+    role: profile.role,
+    email: authUser?.user?.email ?? null,
+    emailConfirmedAt: authUser?.user?.email_confirmed_at ?? null,
+    provider: authUser?.user?.app_metadata?.provider ?? null,
+    isBanned: profile.is_banned,
+    bannedUntil: profile.banned_until,
+    banReason: profile.ban_reason,
+    bio: profile.bio,
+    website: profile.website,
+    notifyReply: profile.notify_reply,
+    createdAt: profile.created_at,
+    lastSeenAt: profile.last_seen_at,
+    commentCount: count ?? 0,
+    sessions: (sessions ?? []).map((row) => ({
+      id: row.id,
+      action: row.action,
+      userAgent: row.user_agent,
+      createdAt: row.created_at,
+    })),
+  };
+}
+
 export async function getAdminPages() {
   await requireRole('editor');
   const supabase = await createServerSupabase();

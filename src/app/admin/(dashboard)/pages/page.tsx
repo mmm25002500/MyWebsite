@@ -1,14 +1,18 @@
 import Link from 'next/link';
 
 import { HomeSections } from '@/components/admin/home-sections';
+import { NavManager } from '@/components/admin/nav-manager';
+import { getNavItems } from '@/lib/data';
 import { getAdminPages } from '@/lib/data/queries/admin';
+import zhTW from '@/lib/i18n/dictionaries/zh-TW.json';
 import { cn, formatDate } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: '頁面' };
 
 export default async function AdminPagesPage() {
-  const { pages, sections } = await getAdminPages();
+  const [{ pages, sections }, nav] = await Promise.all([getAdminPages(), getNavItems()]);
+  const navLabels = zhTW.nav as Record<string, string>;
 
   return (
     <div className="space-y-8">
@@ -56,6 +60,18 @@ export default async function AdminPagesPage() {
             </li>
           ))}
         </ul>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="admin-section-title">導覽列</h2>
+        <NavManager
+          items={nav.map((item) => ({
+            key: item.key,
+            label: navLabels[item.key] ?? item.key,
+            href: item.href,
+            isVisible: item.isVisible,
+          }))}
+        />
       </section>
 
       <section className="space-y-3">

@@ -50,8 +50,9 @@ export function AdminLoginForm({ nextPath }: { nextPath?: string }) {
           return;
         }
 
-        const { data: challenge, error: challengeError } =
-          await supabase.auth.mfa.challenge({ factorId: verified.id });
+        const { data: challenge, error: challengeError } = await supabase.auth.mfa.challenge({
+          factorId: verified.id,
+        });
         if (challengeError) throw challengeError;
 
         const { error: verifyError } = await supabase.auth.mfa.verify({
@@ -62,9 +63,14 @@ export function AdminLoginForm({ nextPath }: { nextPath?: string }) {
         if (verifyError) throw verifyError;
       }
 
-      window.location.assign(
-        nextPath && nextPath.startsWith('/admin') ? nextPath : '/admin',
-      );
+      // 記錄這次登入的裝置與地區；後台登入尤其需要留下軌跡。
+      await fetch('/api/auth/record', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ action: 'login' }),
+      }).catch(() => undefined);
+
+      window.location.assign(nextPath && nextPath.startsWith('/admin') ? nextPath : '/admin');
     } catch {
       setError('登入失敗，請確認帳號密碼');
       setPending(false);

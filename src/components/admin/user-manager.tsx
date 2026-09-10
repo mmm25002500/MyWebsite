@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
@@ -52,18 +53,29 @@ export function UserManager({ users, isOwner }: { users: AdminUser[]; isOwner: b
                     {user.avatarUrl ? (
                       // 頭像網域不固定（OAuth 提供），不走 next/image 最佳化。
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={user.avatarUrl} alt="" className="size-7 rounded-full object-cover" />
+                      <img
+                        src={user.avatarUrl}
+                        alt=""
+                        className="size-7 rounded-full object-cover"
+                      />
                     ) : (
                       <span className="size-7 rounded-full bg-neutral-200" />
                     )}
                     {renaming?.id === user.userId ? (
                       <input
                         value={renaming.name}
-                        onChange={(event) => setRenaming({ id: user.userId, name: event.target.value })}
+                        onChange={(event) =>
+                          setRenaming({ id: user.userId, name: event.target.value })
+                        }
                         className="min-h-8 rounded-md border border-divider bg-bg px-2 py-1 text-[15px] outline-none focus-visible:border-accent"
                       />
                     ) : (
-                      <span className="font-bold">{user.displayName}</span>
+                      <Link
+                        href={`/admin/users/${user.userId}`}
+                        className="font-bold text-text hover:text-accent"
+                      >
+                        {user.displayName}
+                      </Link>
                     )}
                   </div>
                 </td>
@@ -72,7 +84,9 @@ export function UserManager({ users, isOwner }: { users: AdminUser[]; isOwner: b
                     <select
                       value={user.role}
                       disabled={pending}
-                      onChange={(event) => run(() => setUserRole(user.userId, event.target.value as Role))}
+                      onChange={(event) =>
+                        run(() => setUserRole(user.userId, event.target.value as Role))
+                      }
                       className="min-h-8 rounded-md border border-divider bg-bg px-2 py-1 text-[14px] outline-none"
                     >
                       {roles
@@ -93,7 +107,11 @@ export function UserManager({ users, isOwner }: { users: AdminUser[]; isOwner: b
                   {user.commentCount}
                 </td>
                 <td className="whitespace-nowrap px-3 py-2.5 text-ink-70">
-                  {formatDate(user.createdAt, 'zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' })}
+                  {formatDate(user.createdAt, 'zh-TW', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                  })}
                 </td>
                 <td className="px-3 py-2.5">
                   {user.isBanned ? (
@@ -108,25 +126,57 @@ export function UserManager({ users, isOwner }: { users: AdminUser[]; isOwner: b
                 <td className="whitespace-nowrap px-3 py-2.5 text-right">
                   {renaming?.id === user.userId ? (
                     <>
-                      <button type="button" disabled={pending} onClick={() => run(() => updateDisplayName(user.userId, renaming.name), () => setRenaming(null))} className="cursor-pointer text-[14px] text-accent-700">
+                      <button
+                        type="button"
+                        disabled={pending}
+                        onClick={() =>
+                          run(
+                            () => updateDisplayName(user.userId, renaming.name),
+                            () => setRenaming(null),
+                          )
+                        }
+                        className="cursor-pointer text-[14px] text-accent-700"
+                      >
                         儲存
                       </button>
-                      <button type="button" onClick={() => setRenaming(null)} className="ml-3 cursor-pointer text-[14px] text-ink-70">
+                      <button
+                        type="button"
+                        onClick={() => setRenaming(null)}
+                        className="ml-3 cursor-pointer text-[14px] text-ink-70"
+                      >
                         取消
                       </button>
                     </>
                   ) : (
                     <>
-                      <button type="button" onClick={() => setRenaming({ id: user.userId, name: user.displayName })} className="cursor-pointer text-[14px] text-ink-70 hover:text-accent">
+                      <button
+                        type="button"
+                        onClick={() => setRenaming({ id: user.userId, name: user.displayName })}
+                        className="cursor-pointer text-[14px] text-ink-70 hover:text-accent"
+                      >
                         改暱稱
                       </button>
                       {user.role !== 'owner' ? (
                         user.isBanned ? (
-                          <button type="button" disabled={pending} onClick={() => run(() => unbanUser(user.userId))} className="ml-3 cursor-pointer text-[14px] text-ink-70 hover:text-accent">
+                          <button
+                            type="button"
+                            disabled={pending}
+                            onClick={() => run(() => unbanUser(user.userId))}
+                            className="ml-3 cursor-pointer text-[14px] text-ink-70 hover:text-accent"
+                          >
                             解除封鎖
                           </button>
                         ) : (
-                          <button type="button" disabled={pending} onClick={() => run(() => banUser({ userId: user.userId, reason: '', expiresAt: null }))} className="ml-3 cursor-pointer text-[14px] text-ink-70 hover:text-accent-2-700">
+                          <button
+                            type="button"
+                            disabled={pending}
+                            onClick={() =>
+                              run(() =>
+                                banUser({ userId: user.userId, reason: '', expiresAt: null }),
+                              )
+                            }
+                            className="ml-3 cursor-pointer text-[14px] text-ink-70 hover:text-accent-2-700"
+                          >
                             封鎖
                           </button>
                         )

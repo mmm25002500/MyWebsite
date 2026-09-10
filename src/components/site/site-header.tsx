@@ -4,14 +4,28 @@ import { MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr';
 import { useTranslations } from 'next-intl';
 
 import { LocaleSwitch } from '@/components/site/locale-switch';
-import { navItems } from '@/components/site/nav-items';
 import { ThemeToggle } from '@/components/site/theme-toggle';
 import { UserMenu } from '@/components/site/user-menu';
+import type { NavKey } from '@/components/site/nav-items';
 import type { Locale } from '@/lib/i18n/config';
 import { Link, usePathname } from '@/lib/i18n/routing';
 import { cn } from '@/lib/utils';
 
-export function SiteHeader({ locale, onOpenSearch }: { locale: Locale; onOpenSearch: () => void }) {
+export interface NavEntry {
+  key: NavKey;
+  href: string;
+}
+
+export function SiteHeader({
+  locale,
+  navItems,
+  onOpenSearch,
+}: {
+  locale: Locale;
+  /** 由伺服器端依後台設定算好，這裡不再讀取固定清單。 */
+  navItems: NavEntry[];
+  onOpenSearch: () => void;
+}) {
   const t = useTranslations();
   const pathname = usePathname();
 
