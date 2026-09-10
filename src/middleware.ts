@@ -49,22 +49,22 @@ async function getThemeScriptHash(): Promise<string> {
  * 首頁、聯絡表單、登入註冊與整個後台不在其中，維持原本的嚴格政策。
  */
 function contentSecurityPolicy(
-  nonce: string,
+  nonce: string | null,
   scriptHash: string,
   supabaseHost: string,
   ads: boolean,
 ): string {
   const isDev = process.env.NODE_ENV === 'development';
 
-  if (ads) {
+  if (ads || !nonce) {
     return [
       "default-src 'self'",
-      // 有 nonce 時瀏覽器會忽略 'unsafe-inline'，因此這份政策不帶 nonce。
+      // CSP3：script-src 只要出現 nonce 或 hash，'unsafe-inline' 就會被忽略，因此兩者都不帶。
       [
         "script-src 'self' 'unsafe-inline'",
         isDev ? "'unsafe-eval'" : null,
         'https://challenges.cloudflare.com',
-        ...adsenseHosts.script,
+        ...(ads ? adsenseHosts.script : []),
       ]
         .filter(Boolean)
         .join(' '),
@@ -74,17 +74,17 @@ function contentSecurityPolicy(
         'https://i.ytimg.com',
         'https://avatars.githubusercontent.com',
         'https://lh3.googleusercontent.com',
-        ...adsenseHosts.image,
+        ...(ads ? adsenseHosts.image : []),
       ].join(' '),
       [
         'frame-src https://www.youtube-nocookie.com https://challenges.cloudflare.com',
-        ...adsenseHosts.frame,
+        ...(ads ? adsenseHosts.frame : []),
       ].join(' '),
       [
         "connect-src 'self'",
         `https://${supabaseHost}`,
         `wss://${supabaseHost}`,
-        ...adsenseHosts.connect,
+        ...(ads ? adsenseHosts.connect : []),
         isDev ? 'ws://localhost:* http://localhost:*' : null,
       ]
         .filter(Boolean)
@@ -131,19 +131,90 @@ function contentSecurityPolicy(
     .join('; ');
 }
 
+/**
+ * 把標頭覆寫回「請求」，而不只是回應。
+ *
+ * Next.js 是從**請求**上的 `content-security-policy` 取出 nonce，再蓋到它自己
+ * 輸出的 <script> 標籤上。只設在回應標頭的話，瀏覽器會拿到一份「只准帶 nonce」
+ * 的政策、HTML 卻一個 nonce 屬性都沒有，於是所有行內腳本（包含 RSC 的
+ * `self.__next_f` 酬載）全被擋下，React 拿不到 flight 資料就把容器清空——正式
+ * 環境整頁白畫面，主控台只留一句 `Connection closed.`。
+ *
+ * `NextResponse.next({ request: { headers } })` 就是靠下面這兩個協定標頭傳遞的，
+ * 但前台的回應由 next-intl 的中介層產生，我們插不進那個呼叫，因此直接寫。
+ *
+ * 注意 `x-middleware-override-headers` 會**整組取代**下游看到的請求標頭，漏列
+ * 就等於把該標頭從請求上拿掉（少了 cookie 就沒有登入狀態），所以必須列全。
+ */
+function overrideRequestHeaders(
+  request: NextRequest,
+  response: NextResponse,
+  extra: Record<string, string>,
+): void {
+  const headers = new Headers();
+
+  // 上游若已經覆寫過就接續它的結果，否則以原始請求為底。
+  const existing = response.headers.get('x-middleware-override-headers');
+  if (existing) {
+    for (const name of existing.split(',').map((item) => item.trim()).filter(Boolean)) {
+      const value = response.headers.get(`x-middleware-request-${name}`);
+      if (value !== null) headers.set(name, value);
+    }
+  } else {
+    request.headers.forEach((value, name) => headers.set(name, value));
+  }
+
+  for (const [name, value] of Object.entries(extra)) headers.set(name.toLowerCase(), value);
+
+  const names: string[] = [];
+  headers.forEach((value, name) => {
+    names.push(name);
+    response.headers.set(`x-middleware-request-${name}`, value);
+  });
+  response.headers.set('x-middleware-override-headers', names.join(','));
+}
+
+/**
+ * 哪些路徑用帶 nonce 的嚴格政策。
+ *
+ * **nonce 和靜態預先渲染是互斥的**：Next.js 的 nonce 是逐請求現產、在渲染時蓋到
+ * script 標籤上，而 SSG／ISR 的 HTML 只產生一次並重複回應，蓋不進去。結果就是
+ * 政策要求 nonce、HTML 卻沒有，行內腳本（含 RSC 的 `self.__next_f` 酬載）全被擋，
+ * 整頁空白。
+ *
+ * 因此嚴格政策只給「每次請求都會重新渲染」的路徑——整個後台，以及會讀 cookie
+ * 判斷登入狀態的帳號與登入相關頁面。其餘的公開內容頁走放寬版（`'unsafe-inline'`，
+ * 不帶 nonce），保住 ISR 帶來的效能。
+ *
+ * **這是一個明確的取捨**：公開頁面失去 script-src 對行內注入的防護，剩下 `'self'`
+ * 與網域白名單，以及 React 預設的輸出跳脫。權限操作、表單與 session 都在嚴格政策
+ * 那一側。名單裡任何一條若哪天變成完全靜態，那一頁就會白畫面，改路由時要一併檢查。
+ */
+const strictCspPaths = ['/admin', '/account', '/login', '/register', '/reset-password', '/search'];
+
+function wantsNonce(pathname: string): boolean {
+  const segments = pathname.split('/');
+  const bare = isLocale(segments[1] ?? '') ? `/${segments.slice(2).join('/')}` : pathname;
+
+  return strictCspPaths.some((path) => bare === path || bare.startsWith(`${path}/`));
+}
+
 async function applySecurityHeaders(
+  request: NextRequest,
   response: NextResponse,
   pathname: string,
 ): Promise<NextResponse> {
-  const nonce = crypto.randomUUID().replace(/-/g, '');
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseHost = supabaseUrl ? new URL(supabaseUrl).hostname : '*.supabase.co';
   const ads = adsEnabled && isAdRoute(pathname);
+  const nonce = !ads && wantsNonce(pathname) ? crypto.randomUUID().replace(/-/g, '') : null;
 
-  response.headers.set(
-    'content-security-policy',
-    contentSecurityPolicy(nonce, await getThemeScriptHash(), supabaseHost, ads),
-  );
+  const csp = contentSecurityPolicy(nonce, await getThemeScriptHash(), supabaseHost, ads);
+
+  response.headers.set('content-security-policy', csp);
+  // 只有帶 nonce 的政策需要讓 Next.js 讀到；放寬版沒有 nonce 可傳。
+  if (nonce) overrideRequestHeaders(request, response, { 'content-security-policy': csp });
+
   return response;
 }
 
@@ -265,7 +336,7 @@ export async function middleware(request: NextRequest) {
     const response = NextResponse.next();
     const { role } = await refreshSession(request, response, { withRole: true });
 
-    if (pathname === '/admin/login') return applySecurityHeaders(response, pathname);
+    if (pathname === '/admin/login') return applySecurityHeaders(request, response, pathname);
 
     if (!role || !adminRoles.has(role)) {
       const loginUrl = new URL('/admin/login', request.url);
@@ -273,7 +344,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
 
-    return applySecurityHeaders(response, pathname);
+    return applySecurityHeaders(request, response, pathname);
   }
 
   // 轉址在 i18n 之前：命中就直接送走，不必再跑語系協商與 session 刷新。
@@ -283,7 +354,7 @@ export async function middleware(request: NextRequest) {
   const response = handleI18n(request);
   // 前台仍需刷新 session，留言與帳號頁才拿得到登入狀態。
   await refreshSession(request, response);
-  return applySecurityHeaders(response, pathname);
+  return applySecurityHeaders(request, response, pathname);
 }
 
 export const config = {
