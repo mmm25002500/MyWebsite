@@ -10,9 +10,13 @@ const nextConfig = {
   /**
    * `pnpm dev` 與 `pnpm build` 預設共用 `.next`，同時跑會讓正式建置蓋掉
    * dev server 正在使用的 chunk，開發中的站台會突然 500（Cannot find
-   * module './xxxx.js'）。因此建置時改用獨立目錄。
+   * module './xxxx.js'）。因此本機建置時改用獨立目錄。
+   *
+   * **Vercel 上必須維持 `.next`**：它建置完會去固定的位置找輸出，換了目錄
+   * 就會以「找不到 .next」失敗——即使 next build 本身是成功的。平台會注入
+   * `VERCEL`，用它把本機的設定擋掉。
    */
-  distDir: process.env.NEXT_DIST_DIR || '.next',
+  distDir: process.env.VERCEL ? '.next' : process.env.NEXT_DIST_DIR || '.next',
   reactStrictMode: true,
   poweredByHeader: false,
   images: {
