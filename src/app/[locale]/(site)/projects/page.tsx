@@ -10,6 +10,7 @@ import { ProjectFilters } from '@/components/site/project-filters';
 import { Container } from '@/components/ui/typography';
 import { getProjectFilters, getProjects } from '@/lib/data';
 import { isLocale, type Locale } from '@/lib/i18n/config';
+import { pageAlternates } from '@/lib/seo';
 import type { ProjectStatus } from '@/types/content';
 
 export const revalidate = 3600;
@@ -24,7 +25,11 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = await getTranslations({ locale });
-  return { title: t('projects.title'), description: t('projects.description') };
+  return {
+    title: t('projects.title'),
+    description: t('projects.description'),
+    alternates: pageAlternates(locale, '/projects'),
+  };
 }
 
 export default async function ProjectsPage({

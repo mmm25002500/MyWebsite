@@ -18,6 +18,7 @@ import { getAllProjectSlugs, getProjectBySlug } from '@/lib/data';
 import { isLocale, locales, type Locale } from '@/lib/i18n/config';
 import { Link } from '@/lib/i18n/routing';
 import { formatPeriod } from '@/lib/utils';
+import { pageAlternates } from '@/lib/seo';
 import type { ProjectStatus } from '@/types/content';
 
 export const revalidate = 3600;
@@ -48,6 +49,7 @@ export async function generateMetadata({
   return {
     title,
     description,
+    alternates: pageAlternates(locale, `/projects/${slug}`),
     openGraph: { type: 'website', title, description, images: [ogImage] },
     twitter: { card: 'summary_large_image', title, description, images: [ogImage] },
   };

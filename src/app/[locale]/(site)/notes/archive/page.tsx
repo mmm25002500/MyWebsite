@@ -8,6 +8,7 @@ import { getPostArchive } from '@/lib/data';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { Link } from '@/lib/i18n/routing';
 import { formatDate } from '@/lib/utils';
+import { pageAlternates } from '@/lib/seo';
 
 export const revalidate = 3600;
 
@@ -19,7 +20,7 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = await getTranslations({ locale });
-  return { title: t('notes.archiveTitle') };
+  return { title: t('notes.archiveTitle'), alternates: pageAlternates(locale, '/notes/archive') };
 }
 
 export default async function ArchivePage({ params }: { params: Promise<{ locale: string }> }) {

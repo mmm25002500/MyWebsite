@@ -8,6 +8,7 @@ import { searchAll } from '@/lib/data';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { Link } from '@/lib/i18n/routing';
 import { formatDate } from '@/lib/utils';
+import { noIndex } from '@/lib/seo';
 import type { SearchResult } from '@/types/content';
 
 export const dynamic = 'force-dynamic';
@@ -21,7 +22,7 @@ export async function generateMetadata({
   if (!isLocale(locale)) return {};
   const t = await getTranslations({ locale });
   // 搜尋結果頁不應進索引。
-  return { title: t('search.title'), robots: { index: false, follow: true } };
+  return { title: t('search.title'), robots: noIndex };
 }
 
 const hrefFor = (result: SearchResult) =>
@@ -123,9 +124,7 @@ export default async function SearchPage({
                         {groupLabel[result.type]}
                         {result.date ? ` · ${formatDate(result.date, locale)}` : ''}
                       </p>
-                      <h2 className="mt-1 font-heading text-[20px] font-bold">
-                        {result.title}
-                      </h2>
+                      <h2 className="mt-1 font-heading text-[20px] font-bold">{result.title}</h2>
                       {result.snippet ? (
                         <p className="mt-1.5 max-w-[70ch] text-[15px] leading-relaxed text-ink-62">
                           {result.snippet}

@@ -7,6 +7,7 @@ import { PostListRow } from '@/components/site/post-list-row';
 import { Container } from '@/components/ui/typography';
 import { getSeriesList, getSeriesPosts } from '@/lib/data';
 import { isLocale, locales, type Locale } from '@/lib/i18n/config';
+import { pageAlternates } from '@/lib/seo';
 
 export const revalidate = 3600;
 
@@ -26,7 +27,13 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   if (!isLocale(locale)) return {};
   const series = (await getSeriesList(locale)).find((item) => item.slug === slug);
-  return series ? { title: series.title, description: series.description ?? undefined } : {};
+  return series
+    ? {
+        title: series.title,
+        description: series.description ?? undefined,
+        alternates: pageAlternates(locale, `/notes/series/${slug}`),
+      }
+    : {};
 }
 
 export default async function SeriesPage({

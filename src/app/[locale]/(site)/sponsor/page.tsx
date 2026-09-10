@@ -9,6 +9,7 @@ import { Container, Display, Kicker, Lede } from '@/components/ui/typography';
 import { getSponsorMethods, getSponsors } from '@/lib/data';
 import { sponsorIntro, sponsorPerks } from '@/lib/data/seed/site';
 import { isLocale, type Locale } from '@/lib/i18n/config';
+import { pageAlternates } from '@/lib/seo';
 
 export const revalidate = 3600;
 
@@ -20,7 +21,7 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = await getTranslations({ locale });
-  return { title: t('sponsor.title') };
+  return { title: t('sponsor.title'), alternates: pageAlternates(locale, '/sponsor') };
 }
 
 export default async function SponsorPage({ params }: { params: Promise<{ locale: string }> }) {

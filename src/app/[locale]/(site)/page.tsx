@@ -17,10 +17,11 @@ import {
   getHomeSkillGroups,
   getProjectCount,
 } from '@/lib/data';
-import { isLocale, type Locale } from '@/lib/i18n/config';
+import { htmlLang, isLocale, type Locale } from '@/lib/i18n/config';
 import { Link } from '@/lib/i18n/routing';
 import { siteUrl } from '@/lib/env';
 import { formatCompactNumber, formatPeriod } from '@/lib/utils';
+import { pageAlternates } from '@/lib/seo';
 import { Tag } from '@/components/ui/tag';
 
 export const revalidate = 3600;
@@ -34,6 +35,7 @@ export async function generateMetadata({
   if (!isLocale(locale)) return {};
   const t = await getTranslations({ locale });
   return {
+    alternates: pageAlternates(locale, ''),
     title: `${t('site.name')} ${t('site.nameEn')}`,
     description: t('site.role'),
   };
@@ -68,14 +70,40 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     { key: 'subs', value: stats.subscriberCount, label: t('home.statsSubscribers') },
   ].filter((item) => item.value > 0);
 
+  /*
+   * 一次給 Person 與 WebSite 兩個實體。WebSite 帶 SearchAction 讓 Google 有機會
+   * 在搜尋結果直接顯示站內搜尋框（sitelinks searchbox）。
+   */
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: t('site.name'),
-    alternateName: t('site.nameEn'),
-    url: siteUrl,
-    jobTitle: t('site.role'),
-    sameAs: settings.socialLinks.map((link) => link.url),
+    '@graph': [
+      {
+        '@type': 'Person',
+        '@id': `${siteUrl}/#person`,
+        name: t('site.name'),
+        alternateName: t('site.nameEn'),
+        url: siteUrl,
+        jobTitle: t('site.role'),
+        sameAs: settings.socialLinks.map((link) => link.url),
+      },
+      {
+        '@type': 'WebSite',
+        '@id': `${siteUrl}/#website`,
+        url: siteUrl,
+        name: `${t('site.name')} ${t('site.nameEn')}`.trim(),
+        description: t('site.role'),
+        inLanguage: htmlLang[locale],
+        publisher: { '@id': `${siteUrl}/#person` },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: `${siteUrl}/search?q={search_term_string}`,
+          },
+          'query-input': 'required name=search_term_string',
+        },
+      },
+    ],
   };
 
   const renderSection = (key: string) => {
@@ -179,9 +207,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               <div className="grid gap-6.5 md:grid-cols-3">
                 {skillGroups.map((group) => (
                   <div key={group.id}>
-                    <h3 className="font-heading text-[18px] font-bold text-text">
-                      {group.name}
-                    </h3>
+                    <h3 className="font-heading text-[18px] font-bold text-text">{group.name}</h3>
                     <div className="mt-3 flex flex-wrap gap-1.5">
                       {group.skills.map((skill) => (
                         <Tag key={skill.id} variant="bordered">

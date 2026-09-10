@@ -7,6 +7,7 @@ import { PageHeader } from '@/components/site/page-header';
 import { Container } from '@/components/ui/typography';
 import { getCategories } from '@/lib/data';
 import { isLocale, type Locale } from '@/lib/i18n/config';
+import { pageAlternates } from '@/lib/seo';
 
 import { NotesList } from './notes-list';
 
@@ -20,7 +21,11 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = await getTranslations({ locale });
-  return { title: t('notes.title'), description: t('notes.description') };
+  return {
+    title: t('notes.title'),
+    description: t('notes.description'),
+    alternates: pageAlternates(locale, '/notes'),
+  };
 }
 
 export default async function NotesPage({

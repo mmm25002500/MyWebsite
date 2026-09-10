@@ -16,6 +16,7 @@ import {
 } from '@/lib/data';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { formatPeriod } from '@/lib/utils';
+import { pageAlternates } from '@/lib/seo';
 import type { EmploymentType, LanguageProficiency } from '@/types/content';
 
 export const revalidate = 3600;
@@ -28,7 +29,11 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = await getTranslations({ locale });
-  return { title: t('resume.title'), description: t('site.role') };
+  return {
+    title: t('resume.title'),
+    description: t('site.role'),
+    alternates: pageAlternates(locale, '/resume'),
+  };
 }
 
 export default async function ResumePage({ params }: { params: Promise<{ locale: string }> }) {

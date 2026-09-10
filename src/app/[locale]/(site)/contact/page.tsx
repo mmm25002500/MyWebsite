@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Container, Display } from '@/components/ui/typography';
 import { getSiteSettings } from '@/lib/data';
 import { isLocale, type Locale } from '@/lib/i18n/config';
+import { pageAlternates } from '@/lib/seo';
 
 export const revalidate = 3600;
 
@@ -20,7 +21,11 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = await getTranslations({ locale });
-  return { title: t('contact.title'), description: t('contact.description') };
+  return {
+    title: t('contact.title'),
+    description: t('contact.description'),
+    alternates: pageAlternates(locale, '/contact'),
+  };
 }
 
 export default async function ContactPage({ params }: { params: Promise<{ locale: string }> }) {

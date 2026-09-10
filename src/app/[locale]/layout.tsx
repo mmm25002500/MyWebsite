@@ -49,16 +49,16 @@ export async function generateMetadata({
       template: `%s — ${t('site.name')}`,
     },
     description: t('site.role'),
-    alternates: {
-      canonical: locale === 'zh-TW' ? '/' : `/${locale}`,
-      languages: Object.fromEntries(
-        locales.map((item) => [htmlLang[item], item === 'zh-TW' ? '/' : `/${item}`]),
-      ),
-    },
+    /*
+     * 這裡刻意不放 alternates：metadata 是淺層合併，寫在 layout 會被每一個
+     * 沒有自己宣告的子頁沿用，全站的 canonical 就都變成首頁。改由各頁用
+     * `pageAlternates()` 自己給。
+     */
     openGraph: {
       type: 'website',
       siteName: t('site.name'),
       locale: htmlLang[locale as Locale],
+      images: ['/api/og'],
     },
     twitter: { card: 'summary_large_image', creator: t('site.twitter') },
     robots: { index: true, follow: true },

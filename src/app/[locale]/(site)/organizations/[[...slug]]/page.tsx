@@ -11,6 +11,7 @@ import { getOrganizations, getProjects } from '@/lib/data';
 import { isLocale, locales, type Locale } from '@/lib/i18n/config';
 import { Link } from '@/lib/i18n/routing';
 import { formatPeriod } from '@/lib/utils';
+import { pageAlternates } from '@/lib/seo';
 import type { OrganizationStatus } from '@/types/content';
 
 export const revalidate = 3600;
@@ -34,10 +35,21 @@ export async function generateMetadata({
   const t = await getTranslations({ locale });
 
   const target = slug?.[0];
-  if (!target) return { title: t('organizations.title') };
+  if (!target) {
+    return {
+      title: t('organizations.title'),
+      alternates: pageAlternates(locale, '/organizations'),
+    };
+  }
 
   const org = (await getOrganizations(locale)).find((item) => item.slug === target);
-  return org ? { title: org.name, description: org.role } : {};
+  return org
+    ? {
+        title: org.name,
+        description: org.role,
+        alternates: pageAlternates(locale, `/organizations/${target}`),
+      }
+    : {};
 }
 
 /** `/organizations` 與 `/organizations/[slug]` 共用同一個 optional catch-all 路由。 */

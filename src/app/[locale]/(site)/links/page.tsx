@@ -8,6 +8,7 @@ import { Container, Display, Kicker } from '@/components/ui/typography';
 import { getLinkGroups, getSiteSettings } from '@/lib/data';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { cn } from '@/lib/utils';
+import { pageAlternates } from '@/lib/seo';
 
 export const revalidate = 3600;
 
@@ -19,7 +20,11 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = await getTranslations({ locale });
-  return { title: t('links.title'), description: t('links.description') };
+  return {
+    title: t('links.title'),
+    description: t('links.description'),
+    alternates: pageAlternates(locale, '/links'),
+  };
 }
 
 /** 連結樹。行動版優先的單欄版面（規格 §3.1）。 */

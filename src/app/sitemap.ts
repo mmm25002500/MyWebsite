@@ -6,6 +6,7 @@ import {
   getAllProjectSlugs,
   getCategories,
   getOrganizations,
+  getSeriesList,
   getTags,
 } from '@/lib/data';
 import { defaultLocale, locales, type Locale } from '@/lib/i18n/config';
@@ -39,18 +40,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
   for (const locale of locales) {
-    const [posts, projects, categories, tags, organizations] = await Promise.all([
+    const [posts, projects, categories, tags, organizations, series] = await Promise.all([
       getAllPostSlugs(locale),
       getAllProjectSlugs(locale),
       getCategories(locale),
       getTags(locale),
       getOrganizations(locale),
+      getSeriesList(locale),
     ]);
 
     const paths = [
       ...staticPaths,
       ...categories.map((category) => `/notes/c/${category.slug}`),
       ...tags.filter((tag) => tag.postCount > 0).map((tag) => `/notes/tag/${tag.slug}`),
+      ...series.map((item) => `/notes/series/${item.slug}`),
       ...posts.map((slug) => `/notes/p/${slug}`),
       ...projects.map((slug) => `/projects/${slug}`),
       ...organizations.map((org) => `/organizations/${org.slug}`),

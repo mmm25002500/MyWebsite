@@ -8,6 +8,7 @@ import { Container } from '@/components/ui/typography';
 import { getVideos } from '@/lib/data';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { formatDate, formatCompactNumber, formatDuration } from '@/lib/utils';
+import { pageAlternates } from '@/lib/seo';
 
 // 影片資料來自 6 小時快取的 YouTube 代理（規格 §4.2）。
 export const revalidate = 21600;
@@ -20,7 +21,11 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = await getTranslations({ locale });
-  return { title: t('videos.title'), description: t('videos.description') };
+  return {
+    title: t('videos.title'),
+    description: t('videos.description'),
+    alternates: pageAlternates(locale, '/videos'),
+  };
 }
 
 export default async function VideosPage({ params }: { params: Promise<{ locale: string }> }) {

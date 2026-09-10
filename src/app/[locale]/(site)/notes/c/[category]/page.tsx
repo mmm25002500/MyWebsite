@@ -7,6 +7,7 @@ import { PageHeader } from '@/components/site/page-header';
 import { Container } from '@/components/ui/typography';
 import { getCategories } from '@/lib/data';
 import { isLocale, locales, type Locale } from '@/lib/i18n/config';
+import { pageAlternates } from '@/lib/seo';
 
 import { NotesList } from '../../notes-list';
 
@@ -30,7 +31,13 @@ export async function generateMetadata({
   const { locale, category: slug } = await params;
   if (!isLocale(locale)) return {};
   const category = (await getCategories(locale)).find((item) => item.slug === slug);
-  return category ? { title: category.name, description: category.description ?? undefined } : {};
+  return category
+    ? {
+        title: category.name,
+        description: category.description ?? undefined,
+        alternates: pageAlternates(locale, `/notes/c/${slug}`),
+      }
+    : {};
 }
 
 export default async function CategoryPage({

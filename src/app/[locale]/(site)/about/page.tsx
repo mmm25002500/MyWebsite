@@ -9,6 +9,7 @@ import { getInterests, getOrganizations, getProfileCopy, getTimeline } from '@/l
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { Link } from '@/lib/i18n/routing';
 import { formatPeriod } from '@/lib/utils';
+import { pageAlternates } from '@/lib/seo';
 
 export const revalidate = 3600;
 
@@ -20,7 +21,11 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = await getTranslations({ locale });
-  return { title: t('about.title'), description: t('site.role') };
+  return {
+    title: t('about.title'),
+    description: t('site.role'),
+    alternates: pageAlternates(locale, '/about'),
+  };
 }
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {

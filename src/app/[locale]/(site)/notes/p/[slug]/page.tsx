@@ -20,7 +20,7 @@ import {
   getSeriesList,
   getSeriesPosts,
 } from '@/lib/data';
-import { htmlLang, isLocale, locales, type Locale } from '@/lib/i18n/config';
+import { defaultLocale, htmlLang, isLocale, locales, type Locale } from '@/lib/i18n/config';
 import { Link } from '@/lib/i18n/routing';
 import { formatDate } from '@/lib/utils';
 
@@ -34,8 +34,12 @@ export async function generateStaticParams() {
   return params;
 }
 
+function canonicalRoot(locale: Locale) {
+  return locale === 'zh-TW' ? '' : `/${locale}`;
+}
+
 function canonicalPath(locale: Locale, slug: string) {
-  return locale === 'zh-TW' ? `/notes/p/${slug}` : `/${locale}/notes/p/${slug}`;
+  return `${canonicalRoot(locale)}/notes/p/${slug}`;
 }
 
 export async function generateMetadata({
@@ -58,9 +62,16 @@ export async function generateMetadata({
     description,
     alternates: {
       canonical: post.canonicalUrl ?? canonicalPath(locale, slug),
-      languages: Object.fromEntries(
-        post.availableLocales.map((item) => [htmlLang[item], canonicalPath(item, slug)]),
-      ),
+      languages: {
+        ...Object.fromEntries(
+          post.availableLocales.map((item) => [htmlLang[item], canonicalPath(item, slug)]),
+        ),
+        // 只有中文版的文章就指向中文版，不要留給搜尋引擎自己猜。
+        'x-default': canonicalPath(
+          post.availableLocales.includes(defaultLocale) ? defaultLocale : locale,
+          slug,
+        ),
+      },
     },
     openGraph: {
       type: 'article',
@@ -108,14 +119,45 @@ export default async function PostPage({
 
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    headline: post.title,
-    description: post.excerpt ?? undefined,
-    datePublished: post.publishedAt ?? undefined,
-    dateModified: post.updatedAt ?? post.publishedAt ?? undefined,
-    author: { '@type': 'Person', name: t('site.name'), url: siteUrl },
-    mainEntityOfPage: url,
-    keywords: post.tags.map((tag) => tag.name).join(', '),
+    '@graph': [
+      {
+        '@type': 'BlogPosting',
+        headline: post.title,
+        description: post.excerpt ?? undefined,
+        datePublished: post.publishedAt ?? undefined,
+        dateModified: post.updatedAt ?? post.publishedAt ?? undefined,
+        author: { '@type': 'Person', '@id': `${siteUrl}/#person`, name: t('site.name') },
+        publisher: { '@id': `${siteUrl}/#person` },
+        mainEntityOfPage: url,
+        inLanguage: htmlLang[locale],
+        image: [`${siteUrl}/api/og?type=post&slug=${encodeURIComponent(slug)}`],
+        keywords: post.tags.map((tag) => tag.name).join(', '),
+        articleSection: post.categories[0]?.name,
+        wordCount: post.wordCount,
+      },
+      // 麵包屑讓搜尋結果顯示「首頁 › 筆記 › 分類 › 標題」而不是一整條網址。
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { name: t('nav.home'), item: `${siteUrl}${canonicalRoot(locale)}` },
+          { name: t('nav.notes'), item: `${siteUrl}${canonicalRoot(locale)}/notes` },
+          ...(post.categories[0]
+            ? [
+                {
+                  name: post.categories[0].name,
+                  item: `${siteUrl}${canonicalRoot(locale)}/notes/c/${post.categories[0].slug}`,
+                },
+              ]
+            : []),
+          { name: post.title, item: url },
+        ].map((entry, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: entry.name,
+          item: entry.item,
+        })),
+      },
+    ],
   };
 
   return (
