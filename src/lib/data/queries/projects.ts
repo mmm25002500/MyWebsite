@@ -144,7 +144,7 @@ export const getFeaturedProjects = cache(
   },
 );
 
-export const getProjectCount = cache(async (locale: Locale): Promise<number> => {
+export const getProjectCount = cached(['getProjectCount'], async (locale: Locale): Promise<number> => {
   if (usingSeed) return seedProjects(locale).length;
 
   const { count, error } = await publicClient()
@@ -153,7 +153,7 @@ export const getProjectCount = cache(async (locale: Locale): Promise<number> => 
     .eq('locale', locale);
   if (error) throw new Error(`[data] v_public_projects count: ${error.message}`);
   return count ?? 0;
-});
+}, { tags: [cacheTags.projects] });
 
 export const getProjectBySlug = cache(
   async (locale: Locale, slug: string): Promise<Project | null> => {
@@ -274,7 +274,7 @@ export async function getAllProjectSlugs(locale: Locale): Promise<string[]> {
 }
 
 /** 作品集的篩選選項，由目前資料推導，不另建設定表。 */
-export const getProjectFilters = cache(async (locale: Locale) => {
+export const getProjectFilters = cached(['getProjectFilters'], async (locale: Locale) => {
   const result = await getProjects({ locale, pageSize: 200 });
   const categories = new Map<string, string>();
   const tags = new Map<string, string>();
@@ -293,4 +293,4 @@ export const getProjectFilters = cache(async (locale: Locale) => {
     tags: [...tags].map(([slug, name]) => ({ slug, name })),
     years: [...years].sort((a, b) => b - a),
   };
-});
+}, { tags: [cacheTags.projects] });

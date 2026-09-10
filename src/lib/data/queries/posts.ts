@@ -72,7 +72,7 @@ function sortPosts(items: PostSummary[], sort: PostQuery['sort']): PostSummary[]
 
 // —— 查詢 ——
 
-export const getCategories = cache(async (locale: Locale): Promise<Category[]> => {
+export const getCategories = cached(['getCategories'], async (locale: Locale): Promise<Category[]> => {
   if (usingSeed) {
     const summaries = seedSummaries(locale);
     return seedCategories(locale).map((category) => ({
@@ -108,9 +108,9 @@ export const getCategories = cache(async (locale: Locale): Promise<Category[]> =
     sortOrder: row.sort_order,
     postCount: 0,
   }));
-});
+}, { tags: [cacheTags.taxonomy] });
 
-export const getTags = cache(async (locale: Locale): Promise<Tag[]> => {
+export const getTags = cached(['getTags'], async (locale: Locale): Promise<Tag[]> => {
   if (usingSeed) {
     const summaries = seedSummaries(locale);
     const counts = new Map<string, number>();
@@ -144,9 +144,9 @@ export const getTags = cache(async (locale: Locale): Promise<Tag[]> => {
     postCount: row.post_count,
     projectCount: row.project_count,
   }));
-});
+}, { tags: [cacheTags.taxonomy] });
 
-export const getSeriesList = cache(async (locale: Locale): Promise<Series[]> => {
+export const getSeriesList = cached(['getSeriesList'], async (locale: Locale): Promise<Series[]> => {
   if (usingSeed) {
     return seedSeries.map((series) => ({
       id: `series-${series.slug}`,
@@ -180,7 +180,7 @@ export const getSeriesList = cache(async (locale: Locale): Promise<Series[]> => 
     coverUrl: row.cover_url,
     postCount: 0,
   }));
-});
+}, { tags: [cacheTags.taxonomy] });
 
 async function fetchPosts(query: PostQuery): Promise<Paginated<PostSummary>> {
   const page = Math.max(1, query.page ?? 1);
@@ -300,7 +300,7 @@ function mapPostRow(row: PublicPostRow): PostSummary {
   };
 }
 
-export const getPostBySlug = cache(async (locale: Locale, slug: string): Promise<Post | null> => {
+export const getPostBySlug = cached(['getPostBySlug'], async (locale: Locale, slug: string): Promise<Post | null> => {
   if (usingSeed) {
     const seed = seedPosts.find((post) => post.slug === slug);
     const summary = seed ? seedSummary(seed, locale) : null;
@@ -363,9 +363,9 @@ export const getPostBySlug = cache(async (locale: Locale, slug: string): Promise
     seoDescription: row.seo_description,
     wordCount: row.word_count ?? 0,
   };
-});
+}, { tags: [cacheTags.posts] });
 
-export const getPostCount = cache(async (locale: Locale): Promise<number> => {
+export const getPostCount = cached(['getPostCount'], async (locale: Locale): Promise<number> => {
   if (usingSeed) return seedSummaries(locale).length;
 
   const { count, error } = await publicClient()
@@ -374,7 +374,7 @@ export const getPostCount = cache(async (locale: Locale): Promise<number> => {
     .eq('locale', locale);
   if (error) throw new Error(`[data] v_public_posts count: ${error.message}`);
   return count ?? 0;
-});
+}, { tags: [cacheTags.posts] });
 
 export const getLatestPosts = cache(
   async (locale: Locale, limit: number): Promise<PostSummary[]> => {
@@ -419,7 +419,7 @@ export interface ArchiveGroup {
   months: { month: number; posts: PostSummary[] }[];
 }
 
-export const getPostArchive = cache(async (locale: Locale): Promise<ArchiveGroup[]> => {
+export const getPostArchive = cached(['getPostArchive'], async (locale: Locale): Promise<ArchiveGroup[]> => {
   const all = await getPosts({ locale, pageSize: 500 });
   const byYear = new Map<number, Map<number, PostSummary[]>>();
 
@@ -441,7 +441,7 @@ export const getPostArchive = cache(async (locale: Locale): Promise<ArchiveGroup
         .sort((a, b) => b[0] - a[0])
         .map(([month, posts]) => ({ month, posts })),
     }));
-});
+}, { tags: [cacheTags.posts] });
 
 /** 供 `generateStaticParams` 使用：所有已發佈文章的 slug。 */
 export async function getAllPostSlugs(locale: Locale): Promise<string[]> {

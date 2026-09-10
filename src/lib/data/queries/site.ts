@@ -1,5 +1,7 @@
 import { cache } from 'react';
 
+import { cacheTags, cached } from '@/lib/data/cache';
+
 import {
   seedChangelog,
   seedHomeSections,
@@ -24,7 +26,7 @@ import type {
   VideoItem,
 } from '@/types/content';
 
-export const getSiteSettings = cache(async (locale: Locale): Promise<SiteSettings> => {
+export const getSiteSettings = cached(['getSiteSettings'], async (locale: Locale): Promise<SiteSettings> => {
   if (usingSeed) return seedSiteSettings(locale);
 
   const { data, error } = await publicClient().from('site_settings').select('key, value');
@@ -53,9 +55,9 @@ export const getSiteSettings = cache(async (locale: Locale): Promise<SiteSetting
     socialLinks:
       (map.get('social_links') as SiteSettings['socialLinks'] | undefined) ?? defaults.socialLinks,
   };
-});
+}, { tags: [cacheTags.site] });
 
-export const getHomeSections = cache(async (): Promise<HomeSection[]> => {
+export const getHomeSections = cached(['getHomeSections'], async (): Promise<HomeSection[]> => {
   if (usingSeed) return seedHomeSections();
 
   const { data, error } = await publicClient()
@@ -80,9 +82,9 @@ export const getHomeSections = cache(async (): Promise<HomeSection[]> => {
   }));
 
   return sections.length > 0 ? sections : seedHomeSections();
-});
+}, { tags: [cacheTags.site] });
 
-export const getOrganizations = cache(async (locale: Locale): Promise<Organization[]> => {
+export const getOrganizations = cached(['getOrganizations'], async (locale: Locale): Promise<Organization[]> => {
   if (usingSeed) return seedOrganizations(locale);
 
   const { data, error } = await publicClient()
@@ -121,7 +123,7 @@ export const getOrganizations = cache(async (locale: Locale): Promise<Organizati
       status: row.status,
     };
   });
-});
+}, { tags: [cacheTags.site] });
 
 export const getOrganizationBySlug = cache(
   async (locale: Locale, slug: string): Promise<Organization | null> => {
@@ -130,7 +132,7 @@ export const getOrganizationBySlug = cache(
   },
 );
 
-export const getLinkGroups = cache(async (locale: Locale): Promise<LinkGroup[]> => {
+export const getLinkGroups = cached(['getLinkGroups'], async (locale: Locale): Promise<LinkGroup[]> => {
   if (usingSeed) return seedLinkGroups(locale);
 
   const { data, error } = await publicClient()
@@ -180,9 +182,9 @@ export const getLinkGroups = cache(async (locale: Locale): Promise<LinkGroup[]> 
         isHighlighted: button.is_highlighted,
       })),
   }));
-});
+}, { tags: [cacheTags.site] });
 
-export const getSponsorMethods = cache(async (locale: Locale): Promise<SponsorMethod[]> => {
+export const getSponsorMethods = cached(['getSponsorMethods'], async (locale: Locale): Promise<SponsorMethod[]> => {
   if (usingSeed) return seedSponsorMethods(locale);
 
   const { data, error } = await publicClient()
@@ -215,9 +217,9 @@ export const getSponsorMethods = cache(async (locale: Locale): Promise<SponsorMe
     network: row.network,
     icon: row.icon,
   }));
-});
+}, { tags: [cacheTags.site] });
 
-export const getSponsors = cache(async (locale: Locale): Promise<SponsorEntry[]> => {
+export const getSponsors = cached(['getSponsors'], async (locale: Locale): Promise<SponsorEntry[]> => {
   if (usingSeed) return seedSponsors();
 
   const { data, error } = await publicClient()
@@ -250,9 +252,9 @@ export const getSponsors = cache(async (locale: Locale): Promise<SponsorEntry[]>
     sponsoredAt: row.sponsored_at,
     isAnonymous: row.is_anonymous,
   }));
-});
+}, { tags: [cacheTags.site] });
 
-export const getChangelog = cache(async (locale: Locale): Promise<ChangelogEntry[]> => {
+export const getChangelog = cached(['getChangelog'], async (locale: Locale): Promise<ChangelogEntry[]> => {
   if (usingSeed) return seedChangelog(locale);
 
   const { data, error } = await publicClient()
@@ -277,13 +279,13 @@ export const getChangelog = cache(async (locale: Locale): Promise<ChangelogEntry
     title: row.changelog_entries_i18n[0]?.title ?? '',
     items: row.changelog_entries_i18n[0]?.items ?? [],
   }));
-});
+}, { tags: [cacheTags.site] });
 
 /**
  * 影片來自 YouTube Data API 的伺服器端代理（規格 §5.5），後台覆寫存在 `video_meta`。
  * 尚未設定 `YOUTUBE_API_KEY` 時回傳空陣列，頁面顯示空狀態而非報錯。
  */
-export const getVideos = cache(async (): Promise<VideoItem[]> => {
+export const getVideos = cached(['getVideos'], async (): Promise<VideoItem[]> => {
   if (usingSeed) return seedVideos();
 
   const { data, error } = await publicClient()
@@ -308,10 +310,10 @@ export const getVideos = cache(async (): Promise<VideoItem[]> => {
       isFeatured: row.is_featured,
     }),
   );
-});
+}, { tags: [cacheTags.site] });
 
 /** 首頁數據列。GitHub 與 YouTube 的數字來自快取代理，文章與專案數來自 DB。 */
-export const getSiteStats = cache(async (locale: Locale): Promise<SiteStats> => {
+export const getSiteStats = cached(['getSiteStats'], async (locale: Locale): Promise<SiteStats> => {
   const [{ getPostCount }, { getProjectCount }] = await Promise.all([
     import('./posts'),
     import('./projects'),
@@ -323,4 +325,4 @@ export const getSiteStats = cache(async (locale: Locale): Promise<SiteStats> => 
   ]);
 
   return { repoCount: 0, starCount: 0, postCount, projectCount, subscriberCount: 0 };
-});
+}, { tags: [cacheTags.site] });

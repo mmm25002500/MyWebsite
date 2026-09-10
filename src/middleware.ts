@@ -263,7 +263,7 @@ export async function middleware(request: NextRequest) {
 
   if (pathname.startsWith('/admin')) {
     const response = NextResponse.next();
-    const { role } = await refreshSession(request, response);
+    const { role } = await refreshSession(request, response, { withRole: true });
 
     if (pathname === '/admin/login') return applySecurityHeaders(response, pathname);
 

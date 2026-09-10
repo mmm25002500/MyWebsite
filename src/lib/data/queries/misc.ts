@@ -1,12 +1,14 @@
 import { cache } from 'react';
 
+import { cacheTags, cached } from '@/lib/data/cache';
+
 import { renderMarkdown } from '@/lib/content/markdown';
 import { seedTimeline } from '@/lib/data/seed/timeline';
 import { publicClient, rows, usingSeed } from '@/lib/data/source';
 import type { Locale } from '@/lib/i18n/config';
 import type { SearchResult, StaticPage, TimelineEvent } from '@/types/content';
 
-export const getTimeline = cache(async (locale: Locale): Promise<TimelineEvent[]> => {
+export const getTimeline = cached(['getTimeline'], async (locale: Locale): Promise<TimelineEvent[]> => {
   if (usingSeed) return seedTimeline(locale);
 
   const { data, error } = await publicClient()
@@ -53,7 +55,7 @@ export const getTimeline = cache(async (locale: Locale): Promise<TimelineEvent[]
       isMilestone: row.is_milestone,
     };
   });
-});
+}, { tags: [cacheTags.timeline] });
 
 /** about / privacy / terms / sponsor 說明等單頁內容。 */
 export const getStaticPage = cache(

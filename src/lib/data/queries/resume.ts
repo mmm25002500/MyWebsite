@@ -1,4 +1,4 @@
-import { cache } from 'react';
+import { cacheTags, cached } from '@/lib/data/cache';
 
 import {
   beliefs,
@@ -22,7 +22,7 @@ import type {
   SpokenLanguage,
 } from '@/types/content';
 
-export const getExperiences = cache(async (locale: Locale): Promise<Experience[]> => {
+export const getExperiences = cached(['getExperiences'], async (locale: Locale): Promise<Experience[]> => {
   if (usingSeed) return seedExperiences(locale);
 
   const { data, error } = await publicClient()
@@ -71,9 +71,9 @@ export const getExperiences = cache(async (locale: Locale): Promise<Experience[]
       organizationSlug: row.organizations?.slug ?? null,
     };
   });
-});
+}, { tags: [cacheTags.resume] });
 
-export const getEducation = cache(async (locale: Locale): Promise<Education[]> => {
+export const getEducation = cached(['getEducation'], async (locale: Locale): Promise<Education[]> => {
   if (usingSeed) return seedEducation(locale);
 
   const { data, error } = await publicClient()
@@ -112,9 +112,9 @@ export const getEducation = cache(async (locale: Locale): Promise<Education[]> =
       logoUrl: row.logo_url,
     };
   });
-});
+}, { tags: [cacheTags.resume] });
 
-export const getSkillGroups = cache(async (locale: Locale): Promise<SkillGroup[]> => {
+export const getSkillGroups = cached(['getSkillGroups'], async (locale: Locale): Promise<SkillGroup[]> => {
   if (usingSeed) return seedSkillGroups(locale);
 
   const { data, error } = await publicClient()
@@ -162,17 +162,17 @@ export const getSkillGroups = cache(async (locale: Locale): Promise<SkillGroup[]
         showOnHome: skill.show_on_home,
       })),
   }));
-});
+}, { tags: [cacheTags.resume] });
 
 /** 首頁只顯示 `show_on_home` 的技能，且略過整組都沒被勾選的分組。 */
-export const getHomeSkillGroups = cache(async (locale: Locale): Promise<SkillGroup[]> => {
+export const getHomeSkillGroups = cached(['getHomeSkillGroups'], async (locale: Locale): Promise<SkillGroup[]> => {
   const groups = await getSkillGroups(locale);
   return groups
     .map((group) => ({ ...group, skills: group.skills.filter((skill) => skill.showOnHome) }))
     .filter((group) => group.skills.length > 0);
-});
+}, { tags: [cacheTags.resume] });
 
-export const getCertifications = cache(async (locale: Locale): Promise<Certification[]> => {
+export const getCertifications = cached(['getCertifications'], async (locale: Locale): Promise<Certification[]> => {
   if (usingSeed) return seedCertifications(locale);
 
   const { data, error } = await publicClient()
@@ -198,9 +198,9 @@ export const getCertifications = cache(async (locale: Locale): Promise<Certifica
     issuedAt: row.issued_at,
     credentialUrl: row.credential_url,
   }));
-});
+}, { tags: [cacheTags.resume] });
 
-export const getLanguages = cache(async (locale: Locale): Promise<SpokenLanguage[]> => {
+export const getLanguages = cached(['getLanguages'], async (locale: Locale): Promise<SpokenLanguage[]> => {
   if (usingSeed) return seedLanguages(locale);
 
   const { data, error } = await publicClient()
@@ -223,9 +223,9 @@ export const getLanguages = cache(async (locale: Locale): Promise<SpokenLanguage
     proficiency: row.proficiency,
     note: row.languages_spoken_i18n[0]?.note ?? null,
   }));
-});
+}, { tags: [cacheTags.resume] });
 
-export const getInterests = cache(async (locale: Locale): Promise<Interest[]> => {
+export const getInterests = cached(['getInterests'], async (locale: Locale): Promise<Interest[]> => {
   if (usingSeed) return seedInterests(locale);
 
   const { data, error } = await publicClient()
@@ -246,7 +246,7 @@ export const getInterests = cache(async (locale: Locale): Promise<Interest[]> =>
     description: row.interests_i18n[0]?.description ?? null,
     icon: row.icon,
   }));
-});
+}, { tags: [cacheTags.resume] });
 
 /** 簡介、座右銘與特質標籤目前僅有 seed 版本，後台上線後改由 `pages` 提供。 */
 export function getProfileCopy(locale: Locale) {
