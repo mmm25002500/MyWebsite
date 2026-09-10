@@ -108,9 +108,9 @@ export function AdminMobileNav({
         type="button"
         aria-label="關閉導覽"
         onClick={onClose}
-        className="absolute inset-0 bg-black/50"
+        className="animate-backdrop absolute inset-0 bg-black/50"
       />
-      <div className="absolute inset-y-0 left-0 flex w-64 flex-col border-r border-divider bg-surface">
+      <div className="animate-drawer-left absolute inset-y-0 left-0 flex w-64 flex-col border-r border-divider bg-surface">
         <div className="flex items-center gap-2 px-3 py-3.5">
           <Link
             href="/admin"

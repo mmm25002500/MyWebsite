@@ -270,6 +270,19 @@
     animation: rise 0.72s cubic-bezier(0.2, 0.75, 0.2, 1) both;
   }
 
+  /* 抽屜進場：遮罩淡入，面板從畫面外滑進來。 */
+  .animate-backdrop {
+    animation: backdrop-in 0.18s ease-out both;
+  }
+
+  .animate-drawer-right {
+    animation: drawer-in-right 0.24s cubic-bezier(0.32, 0.72, 0, 1) both;
+  }
+
+  .animate-drawer-left {
+    animation: drawer-in-left 0.24s cubic-bezier(0.32, 0.72, 0, 1) both;
+  }
+
   /* 報紙網點：介面影像的處理方式。 */
   .halftone {
     position: relative;
@@ -313,6 +326,35 @@
   z-index: 1;
 }
 
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 右側抽屜：從畫面右緣滑入。 */
+@keyframes drawer-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* 左側抽屜（後台）：從畫面左緣滑入。 */
+@keyframes drawer-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
 @keyframes rise {
   from {
     opacity: 0;
@@ -325,7 +367,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-rise {
+  .animate-rise,
+  .animate-backdrop,
+  .animate-drawer-right,
+  .animate-drawer-left {
     animation: none;
   }
 

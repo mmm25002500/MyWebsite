@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { clearUnverifiedTotpFactors } from '@/actions/auth';
 import { createBrowserSupabase } from '@/lib/supabase/client';
 import { toast } from '@/lib/toast';
 
@@ -56,20 +57,26 @@ export function TotpSetup() {
       const supabase = createBrowserSupabase();
 
       /*
-       * 上一次沒完成的綁定會留下 unverified 的 factor，Supabase 會以「已經有
-       * 同名的 factor」拒絕下一次 enroll。清掉之前先重新查一次——元件掛載時
-       * 抓的那份可能已經過期（例如剛才自己才建了一個）。
+       * 取消或關掉分頁會在 Supabase 留下 unverified 的 factor，而 friendlyName
+       * 是唯一鍵，同名就會被拒絕。麻煩的是 `listFactors()` 只回傳**已驗證**的
+       * factor，前端看不到那些殘留的，也就刪不掉——之前「同一分鐘內啟用兩次
+       * 就失敗」正是這個原因。
+       *
+       * 兩道保險：先請伺服器端用管理權限清掉殘留的，名稱再帶一段隨機值。
        */
-      const { data: existing } = await supabase.auth.mfa.listFactors();
-      for (const factor of existing?.totp ?? []) {
-        if (factor.status !== 'verified') await supabase.auth.mfa.unenroll({ factorId: factor.id });
+      await clearUnverifiedTotpFactors().catch(() => undefined);
+
+      const label = () =>
+        `${new Date().toISOString().slice(0, 16).replace('T', ' ')} · ${Math.random()
+          .toString(36)
+          .slice(2, 6)}`;
+
+      let enrolled = await supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: label() });
+      if (enrolled.error?.message.includes('already exists')) {
+        enrolled = await supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: label() });
       }
 
-      const { data, error } = await supabase.auth.mfa.enroll({
-        factorType: 'totp',
-        // 名稱帶到分鐘，避免同一天重複綁定時撞名。
-        friendlyName: `${new Date().toISOString().slice(0, 16).replace('T', ' ')}`,
-      });
+      const { data, error } = enrolled;
 
       if (error || !data) {
         toast.error(error?.message ?? '無法開始綁定');
@@ -129,9 +136,7 @@ export function TotpSetup() {
     <div className="space-y-4">
       {verified.length > 0 ? (
         <>
-          <p className="text-[15px]">
-            已啟用兩步驟驗證。下次登入時會要求輸入驗證器上的六位數字。
-          </p>
+          <p className="text-[15px]">已啟用兩步驟驗證。下次登入時會要求輸入驗證器上的六位數字。</p>
           {verified.map((factor) => (
             <div key={factor.id} className="flex flex-wrap items-center gap-3">
               <span className="text-[15px] font-bold">{factor.friendlyName ?? 'TOTP'}</span>

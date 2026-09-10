@@ -119,9 +119,9 @@ export function SiteHeader({
             type="button"
             aria-label={t('common.close')}
             onClick={() => setMenuOpen(false)}
-            className="absolute inset-0 bg-black/50"
+            className="animate-backdrop absolute inset-0 bg-black/50"
           />
-          <div className="absolute inset-y-0 right-0 flex w-64 flex-col border-l border-divider bg-bg">
+          <div className="animate-drawer-right absolute inset-y-0 right-0 flex w-64 flex-col border-l border-divider bg-bg">
             <div className="flex items-center gap-2 px-5 py-3.5">
               <span className="font-heading text-[18px] font-bold tracking-[0.06em]">TSX</span>
               <button
