@@ -272,7 +272,18 @@
     "unlink": "Unlink",
     "unlinkDone": "Unlinked",
     "unlinkLast": "This is your only sign-in method; unlinking it would lock you out.",
-    "oauthFailed": "Sign-in did not complete. Please try again."
+    "oauthFailed": "Sign-in did not complete. Please try again.",
+    "passwordHint": "Once set, you can sign in with your email and password.",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "changePassword": "Change password",
+    "setPassword": "Set password",
+    "passwordUpdated": "Password updated",
+    "passwordWrong": "That is not your current password",
+    "passwordMismatch": "The two new passwords do not match",
+    "passwordTooShort": "Password must be at least {min} characters",
+    "setNewPasswordTitle": "Set a new password"
   },
   "footer": {
     "builtWith": "Built with Next.js and Supabase",
