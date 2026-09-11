@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import type { UserIdentity } from '@supabase/supabase-js';
 import { useTranslations } from 'next-intl';
 
@@ -33,9 +33,10 @@ type ProviderId = (typeof providers)[number]['id'];
  *    所以他綁了一個 Google 之後仍然可以解除 Google；反過來，純 OAuth 註冊的
  *    人在只剩一個 provider 時解不掉——這是對的，解掉就再也登不進來了。
  */
-export function LinkedAccounts() {
+export function LinkedAccounts({ initial }: { initial: UserIdentity[] }) {
   const t = useTranslations();
-  const [identities, setIdentities] = useState<UserIdentity[] | null>(null);
+  // 初值由伺服器帶下來；只有解除綁定之後才需要重新查。
+  const [identities, setIdentities] = useState<UserIdentity[] | null>(initial);
   const [pending, startTransition] = useTransition();
 
   const load = async () => {
@@ -43,10 +44,6 @@ export function LinkedAccounts() {
     const { data } = await supabase.auth.getUserIdentities();
     setIdentities(data?.identities ?? []);
   };
-
-  useEffect(() => {
-    void load();
-  }, []);
 
   const link = (provider: ProviderId) => {
     startTransition(async () => {

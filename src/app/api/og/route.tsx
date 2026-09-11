@@ -58,8 +58,7 @@ export async function GET(request: Request) {
   const parsed = querySchema.safeParse(Object.fromEntries(new URL(request.url).searchParams));
   const data = parsed.success ? parsed.data : { type: 'page' as const, slug: undefined };
 
-  const looked =
-    data.type !== 'page' && data.slug ? await lookupTitle(data.type, data.slug) : null;
+  const looked = data.type !== 'page' && data.slug ? await lookupTitle(data.type, data.slug) : null;
 
   const title = looked ?? dictionary.site.name;
   const subtitle = dictionary.site.kicker;

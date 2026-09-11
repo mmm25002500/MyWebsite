@@ -144,16 +144,20 @@ export const getFeaturedProjects = cache(
   },
 );
 
-export const getProjectCount = cached(['getProjectCount'], async (locale: Locale): Promise<number> => {
-  if (usingSeed) return seedProjects(locale).length;
+export const getProjectCount = cached(
+  ['getProjectCount'],
+  async (locale: Locale): Promise<number> => {
+    if (usingSeed) return seedProjects(locale).length;
 
-  const { count, error } = await publicClient()
-    .from('v_public_projects')
-    .select('id', { count: 'exact', head: true })
-    .eq('locale', locale);
-  if (error) throw new Error(`[data] v_public_projects count: ${error.message}`);
-  return count ?? 0;
-}, { tags: [cacheTags.projects] });
+    const { count, error } = await publicClient()
+      .from('v_public_projects')
+      .select('id', { count: 'exact', head: true })
+      .eq('locale', locale);
+    if (error) throw new Error(`[data] v_public_projects count: ${error.message}`);
+    return count ?? 0;
+  },
+  { tags: [cacheTags.projects] },
+);
 
 export const getProjectBySlug = cache(
   async (locale: Locale, slug: string): Promise<Project | null> => {
@@ -274,23 +278,27 @@ export async function getAllProjectSlugs(locale: Locale): Promise<string[]> {
 }
 
 /** 作品集的篩選選項，由目前資料推導，不另建設定表。 */
-export const getProjectFilters = cached(['getProjectFilters'], async (locale: Locale) => {
-  const result = await getProjects({ locale, pageSize: 200 });
-  const categories = new Map<string, string>();
-  const tags = new Map<string, string>();
-  const years = new Set<number>();
+export const getProjectFilters = cached(
+  ['getProjectFilters'],
+  async (locale: Locale) => {
+    const result = await getProjects({ locale, pageSize: 200 });
+    const categories = new Map<string, string>();
+    const tags = new Map<string, string>();
+    const years = new Set<number>();
 
-  for (const project of result.items) {
-    if (project.categorySlug && project.categoryName) {
-      categories.set(project.categorySlug, project.categoryName);
+    for (const project of result.items) {
+      if (project.categorySlug && project.categoryName) {
+        categories.set(project.categorySlug, project.categoryName);
+      }
+      for (const tag of project.tags) tags.set(tag.slug, tag.name);
+      years.add(Number(project.startedAt.slice(0, 4)));
     }
-    for (const tag of project.tags) tags.set(tag.slug, tag.name);
-    years.add(Number(project.startedAt.slice(0, 4)));
-  }
 
-  return {
-    categories: [...categories].map(([slug, name]) => ({ slug, name })),
-    tags: [...tags].map(([slug, name]) => ({ slug, name })),
-    years: [...years].sort((a, b) => b - a),
-  };
-}, { tags: [cacheTags.projects] });
+    return {
+      categories: [...categories].map(([slug, name]) => ({ slug, name })),
+      tags: [...tags].map(([slug, name]) => ({ slug, name })),
+      years: [...years].sort((a, b) => b - a),
+    };
+  },
+  { tags: [cacheTags.projects] },
+);

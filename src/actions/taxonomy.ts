@@ -200,12 +200,21 @@ export async function saveTag(input: SaveTagInput): Promise<ActionResult> {
 
   let previousSlug: string | null = null;
   if (data.id) {
-    const { data: row } = await supabase.from('tags').select('slug').eq('id', data.id).maybeSingle();
+    const { data: row } = await supabase
+      .from('tags')
+      .select('slug')
+      .eq('id', data.id)
+      .maybeSingle();
     previousSlug = row?.slug ?? null;
   }
 
   const { data: saved, error } = data.id
-    ? await supabase.from('tags').update({ slug: data.slug }).eq('id', data.id).select('id').single()
+    ? await supabase
+        .from('tags')
+        .update({ slug: data.slug })
+        .eq('id', data.id)
+        .select('id')
+        .single()
     : await supabase.from('tags').insert({ slug: data.slug }).select('id').single();
 
   if (error || !saved) {
@@ -286,12 +295,10 @@ export async function mergeTags(sourceId: string, targetId: string): Promise<Act
   ]);
 
   if (postLinks && postLinks.length > 0) {
-    const { error } = await supabase
-      .from('post_tags')
-      .upsert(
-        postLinks.map((row) => ({ post_id: row.post_id, tag_id: targetId })),
-        { onConflict: 'post_id,tag_id', ignoreDuplicates: true },
-      );
+    const { error } = await supabase.from('post_tags').upsert(
+      postLinks.map((row) => ({ post_id: row.post_id, tag_id: targetId })),
+      { onConflict: 'post_id,tag_id', ignoreDuplicates: true },
+    );
     if (error) {
       console.error('[actions] mergeTags post_tags 失敗：', error);
       return { ok: false, error: '合併失敗' };
@@ -299,12 +306,10 @@ export async function mergeTags(sourceId: string, targetId: string): Promise<Act
   }
 
   if (projectLinks && projectLinks.length > 0) {
-    const { error } = await supabase
-      .from('project_tags')
-      .upsert(
-        projectLinks.map((row) => ({ project_id: row.project_id, tag_id: targetId })),
-        { onConflict: 'project_id,tag_id', ignoreDuplicates: true },
-      );
+    const { error } = await supabase.from('project_tags').upsert(
+      projectLinks.map((row) => ({ project_id: row.project_id, tag_id: targetId })),
+      { onConflict: 'project_id,tag_id', ignoreDuplicates: true },
+    );
     if (error) {
       console.error('[actions] mergeTags project_tags 失敗：', error);
       return { ok: false, error: '合併失敗' };

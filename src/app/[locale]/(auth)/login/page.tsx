@@ -14,7 +14,6 @@ import { isLocale } from '@/lib/i18n/config';
  */
 export const dynamic = 'force-dynamic';
 
-
 export async function generateMetadata({
   params,
 }: {
@@ -45,6 +44,10 @@ export default async function LoginPage({
    */
   const t = await getTranslations({ locale });
   return (
-    <AuthForm mode="login" nextPath={next} initialError={error ? t('auth.oauthFailed') : undefined} />
+    <AuthForm
+      mode="login"
+      nextPath={next}
+      initialError={error ? t('auth.oauthFailed') : undefined}
+    />
   );
 }

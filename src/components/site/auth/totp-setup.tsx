@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { clearUnverifiedTotpFactors } from '@/actions/auth';
@@ -24,9 +24,10 @@ interface Factor {
  * 有後台權限的人才能開。後台登入表單（admin-login-form）已經處理過登入時的
  * MFA 挑戰，這裡補上綁定的那一半。
  */
-export function TotpSetup() {
+export function TotpSetup({ initial = [] }: { initial?: Factor[] }) {
   const [pending, startTransition] = useTransition();
-  const [factors, setFactors] = useState<Factor[] | null>(null);
+  // 初值由伺服器帶下來；綁定或解除之後才重新查。
+  const [factors, setFactors] = useState<Factor[] | null>(initial);
   const [enrolling, setEnrolling] = useState<{
     factorId: string;
     qr: string;
@@ -45,10 +46,6 @@ export function TotpSetup() {
       })),
     );
   };
-
-  useEffect(() => {
-    void load();
-  }, []);
 
   const verified = factors?.filter((factor) => factor.status === 'verified') ?? [];
 

@@ -28,7 +28,9 @@ export async function generateMetadata({
   const { locale, tag: slug } = await params;
   if (!isLocale(locale)) return {};
   const tag = (await getTags(locale)).find((item) => item.slug === slug);
-  return tag ? { title: tag.name, alternates: pageAlternates(locale, `/notes/tag/${slug}`) } : notFoundMetadata;
+  return tag
+    ? { title: tag.name, alternates: pageAlternates(locale, `/notes/tag/${slug}`) }
+    : notFoundMetadata;
 }
 
 /** 標籤全站共用，因此同時列出相關文章與相關作品（規格 §3.1）。 */

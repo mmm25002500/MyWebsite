@@ -8,54 +8,58 @@ import { publicClient, rows, usingSeed } from '@/lib/data/source';
 import type { Locale } from '@/lib/i18n/config';
 import type { SearchResult, StaticPage, TimelineEvent } from '@/types/content';
 
-export const getTimeline = cached(['getTimeline'], async (locale: Locale): Promise<TimelineEvent[]> => {
-  if (usingSeed) return seedTimeline(locale);
+export const getTimeline = cached(
+  ['getTimeline'],
+  async (locale: Locale): Promise<TimelineEvent[]> => {
+    if (usingSeed) return seedTimeline(locale);
 
-  const { data, error } = await publicClient()
-    .from('timeline_events')
-    .select(
-      'id, event_date, end_date, branch, type, icon, color, image_url, link_url, is_milestone, sort_order, timeline_events_i18n!inner(title, subtitle, description, locale)',
-    )
-    .eq('is_visible', true)
-    .eq('timeline_events_i18n.locale', locale)
-    .order('event_date');
-  if (error) throw new Error(`[data] timeline_events: ${error.message}`);
+    const { data, error } = await publicClient()
+      .from('timeline_events')
+      .select(
+        'id, event_date, end_date, branch, type, icon, color, image_url, link_url, is_milestone, sort_order, timeline_events_i18n!inner(title, subtitle, description, locale)',
+      )
+      .eq('is_visible', true)
+      .eq('timeline_events_i18n.locale', locale)
+      .order('event_date');
+    if (error) throw new Error(`[data] timeline_events: ${error.message}`);
 
-  return rows<{
-    id: string;
-    event_date: string;
-    end_date: string | null;
-    branch: TimelineEvent['branch'];
-    type: TimelineEvent['type'];
-    icon: string | null;
-    color: string | null;
-    image_url: string | null;
-    link_url: string | null;
-    is_milestone: boolean;
-    timeline_events_i18n: {
-      title: string;
-      subtitle: string | null;
-      description: string | null;
-    }[];
-  }>(data).map((row) => {
-    const i18n = row.timeline_events_i18n[0];
-    return {
-      id: row.id,
-      eventDate: row.event_date,
-      endDate: row.end_date,
-      branch: row.branch,
-      type: row.type,
-      title: i18n?.title ?? '',
-      subtitle: i18n?.subtitle ?? null,
-      description: i18n?.description ?? null,
-      icon: row.icon,
-      color: row.color,
-      imageUrl: row.image_url,
-      linkUrl: row.link_url,
-      isMilestone: row.is_milestone,
-    };
-  });
-}, { tags: [cacheTags.timeline] });
+    return rows<{
+      id: string;
+      event_date: string;
+      end_date: string | null;
+      branch: TimelineEvent['branch'];
+      type: TimelineEvent['type'];
+      icon: string | null;
+      color: string | null;
+      image_url: string | null;
+      link_url: string | null;
+      is_milestone: boolean;
+      timeline_events_i18n: {
+        title: string;
+        subtitle: string | null;
+        description: string | null;
+      }[];
+    }>(data).map((row) => {
+      const i18n = row.timeline_events_i18n[0];
+      return {
+        id: row.id,
+        eventDate: row.event_date,
+        endDate: row.end_date,
+        branch: row.branch,
+        type: row.type,
+        title: i18n?.title ?? '',
+        subtitle: i18n?.subtitle ?? null,
+        description: i18n?.description ?? null,
+        icon: row.icon,
+        color: row.color,
+        imageUrl: row.image_url,
+        linkUrl: row.link_url,
+        isMilestone: row.is_milestone,
+      };
+    });
+  },
+  { tags: [cacheTags.timeline] },
+);
 
 /** about / privacy / terms / sponsor 說明等單頁內容。 */
 export const getStaticPage = cache(

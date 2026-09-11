@@ -10,7 +10,9 @@ export default async function AdminVideosPage() {
   const supabase = await createServerSupabase();
   const { data } = await supabase
     .from('video_meta')
-    .select('id, youtube_id, category, is_featured, is_hidden, sort_order, video_meta_i18n(locale, title_override, description_override)')
+    .select(
+      'id, youtube_id, category, is_featured, is_hidden, sort_order, video_meta_i18n(locale, title_override, description_override)',
+    )
     .order('sort_order');
 
   const rows = data ?? [];
@@ -20,8 +22,8 @@ export default async function AdminVideosPage() {
       <div>
         <h1 className="text-[28px] font-bold">影片</h1>
         <p className="mt-1.5 text-[15px] text-ink-70">
-          影片本體由 YouTube API 提供，這裡只設定覆寫（規格 §5.5）。
-          尚未設定 YOUTUBE_API_KEY 時前台的 /videos 會是空的。
+          影片本體由 YouTube API 提供，這裡只設定覆寫（規格 §5.5）。 尚未設定 YOUTUBE_API_KEY
+          時前台的 /videos 會是空的。
         </p>
       </div>
 
@@ -49,7 +51,10 @@ export default async function AdminVideosPage() {
           i18n: Object.fromEntries(
             row.video_meta_i18n.map((item) => [
               item.locale,
-              { title_override: item.title_override, description_override: item.description_override },
+              {
+                title_override: item.title_override,
+                description_override: item.description_override,
+              },
             ]),
           ),
           summary: (

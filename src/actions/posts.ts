@@ -217,9 +217,7 @@ export async function bulkUpdateStatus(
 
   // 發佈時補上發佈時間；其他狀態沿用原本的值。
   const patch =
-    status === 'published'
-      ? { status, published_at: new Date().toISOString() }
-      : { status };
+    status === 'published' ? { status, published_at: new Date().toISOString() } : { status };
 
   const { error } = await supabase.from('posts').update(patch).in('id', parsedIds.data);
   if (error) {

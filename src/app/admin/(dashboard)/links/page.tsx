@@ -17,7 +17,9 @@ export default async function AdminLinksPage() {
       <section className="space-y-4">
         <div>
           <h1 className="text-[28px] font-bold">連結樹</h1>
-          <p className="mt-1.5 text-[15px] text-ink-70">分組 {groups.length} 個、按鈕 {buttons.length} 個</p>
+          <p className="mt-1.5 text-[15px] text-ink-70">
+            分組 {groups.length} 個、按鈕 {buttons.length} 個
+          </p>
         </div>
 
         <h2 className="text-[16px] font-bold">分組</h2>

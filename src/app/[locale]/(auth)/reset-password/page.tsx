@@ -14,7 +14,6 @@ import { isLocale } from '@/lib/i18n/config';
  */
 export const dynamic = 'force-dynamic';
 
-
 export async function generateMetadata({
   params,
 }: {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { hasSupabase } from '@/lib/env';
@@ -30,33 +30,25 @@ const inputClass =
  */
 export function PasswordPanel({
   requireCurrent = true,
+  initialHasPassword = false,
+  initialEmail = null,
   onDone,
 }: {
   requireCurrent?: boolean;
+  /** 是否已經有密碼（身分清單裡有 `email`）。由伺服器帶下來，避免再問一次。 */
+  initialHasPassword?: boolean;
+  initialEmail?: string | null;
   onDone?: () => void;
 }) {
   const t = useTranslations();
-  const [hasPassword, setHasPassword] = useState<boolean | null>(requireCurrent ? null : false);
-  const [email, setEmail] = useState<string | null>(null);
+  const [hasPassword, setHasPassword] = useState<boolean | null>(initialHasPassword);
   const [current, setCurrent] = useState('');
   const [next, setNext] = useState('');
   const [confirm, setConfirm] = useState('');
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!hasSupabase || !requireCurrent) return;
-    void (async () => {
-      const supabase = createBrowserSupabase();
-      const [{ data: identities }, { data: userData }] = await Promise.all([
-        supabase.auth.getUserIdentities(),
-        supabase.auth.getUser(),
-      ]);
-      setHasPassword((identities?.identities ?? []).some((item) => item.provider === 'email'));
-      setEmail(userData.user?.email ?? null);
-    })();
-  }, [requireCurrent]);
-
+  const email = initialEmail;
   const askCurrent = requireCurrent && hasPassword === true;
 
   const submit = async (event: React.FormEvent) => {

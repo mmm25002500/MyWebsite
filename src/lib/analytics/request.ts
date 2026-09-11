@@ -15,8 +15,7 @@
  * （`VERCEL=1`），自架（Nginx／Cloudflare Tunnel／Caddy 之類）請自行設定
  * `TRUST_PROXY_HEADERS=true`，否則一律當成 loopback。
  */
-const trustProxyHeaders =
-  process.env.VERCEL === '1' || process.env.TRUST_PROXY_HEADERS === 'true';
+const trustProxyHeaders = process.env.VERCEL === '1' || process.env.TRUST_PROXY_HEADERS === 'true';
 
 /** 取用戶端 IP。不信任代理標頭時退回 loopback（速率限制會併成同一個桶）。 */
 export function clientIp(headers: Headers): string {

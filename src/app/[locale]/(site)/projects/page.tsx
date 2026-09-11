@@ -126,7 +126,6 @@ export default async function ProjectsPage({ params }: { params: Promise<{ local
           ))}
         </div>
       </Container>
-
     </>
   );
 }

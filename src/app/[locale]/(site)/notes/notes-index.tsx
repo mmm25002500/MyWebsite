@@ -53,10 +53,7 @@ export async function NotesIndex({
 /**
  * 列表共有幾頁。`/notes/page/N` 的 `generateStaticParams` 用它把每一頁都預先產生。
  */
-export async function notesPageCount(
-  locale: Locale,
-  categorySlug?: string,
-): Promise<number> {
+export async function notesPageCount(locale: Locale, categorySlug?: string): Promise<number> {
   const { getPosts } = await import('@/lib/data');
   const result = await getPosts({ locale, page: 1, ...(categorySlug ? { categorySlug } : {}) });
   return result.totalPages;

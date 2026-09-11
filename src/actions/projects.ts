@@ -20,7 +20,12 @@ export interface ActionResult {
 /** 這些動作直接收 id 或自由字串，`string` 在執行期擋不住任何東西。 */
 const idSchema = z.string().uuid();
 const repoListSchema = z
-  .array(z.string().trim().regex(/^[\w.-]+\/[\w.-]+$/))
+  .array(
+    z
+      .string()
+      .trim()
+      .regex(/^[\w.-]+\/[\w.-]+$/),
+  )
   .max(100);
 
 /**

@@ -31,7 +31,14 @@ export default function RootNotFound() {
         }}
       >
         <main>
-          <p style={{ margin: 0, fontSize: 'clamp(72px,18vw,150px)', lineHeight: 0.85, opacity: 0.14 }}>
+          <p
+            style={{
+              margin: 0,
+              fontSize: 'clamp(72px,18vw,150px)',
+              lineHeight: 0.85,
+              opacity: 0.14,
+            }}
+          >
             404
           </p>
           <h1 style={{ margin: '0.5rem 0 0', fontSize: '1.5rem' }}>找不到頁面</h1>

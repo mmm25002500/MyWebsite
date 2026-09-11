@@ -50,8 +50,9 @@
   /* 台灣圓體。
      用 `--stack-*` 而不是直接寫 `--font-*`：後者與 Tailwind `@theme` 的
      `--font-` 命名空間同名，兩邊互相指向會變成循環參照。 */
-  --stack-heading: var(--font-huninn), 'Huninn', 'jf-openhuninn', 'PingFang TC',
-    'Noto Sans TC', 'Microsoft JhengHei', system-ui, sans-serif;
+  --stack-heading:
+    var(--font-huninn), 'Huninn', 'jf-openhuninn', 'PingFang TC', 'Noto Sans TC',
+    'Microsoft JhengHei', system-ui, sans-serif;
   --stack-body: var(--stack-heading);
 
   --space-1: 5px;

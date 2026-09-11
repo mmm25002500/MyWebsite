@@ -257,16 +257,14 @@ export async function saveResource(input: SaveResourceInput): Promise<ActionResu
   if (config.i18nTable && config.i18nKey) {
     for (const content of i18n) {
       const { locale, ...rest } = content;
-      const { error: i18nError } = await supabase
-        .from(config.i18nTable)
-        .upsert(
-          {
-            [config.i18nKey]: saved.id,
-            locale,
-            ...(pick(rest, config.i18nColumns) as object),
-          } as never,
-          { onConflict: `${config.i18nKey},locale` },
-        );
+      const { error: i18nError } = await supabase.from(config.i18nTable).upsert(
+        {
+          [config.i18nKey]: saved.id,
+          locale,
+          ...(pick(rest, config.i18nColumns) as object),
+        } as never,
+        { onConflict: `${config.i18nKey},locale` },
+      );
       if (i18nError) {
         console.error('[actions] saveResource i18n 失敗：', i18nError);
         return { ok: false, error: '儲存失敗' };

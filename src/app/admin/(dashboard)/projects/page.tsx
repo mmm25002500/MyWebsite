@@ -52,7 +52,10 @@ export default async function AdminProjectsPage() {
             {rows.map((row) => (
               <tr key={row.id} className="border-b border-ink-8 last:border-0 hover:bg-ink-4">
                 <td className="px-3 py-2.5">
-                  <Link href={`/admin/projects/${row.id}`} className="font-bold text-text hover:text-accent">
+                  <Link
+                    href={`/admin/projects/${row.id}`}
+                    className="font-bold text-text hover:text-accent"
+                  >
                     {row.name}
                   </Link>
                   <div className="mt-0.5 text-[13px] text-ink-70">
@@ -63,21 +66,34 @@ export default async function AdminProjectsPage() {
                 <td className="whitespace-nowrap px-3 py-2.5 text-ink-70">
                   {formatPeriod(row.startedAt, row.endedAt, '至今')}
                 </td>
-                <td className="px-3 py-2.5 text-ink-70">{statusLabels[row.status] ?? row.status}</td>
+                <td className="px-3 py-2.5 text-ink-70">
+                  {statusLabels[row.status] ?? row.status}
+                </td>
                 <td className="px-3 py-2.5 text-ink-70">{row.categoryName ?? '—'}</td>
-                <td className="px-3 py-2.5 text-right tabular-nums text-ink-70">{row.imageCount}</td>
+                <td className="px-3 py-2.5 text-right tabular-nums text-ink-70">
+                  {row.imageCount}
+                </td>
                 <td className="px-3 py-2.5">
                   <span className={cn(row.isVisible ? 'text-text' : 'text-ink-45')}>
                     {row.isVisible ? '是' : '否'}
                   </span>
                 </td>
                 <td className="px-3 py-2.5">
-                  <span className={row.locales.includes('zh-TW') ? 'text-text' : 'text-ink-45'}>中</span>
+                  <span className={row.locales.includes('zh-TW') ? 'text-text' : 'text-ink-45'}>
+                    中
+                  </span>
                   <span className="mx-1 text-ink-45">/</span>
-                  <span className={row.locales.includes('en') ? 'text-text' : 'text-ink-45'}>EN</span>
+                  <span className={row.locales.includes('en') ? 'text-text' : 'text-ink-45'}>
+                    EN
+                  </span>
                 </td>
                 <td className="whitespace-nowrap px-3 py-2.5 text-right">
-                  <a href={`/projects/${row.slug}`} target="_blank" rel="noreferrer" className="text-[14px] text-ink-70 hover:text-accent">
+                  <a
+                    href={`/projects/${row.slug}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[14px] text-ink-70 hover:text-accent"
+                  >
                     前台檢視
                   </a>
                 </td>

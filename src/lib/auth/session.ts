@@ -39,7 +39,11 @@ export const getAdminSession = cache(async (): Promise<AdminSession | null> => {
    */
   const [{ data: role }, { data }] = await Promise.all([
     supabase.rpc('auth_role'),
-    supabase.from('profiles').select('display_name, avatar_url').eq('user_id', user.id).maybeSingle(),
+    supabase
+      .from('profiles')
+      .select('display_name, avatar_url')
+      .eq('user_id', user.id)
+      .maybeSingle(),
   ]);
 
   if (!role || !isRole(role) || !atLeast(role, 'editor')) return null;

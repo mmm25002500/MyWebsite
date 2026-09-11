@@ -72,115 +72,127 @@ function sortPosts(items: PostSummary[], sort: PostQuery['sort']): PostSummary[]
 
 // —— 查詢 ——
 
-export const getCategories = cached(['getCategories'], async (locale: Locale): Promise<Category[]> => {
-  if (usingSeed) {
-    const summaries = seedSummaries(locale);
-    return seedCategories(locale).map((category) => ({
-      ...category,
-      postCount: summaries.filter((post) =>
-        post.categories.some((item) => item.slug === category.slug),
-      ).length,
-    }));
-  }
-
-  const { data, error } = await publicClient()
-    .from('categories')
-    .select('id, slug, icon, color, sort_order, categories_i18n!inner(name, description, locale)')
-    .eq('is_visible', true)
-    .eq('categories_i18n.locale', locale)
-    .order('sort_order');
-  if (error) throw new Error(`[data] categories: ${error.message}`);
-
-  return rows<{
-    id: string;
-    slug: string;
-    icon: string | null;
-    color: string | null;
-    sort_order: number;
-    categories_i18n: { name: string; description: string | null }[];
-  }>(data).map((row) => ({
-    id: row.id,
-    slug: row.slug,
-    name: row.categories_i18n[0]?.name ?? row.slug,
-    description: row.categories_i18n[0]?.description ?? null,
-    icon: row.icon,
-    color: row.color,
-    sortOrder: row.sort_order,
-    postCount: 0,
-  }));
-}, { tags: [cacheTags.taxonomy] });
-
-export const getTags = cached(['getTags'], async (locale: Locale): Promise<Tag[]> => {
-  if (usingSeed) {
-    const summaries = seedSummaries(locale);
-    const counts = new Map<string, number>();
-    for (const post of summaries) {
-      for (const tag of post.tags) counts.set(tag.slug, (counts.get(tag.slug) ?? 0) + 1);
+export const getCategories = cached(
+  ['getCategories'],
+  async (locale: Locale): Promise<Category[]> => {
+    if (usingSeed) {
+      const summaries = seedSummaries(locale);
+      return seedCategories(locale).map((category) => ({
+        ...category,
+        postCount: summaries.filter((post) =>
+          post.categories.some((item) => item.slug === category.slug),
+        ).length,
+      }));
     }
-    return findTags([...new Set(seedPosts.flatMap((post) => post.tags))])
-      .map((tag) => ({ ...tag, postCount: counts.get(tag.slug) ?? 0 }))
-      .sort((a, b) => b.postCount - a.postCount);
-  }
 
-  const { data, error } = await publicClient()
-    .from('tags')
-    .select('id, slug, color, post_count, project_count, tags_i18n!inner(name, locale)')
-    .eq('tags_i18n.locale', locale)
-    .order('post_count', { ascending: false });
-  if (error) throw new Error(`[data] tags: ${error.message}`);
+    const { data, error } = await publicClient()
+      .from('categories')
+      .select('id, slug, icon, color, sort_order, categories_i18n!inner(name, description, locale)')
+      .eq('is_visible', true)
+      .eq('categories_i18n.locale', locale)
+      .order('sort_order');
+    if (error) throw new Error(`[data] categories: ${error.message}`);
 
-  return rows<{
-    id: string;
-    slug: string;
-    color: string | null;
-    post_count: number;
-    project_count: number;
-    tags_i18n: { name: string }[];
-  }>(data).map((row) => ({
-    id: row.id,
-    slug: row.slug,
-    name: row.tags_i18n[0]?.name ?? row.slug,
-    color: row.color,
-    postCount: row.post_count,
-    projectCount: row.project_count,
-  }));
-}, { tags: [cacheTags.taxonomy] });
-
-export const getSeriesList = cached(['getSeriesList'], async (locale: Locale): Promise<Series[]> => {
-  if (usingSeed) {
-    return seedSeries.map((series) => ({
-      id: `series-${series.slug}`,
-      slug: series.slug,
-      title: series.title[locale],
-      description: series.description[locale],
-      coverUrl: null,
-      postCount: seedPosts.filter((post) => post.seriesSlug === series.slug && post.i18n[locale])
-        .length,
+    return rows<{
+      id: string;
+      slug: string;
+      icon: string | null;
+      color: string | null;
+      sort_order: number;
+      categories_i18n: { name: string; description: string | null }[];
+    }>(data).map((row) => ({
+      id: row.id,
+      slug: row.slug,
+      name: row.categories_i18n[0]?.name ?? row.slug,
+      description: row.categories_i18n[0]?.description ?? null,
+      icon: row.icon,
+      color: row.color,
+      sortOrder: row.sort_order,
+      postCount: 0,
     }));
-  }
+  },
+  { tags: [cacheTags.taxonomy] },
+);
 
-  const { data, error } = await publicClient()
-    .from('series')
-    .select('id, slug, cover_url, sort_order, series_i18n!inner(title, description, locale)')
-    .eq('is_visible', true)
-    .eq('series_i18n.locale', locale)
-    .order('sort_order');
-  if (error) throw new Error(`[data] series: ${error.message}`);
+export const getTags = cached(
+  ['getTags'],
+  async (locale: Locale): Promise<Tag[]> => {
+    if (usingSeed) {
+      const summaries = seedSummaries(locale);
+      const counts = new Map<string, number>();
+      for (const post of summaries) {
+        for (const tag of post.tags) counts.set(tag.slug, (counts.get(tag.slug) ?? 0) + 1);
+      }
+      return findTags([...new Set(seedPosts.flatMap((post) => post.tags))])
+        .map((tag) => ({ ...tag, postCount: counts.get(tag.slug) ?? 0 }))
+        .sort((a, b) => b.postCount - a.postCount);
+    }
 
-  return rows<{
-    id: string;
-    slug: string;
-    cover_url: string | null;
-    series_i18n: { title: string; description: string | null }[];
-  }>(data).map((row) => ({
-    id: row.id,
-    slug: row.slug,
-    title: row.series_i18n[0]?.title ?? row.slug,
-    description: row.series_i18n[0]?.description ?? null,
-    coverUrl: row.cover_url,
-    postCount: 0,
-  }));
-}, { tags: [cacheTags.taxonomy] });
+    const { data, error } = await publicClient()
+      .from('tags')
+      .select('id, slug, color, post_count, project_count, tags_i18n!inner(name, locale)')
+      .eq('tags_i18n.locale', locale)
+      .order('post_count', { ascending: false });
+    if (error) throw new Error(`[data] tags: ${error.message}`);
+
+    return rows<{
+      id: string;
+      slug: string;
+      color: string | null;
+      post_count: number;
+      project_count: number;
+      tags_i18n: { name: string }[];
+    }>(data).map((row) => ({
+      id: row.id,
+      slug: row.slug,
+      name: row.tags_i18n[0]?.name ?? row.slug,
+      color: row.color,
+      postCount: row.post_count,
+      projectCount: row.project_count,
+    }));
+  },
+  { tags: [cacheTags.taxonomy] },
+);
+
+export const getSeriesList = cached(
+  ['getSeriesList'],
+  async (locale: Locale): Promise<Series[]> => {
+    if (usingSeed) {
+      return seedSeries.map((series) => ({
+        id: `series-${series.slug}`,
+        slug: series.slug,
+        title: series.title[locale],
+        description: series.description[locale],
+        coverUrl: null,
+        postCount: seedPosts.filter((post) => post.seriesSlug === series.slug && post.i18n[locale])
+          .length,
+      }));
+    }
+
+    const { data, error } = await publicClient()
+      .from('series')
+      .select('id, slug, cover_url, sort_order, series_i18n!inner(title, description, locale)')
+      .eq('is_visible', true)
+      .eq('series_i18n.locale', locale)
+      .order('sort_order');
+    if (error) throw new Error(`[data] series: ${error.message}`);
+
+    return rows<{
+      id: string;
+      slug: string;
+      cover_url: string | null;
+      series_i18n: { title: string; description: string | null }[];
+    }>(data).map((row) => ({
+      id: row.id,
+      slug: row.slug,
+      title: row.series_i18n[0]?.title ?? row.slug,
+      description: row.series_i18n[0]?.description ?? null,
+      coverUrl: row.cover_url,
+      postCount: 0,
+    }));
+  },
+  { tags: [cacheTags.taxonomy] },
+);
 
 async function fetchPosts(query: PostQuery): Promise<Paginated<PostSummary>> {
   const page = Math.max(1, query.page ?? 1);
@@ -300,81 +312,89 @@ function mapPostRow(row: PublicPostRow): PostSummary {
   };
 }
 
-export const getPostBySlug = cached(['getPostBySlug'], async (locale: Locale, slug: string): Promise<Post | null> => {
-  if (usingSeed) {
-    const seed = seedPosts.find((post) => post.slug === slug);
-    const summary = seed ? seedSummary(seed, locale) : null;
-    if (!seed || !summary) return null;
+export const getPostBySlug = cached(
+  ['getPostBySlug'],
+  async (locale: Locale, slug: string): Promise<Post | null> => {
+    if (usingSeed) {
+      const seed = seedPosts.find((post) => post.slug === slug);
+      const summary = seed ? seedSummary(seed, locale) : null;
+      if (!seed || !summary) return null;
 
-    const i18n = seed.i18n[locale];
-    if (!i18n) return null;
+      const i18n = seed.i18n[locale];
+      if (!i18n) return null;
 
-    const rendered = await renderMarkdown(i18n.markdown);
-    return {
-      ...summary,
-      readingTimeMin: rendered.readingTimeMin,
-      contentHtml: rendered.html,
-      toc: rendered.toc,
-      seriesId: seed.seriesSlug ? `series-${seed.seriesSlug}` : null,
-      seriesOrder: seed.seriesOrder,
-      allowComments: true,
-      canonicalUrl: null,
-      ogImageUrl: null,
-      seoTitle: null,
-      seoDescription: null,
-      wordCount: rendered.wordCount,
+      const rendered = await renderMarkdown(i18n.markdown);
+      return {
+        ...summary,
+        readingTimeMin: rendered.readingTimeMin,
+        contentHtml: rendered.html,
+        toc: rendered.toc,
+        seriesId: seed.seriesSlug ? `series-${seed.seriesSlug}` : null,
+        seriesOrder: seed.seriesOrder,
+        allowComments: true,
+        canonicalUrl: null,
+        ogImageUrl: null,
+        seoTitle: null,
+        seoDescription: null,
+        wordCount: rendered.wordCount,
+      };
+    }
+
+    const { data, error } = await publicClient()
+      .from('v_public_posts')
+      .select(
+        '*, content_html, toc, series_id, series_order, allow_comments, canonical_url, og_image_url, seo_title, seo_description, word_count',
+      )
+      .eq('slug', slug)
+      .eq('locale', locale)
+      .maybeSingle();
+    if (error) throw new Error(`[data] v_public_posts(${slug}): ${error.message}`);
+    if (!data) return null;
+
+    const row = data as unknown as PublicPostRow & {
+      content_html: string | null;
+      toc: Post['toc'] | null;
+      series_id: string | null;
+      series_order: number | null;
+      allow_comments: boolean;
+      canonical_url: string | null;
+      og_image_url: string | null;
+      seo_title: string | null;
+      seo_description: string | null;
+      word_count: number | null;
     };
-  }
 
-  const { data, error } = await publicClient()
-    .from('v_public_posts')
-    .select(
-      '*, content_html, toc, series_id, series_order, allow_comments, canonical_url, og_image_url, seo_title, seo_description, word_count',
-    )
-    .eq('slug', slug)
-    .eq('locale', locale)
-    .maybeSingle();
-  if (error) throw new Error(`[data] v_public_posts(${slug}): ${error.message}`);
-  if (!data) return null;
+    return {
+      ...mapPostRow(row),
+      contentHtml: row.content_html ?? '',
+      toc: row.toc ?? [],
+      seriesId: row.series_id,
+      seriesOrder: row.series_order,
+      allowComments: row.allow_comments,
+      canonicalUrl: row.canonical_url,
+      ogImageUrl: row.og_image_url,
+      seoTitle: row.seo_title,
+      seoDescription: row.seo_description,
+      wordCount: row.word_count ?? 0,
+    };
+  },
+  { tags: [cacheTags.posts] },
+);
 
-  const row = data as unknown as PublicPostRow & {
-    content_html: string | null;
-    toc: Post['toc'] | null;
-    series_id: string | null;
-    series_order: number | null;
-    allow_comments: boolean;
-    canonical_url: string | null;
-    og_image_url: string | null;
-    seo_title: string | null;
-    seo_description: string | null;
-    word_count: number | null;
-  };
+export const getPostCount = cached(
+  ['getPostCount'],
+  async (locale: Locale): Promise<number> => {
+    if (usingSeed) return seedSummaries(locale).length;
 
-  return {
-    ...mapPostRow(row),
-    contentHtml: row.content_html ?? '',
-    toc: row.toc ?? [],
-    seriesId: row.series_id,
-    seriesOrder: row.series_order,
-    allowComments: row.allow_comments,
-    canonicalUrl: row.canonical_url,
-    ogImageUrl: row.og_image_url,
-    seoTitle: row.seo_title,
-    seoDescription: row.seo_description,
-    wordCount: row.word_count ?? 0,
-  };
-}, { tags: [cacheTags.posts] });
-
-export const getPostCount = cached(['getPostCount'], async (locale: Locale): Promise<number> => {
-  if (usingSeed) return seedSummaries(locale).length;
-
-  const { count, error } = await publicClient()
-    .from('v_public_posts')
-    .select('id', { count: 'exact', head: true })
-    .eq('locale', locale);
-  if (error) throw new Error(`[data] v_public_posts count: ${error.message}`);
-  return count ?? 0;
-}, { tags: [cacheTags.posts] });
+    const { count, error } = await publicClient()
+      .from('v_public_posts')
+      .select('id', { count: 'exact', head: true })
+      .eq('locale', locale);
+    if (error) throw new Error(`[data] v_public_posts count: ${error.message}`);
+    return count ?? 0;
+  },
+  { tags: [cacheTags.posts] },
+);
 
 export const getLatestPosts = cache(
   async (locale: Locale, limit: number): Promise<PostSummary[]> => {
@@ -419,29 +439,33 @@ export interface ArchiveGroup {
   months: { month: number; posts: PostSummary[] }[];
 }
 
-export const getPostArchive = cached(['getPostArchive'], async (locale: Locale): Promise<ArchiveGroup[]> => {
-  const all = await getPosts({ locale, pageSize: 500 });
-  const byYear = new Map<number, Map<number, PostSummary[]>>();
+export const getPostArchive = cached(
+  ['getPostArchive'],
+  async (locale: Locale): Promise<ArchiveGroup[]> => {
+    const all = await getPosts({ locale, pageSize: 500 });
+    const byYear = new Map<number, Map<number, PostSummary[]>>();
 
-  for (const post of all.items) {
-    if (!post.publishedAt) continue;
-    const date = new Date(post.publishedAt);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const months = byYear.get(year) ?? new Map<number, PostSummary[]>();
-    months.set(month, [...(months.get(month) ?? []), post]);
-    byYear.set(year, months);
-  }
+    for (const post of all.items) {
+      if (!post.publishedAt) continue;
+      const date = new Date(post.publishedAt);
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const months = byYear.get(year) ?? new Map<number, PostSummary[]>();
+      months.set(month, [...(months.get(month) ?? []), post]);
+      byYear.set(year, months);
+    }
 
-  return [...byYear.entries()]
-    .sort((a, b) => b[0] - a[0])
-    .map(([year, months]) => ({
-      year,
-      months: [...months.entries()]
-        .sort((a, b) => b[0] - a[0])
-        .map(([month, posts]) => ({ month, posts })),
-    }));
-}, { tags: [cacheTags.posts] });
+    return [...byYear.entries()]
+      .sort((a, b) => b[0] - a[0])
+      .map(([year, months]) => ({
+        year,
+        months: [...months.entries()]
+          .sort((a, b) => b[0] - a[0])
+          .map(([month, posts]) => ({ month, posts })),
+      }));
+  },
+  { tags: [cacheTags.posts] },
+);
 
 /** 供 `generateStaticParams` 使用：所有已發佈文章的 slug。 */
 export async function getAllPostSlugs(locale: Locale): Promise<string[]> {

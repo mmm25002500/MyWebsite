@@ -174,7 +174,10 @@ function overrideRequestHeaders(
   // 上游若已經覆寫過就接續它的結果，否則以原始請求為底。
   const existing = response.headers.get('x-middleware-override-headers');
   if (existing) {
-    for (const name of existing.split(',').map((item) => item.trim()).filter(Boolean)) {
+    for (const name of existing
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean)) {
       const value = response.headers.get(`x-middleware-request-${name}`);
       if (value !== null) headers.set(name, value);
     }

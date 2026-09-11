@@ -69,19 +69,22 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
         </Display>
         <div className="max-w-[60ch] space-y-5">
           <div className="rounded-lg border border-divider bg-surface p-5">
-            <TotpSetup />
+            <TotpSetup initial={viewer.factors} />
           </div>
 
           <div className="rounded-lg border border-divider bg-surface p-5">
             <p className="font-heading text-[16px] font-bold">{t('auth.linkedAccounts')}</p>
             <p className="mb-3 mt-1 text-[14px] text-ink-62">{t('auth.linkedAccountsHint')}</p>
-            <LinkedAccounts />
+            <LinkedAccounts initial={viewer.identities} />
           </div>
 
           <div className="rounded-lg border border-divider bg-surface p-5">
             <p className="font-heading text-[16px] font-bold">{t('auth.password')}</p>
             <p className="mb-3 mt-1 text-[14px] text-ink-62">{t('auth.passwordHint')}</p>
-            <PasswordPanel />
+            <PasswordPanel
+              initialHasPassword={viewer.identities.some((item) => item.provider === 'email')}
+              initialEmail={viewer.email}
+            />
           </div>
         </div>
       </Container>
@@ -126,7 +129,15 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
         <Display level={2} className="mb-6">
           {t('auth.profile')}
         </Display>
-        <AccountPanel email={viewer.email} />
+        <AccountPanel
+          email={viewer.email}
+          userId={viewer.userId}
+          initial={{
+            displayName: viewer.displayName,
+            avatarUrl: viewer.avatarUrl,
+            notifyReply: viewer.notifyReply,
+          }}
+        />
       </Container>
     </>
   );
