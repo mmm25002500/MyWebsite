@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
 import { saveSetting } from '@/actions/resources';
+import { ImageUploadField } from '@/components/admin/image-upload-field';
 import { Button } from '@/components/ui/button';
 import type { Json } from '@/types/database';
 import { toastResult } from '@/lib/toast';
@@ -14,6 +15,24 @@ interface SocialLink {
   url: string;
   icon: string;
 }
+
+type AboutLocale = 'zh-TW' | 'en';
+
+interface AboutCopy {
+  summary: string;
+  beliefs: string[];
+  traits: string[];
+}
+
+type AboutSettings = { photoUrl: string | null } & Record<AboutLocale, AboutCopy>;
+
+/** 清單欄位在表單裡以「一行一項」編輯，存檔時才拆成陣列，空行略過。 */
+const toLines = (items: string[] | undefined) => (items ?? []).join('\n');
+const fromLines = (text: string) =>
+  text
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
 
 const field =
   'w-full min-h-9 rounded-md border border-divider bg-bg px-2.5 py-1.5 text-[15px] text-text outline-none transition-colors focus-visible:border-accent';
@@ -42,6 +61,20 @@ export function SettingsForm({
     (initial.hero as Record<string, string>) ?? { 'zh-TW': '', en: '' },
   );
   const [contactEmail, setContactEmail] = useState(String(initial.contact_email ?? ''));
+  const initialAbout = initial.about as AboutSettings;
+  const [aboutPhoto, setAboutPhoto] = useState(initialAbout.photoUrl ?? '');
+  const [aboutText, setAboutText] = useState(() =>
+    Object.fromEntries(
+      (['zh-TW', 'en'] as const).map((locale) => [
+        locale,
+        {
+          summary: initialAbout[locale]?.summary ?? '',
+          beliefs: toLines(initialAbout[locale]?.beliefs),
+          traits: toLines(initialAbout[locale]?.traits),
+        },
+      ]),
+    ) as Record<AboutLocale, { summary: string; beliefs: string; traits: string }>,
+  );
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>(
     (initial.social_links as SocialLink[]) ?? [],
   );
@@ -147,6 +180,105 @@ export function SettingsForm({
           }}
         >
           儲存一般設定
+        </Button>
+      </section>
+
+      <section className="space-y-4 rounded-lg border border-divider bg-surface p-4">
+        <h2 className="admin-section-title">關於頁</h2>
+        <p className="text-[14px] text-ink-70">
+          關於頁右側的大圖、自我介紹、特質標籤與座右銘。自我介紹也會顯示在履歷頁。
+        </p>
+
+        <div>
+          <p className={label}>大圖</p>
+          <ImageUploadField value={aboutPhoto} onChange={setAboutPhoto} folder="about" />
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          {(
+            [
+              ['zh-TW', '中文'],
+              ['en', 'English'],
+            ] as const
+          ).map(([locale, name]) => (
+            <div key={locale} className="space-y-3">
+              <p className="text-[14px] font-bold text-ink-70">{name}</p>
+              <div>
+                <label className={label} htmlFor={`about-summary-${locale}`}>
+                  自我介紹
+                </label>
+                <textarea
+                  id={`about-summary-${locale}`}
+                  rows={4}
+                  value={aboutText[locale].summary}
+                  onChange={(e) =>
+                    setAboutText((current) => ({
+                      ...current,
+                      [locale]: { ...current[locale], summary: e.target.value },
+                    }))
+                  }
+                  className={`${field} resize-y`}
+                />
+              </div>
+              <div>
+                <label className={label} htmlFor={`about-traits-${locale}`}>
+                  特質標籤（一行一個）
+                </label>
+                <textarea
+                  id={`about-traits-${locale}`}
+                  rows={3}
+                  value={aboutText[locale].traits}
+                  onChange={(e) =>
+                    setAboutText((current) => ({
+                      ...current,
+                      [locale]: { ...current[locale], traits: e.target.value },
+                    }))
+                  }
+                  className={`${field} resize-y`}
+                />
+              </div>
+              <div>
+                <label className={label} htmlFor={`about-beliefs-${locale}`}>
+                  座右銘（一行一句）
+                </label>
+                <textarea
+                  id={`about-beliefs-${locale}`}
+                  rows={3}
+                  value={aboutText[locale].beliefs}
+                  onChange={(e) =>
+                    setAboutText((current) => ({
+                      ...current,
+                      [locale]: { ...current[locale], beliefs: e.target.value },
+                    }))
+                  }
+                  className={`${field} resize-y`}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <Button
+          size="sm"
+          disabled={pending}
+          onClick={() => {
+            const value: AboutSettings = {
+              photoUrl: aboutPhoto.trim() || null,
+              'zh-TW': {
+                summary: aboutText['zh-TW'].summary.trim(),
+                beliefs: fromLines(aboutText['zh-TW'].beliefs),
+                traits: fromLines(aboutText['zh-TW'].traits),
+              },
+              en: {
+                summary: aboutText.en.summary.trim(),
+                beliefs: fromLines(aboutText.en.beliefs),
+                traits: fromLines(aboutText.en.traits),
+              },
+            };
+            persist('about', value as unknown as Json);
+          }}
+        >
+          儲存關於頁
         </Button>
       </section>
 

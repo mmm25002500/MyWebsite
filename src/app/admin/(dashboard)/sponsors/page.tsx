@@ -77,6 +77,7 @@ export default async function AdminSponsorsPage() {
           table="sponsors"
           fields={[
             { key: 'display_name', label: '名稱' },
+            { key: 'avatar_url', label: '頭像', type: 'image' },
             {
               key: 'tier',
               label: '等級',
@@ -99,6 +100,7 @@ export default async function AdminSponsorsPage() {
             id: row.id,
             values: {
               display_name: row.display_name,
+              avatar_url: row.avatar_url,
               tier: row.tier,
               amount_note: row.amount_note,
               sponsored_at: row.sponsored_at,

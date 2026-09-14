@@ -107,7 +107,23 @@ export default async function SponsorPage({ params }: { params: Promise<{ locale
           </Display>
           <ul className="flex flex-wrap gap-3">
             {sponsors.map((sponsor) => (
-              <li key={sponsor.id} className="rounded-md bg-surface px-3.5 py-2 text-[15px]">
+              <li
+                key={sponsor.id}
+                className="flex items-center gap-2.5 rounded-md bg-surface py-2 pl-2 pr-3.5 text-[15px]"
+              >
+                {/* 匿名贊助者不顯示頭像，避免從圖片反推身分。 */}
+                {sponsor.avatarUrl && !sponsor.isAnonymous ? (
+                  // 使用者可能貼任意網域的網址，next/image 遇到白名單外的網域會讓整頁 500。
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={sponsor.avatarUrl}
+                    alt=""
+                    loading="lazy"
+                    className="size-7 shrink-0 rounded-full object-cover"
+                  />
+                ) : (
+                  <span className="size-7 shrink-0 rounded-full media-slot" aria-hidden="true" />
+                )}
                 {sponsor.isAnonymous ? t('sponsor.anonymous') : sponsor.displayName}
               </li>
             ))}

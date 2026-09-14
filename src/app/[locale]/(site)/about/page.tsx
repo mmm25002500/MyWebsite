@@ -40,7 +40,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
     getInterests(locale),
     getOrganizations(locale),
   ]);
-  const profile = getProfileCopy(locale);
+  const profile = await getProfileCopy(locale);
 
   return (
     <>
@@ -59,7 +59,17 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
               ))}
             </div>
           </div>
-          <div className="aspect-4/5 rounded-md media-slot" aria-hidden="true" />
+          {profile.photoUrl ? (
+            // 網址可能是任意網域，next/image 遇到白名單外的網域會讓整頁 500。
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={profile.photoUrl}
+              alt=""
+              className="aspect-4/5 w-full rounded-md object-cover"
+            />
+          ) : (
+            <div className="aspect-4/5 rounded-md media-slot" aria-hidden="true" />
+          )}
         </div>
       </Container>
 

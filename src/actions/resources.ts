@@ -358,6 +358,26 @@ export async function reorderResource(
  * 會出現在每一位訪客的頁面上。
  */
 function validateSettingValue(key: string, value: Json): boolean {
+  // 關於頁：大圖只接受 http(s)（避免 javascript: 之類的網址被寫進 <img src>），
+  // 文字設上限，免得誤貼整篇文章把頁面撐爆。
+  if (key === 'about') {
+    const copy = z
+      .object({
+        summary: z.string().max(2000),
+        beliefs: z.array(z.string().max(300)).max(20),
+        traits: z.array(z.string().max(60)).max(30),
+      })
+      .strict();
+    return z
+      .object({
+        photoUrl: z.union([httpUrl, z.null()]),
+        'zh-TW': copy,
+        en: copy,
+      })
+      .strict()
+      .safeParse(value).success;
+  }
+
   if (key === 'contact_email') {
     return value === '' || z.string().trim().email().max(160).safeParse(value).success;
   }

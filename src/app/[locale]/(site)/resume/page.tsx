@@ -51,7 +51,7 @@ export default async function ResumePage({ params }: { params: Promise<{ locale:
     getLanguages(locale),
   ]);
   const certifications = settings.showCertifications ? await getCertifications(locale) : [];
-  const profile = getProfileCopy(locale);
+  const profile = await getProfileCopy(locale);
 
   const employmentLabel: Record<EmploymentType, string> = {
     full_time: t('resume.typeFullTime'),

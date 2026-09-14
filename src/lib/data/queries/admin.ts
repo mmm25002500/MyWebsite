@@ -1129,7 +1129,7 @@ export async function getAdminSponsors() {
     supabase
       .from('sponsors')
       .select(
-        'id, display_name, tier, amount_note, sponsored_at, is_anonymous, is_visible, sort_order',
+        'id, display_name, avatar_url, tier, amount_note, sponsored_at, is_anonymous, is_visible, sort_order',
       )
       .order('sort_order'),
   ]);

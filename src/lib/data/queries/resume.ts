@@ -276,11 +276,56 @@ export const getInterests = cached(
   { tags: [cacheTags.resume] },
 );
 
-/** 簡介、座右銘與特質標籤目前僅有 seed 版本，後台上線後改由 `pages` 提供。 */
-export function getProfileCopy(locale: Locale) {
-  return {
-    summary: summaryText[locale],
-    beliefs: beliefs[locale],
-    traits: traits[locale],
-  };
+export interface ProfileCopy {
+  summary: string;
+  beliefs: string[];
+  traits: string[];
+  /** 關於頁右側的大圖；沒設定時前台顯示佔位方塊。 */
+  photoUrl: string | null;
 }
+
+/** `site_settings.about` 的形狀，由後台「設定 → 關於頁」寫入。 */
+type AboutSetting = { photoUrl?: string | null } & Partial<
+  Record<Locale, { summary?: string; beliefs?: string[]; traits?: string[] }>
+>;
+
+/**
+ * 關於頁與履歷頁的簡介、座右銘、特質標籤與大圖。
+ *
+ * 原本這幾段是寫死在 seed 裡的示範文字，後台改不到。現在存在 `site_settings`
+ * 的 `about` 鍵（與 `hero`、`site_title` 同樣的多語系 JSON）。
+ *
+ * **只有整個設定不存在時才退回 seed**：一旦站長存過，就完全照存的內容顯示——
+ * 刻意清空某一欄時，不該又冒出「示範特質一」。
+ */
+export const getProfileCopy = cached(
+  ['getProfileCopy'],
+  async (locale: Locale): Promise<ProfileCopy> => {
+    const fallback: ProfileCopy = {
+      summary: summaryText[locale],
+      beliefs: beliefs[locale],
+      traits: traits[locale],
+      photoUrl: null,
+    };
+    if (usingSeed) return fallback;
+
+    const { data, error } = await publicClient()
+      .from('site_settings')
+      .select('value')
+      .eq('key', 'about')
+      .maybeSingle();
+    if (error) throw new Error(`[data] site_settings.about: ${error.message}`);
+
+    const about = (data?.value ?? null) as AboutSetting | null;
+    if (!about) return fallback;
+
+    const copy = about[locale] ?? {};
+    return {
+      summary: copy.summary ?? '',
+      beliefs: copy.beliefs ?? [],
+      traits: copy.traits ?? [],
+      photoUrl: typeof about.photoUrl === 'string' && about.photoUrl ? about.photoUrl : null,
+    };
+  },
+  { tags: [cacheTags.site] },
+);
