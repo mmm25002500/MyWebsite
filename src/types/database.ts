@@ -1,10 +1,3 @@
-/**
- * Supabase schema 型別。
- *
- * **本檔由 `supabase gen types typescript` 產生，請勿手動編輯（規格 §0.3）。**
- * schema 變更後重新產生：`pnpm db:types`
- */
-
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
@@ -3182,6 +3175,15 @@ export type Database = {
       record_duration: {
         Args: { p_duration_sec: number; p_path: string; p_session_id: string };
         Returns: undefined;
+      };
+      record_link_click: {
+        Args: {
+          p_button_id: string;
+          p_ip: string;
+          p_referrer?: string;
+          p_user_agent: string;
+        };
+        Returns: boolean;
       };
       record_pageview: {
         Args: {

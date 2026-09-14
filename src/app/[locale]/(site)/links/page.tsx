@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
+import { TrackedLink } from '@/components/site/tracked-link';
 import { Container, Display, Kicker } from '@/components/ui/typography';
 import { getLinkGroups, getSiteSettings } from '@/lib/data';
 import { isLocale, type Locale } from '@/lib/i18n/config';
@@ -61,10 +62,9 @@ export default async function LinksPage({ params }: { params: Promise<{ locale: 
             <ul className="mt-3.5 space-y-2.5">
               {group.buttons.map((button) => (
                 <li key={button.id}>
-                  <a
+                  <TrackedLink
+                    buttonId={button.id}
                     href={button.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className={cn(
                       'flex items-center gap-3 rounded-md border px-4 py-3.5 text-text transition-colors hover:text-text',
                       button.isHighlighted
@@ -100,7 +100,7 @@ export default async function LinksPage({ params }: { params: Promise<{ locale: 
                       weight="duotone"
                       className="shrink-0 opacity-50"
                     />
-                  </a>
+                  </TrackedLink>
                 </li>
               ))}
             </ul>
