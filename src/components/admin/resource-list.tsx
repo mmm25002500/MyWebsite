@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useState, useTransition, type ReactNode } from 'react';
 
 import { deleteResource, saveResource, type ResourceTable } from '@/actions/resources';
+import { ImageUploadField } from '@/components/admin/image-upload-field';
 import { Button } from '@/components/ui/button';
 import { locales } from '@/lib/i18n/config';
 import { toast } from '@/lib/toast';
@@ -11,7 +12,7 @@ import { toast } from '@/lib/toast';
 export interface ResourceField {
   key: string;
   label: string;
-  type?: 'text' | 'date' | 'number' | 'checkbox' | 'select' | 'textarea';
+  type?: 'text' | 'date' | 'number' | 'checkbox' | 'select' | 'textarea' | 'image';
   options?: { value: string; label: string }[];
   /** i18n 欄位放在 `*_i18n` 子表，其餘放主表。 */
   i18n?: boolean;
@@ -134,6 +135,17 @@ export function ResourceList({
             </option>
           ))}
         </select>
+      );
+    }
+
+    if (definition.type === 'image') {
+      // 上傳到 media bucket，資料夾以資料表命名，方便日後在 Storage 裡辨認。
+      return (
+        <ImageUploadField
+          value={String(value ?? '')}
+          onChange={(next) => onChange(next)}
+          folder={table}
+        />
       );
     }
 

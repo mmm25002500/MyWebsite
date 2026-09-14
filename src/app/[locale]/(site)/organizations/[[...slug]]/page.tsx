@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -149,7 +150,17 @@ export default async function OrganizationsPage({
                 href={`/organizations/${org.slug}`}
                 className="flex flex-col gap-2 py-6 text-text transition-colors hover:bg-ink-4 hover:text-text md:flex-row md:items-baseline md:gap-6"
               >
-                <div className="size-11 shrink-0 rounded-sm media-slot" />
+                {org.logoUrl ? (
+                  <Image
+                    src={org.logoUrl}
+                    alt=""
+                    width={44}
+                    height={44}
+                    className="size-11 shrink-0 rounded-sm object-cover"
+                  />
+                ) : (
+                  <div className="size-11 shrink-0 rounded-sm media-slot" />
+                )}
                 <div className="min-w-0 flex-1">
                   <h2 className="font-heading text-[23px] font-bold">{org.name}</h2>
                   <p className="mt-1 text-[15px] text-ink-62">

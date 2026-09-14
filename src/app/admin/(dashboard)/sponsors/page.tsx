@@ -35,7 +35,7 @@ export default async function AdminSponsorsPage() {
             },
             { key: 'address_or_url', label: '地址或網址' },
             { key: 'network', label: '網路' },
-            { key: 'qr_image_url', label: 'QR 圖網址' },
+            { key: 'qr_image_url', label: 'QR 圖', type: 'image' },
             { key: 'sort_order', label: '排序', type: 'number' },
             { key: 'is_visible', label: '在前台顯示', type: 'checkbox' },
           ]}

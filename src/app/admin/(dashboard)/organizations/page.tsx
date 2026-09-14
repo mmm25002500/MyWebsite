@@ -28,6 +28,7 @@ export default async function AdminOrganizationsPage() {
           { key: 'name', label: '名稱', i18n: true },
           { key: 'role', label: '我的角色', i18n: true },
           { key: 'description_md', label: '介紹', type: 'textarea', i18n: true },
+          { key: 'logo_url', label: 'Logo', type: 'image' },
           { key: 'slug', label: 'slug' },
           { key: 'status', label: '狀態', type: 'select', options: statusOptions },
           { key: 'website_url', label: '網站' },
@@ -41,6 +42,7 @@ export default async function AdminOrganizationsPage() {
           id: row.id,
           values: {
             slug: row.slug,
+            logo_url: row.logo_url,
             status: row.status,
             website_url: row.website_url,
             github_org: row.github_org,

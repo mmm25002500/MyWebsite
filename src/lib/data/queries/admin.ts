@@ -1078,7 +1078,7 @@ export async function getAdminOrganizations() {
   const { data, error } = await supabase
     .from('organizations')
     .select(
-      'id, slug, website_url, github_org, started_at, ended_at, status, is_visible, sort_order, organizations_i18n(locale, name, role, description_md)',
+      'id, slug, logo_url, website_url, github_org, started_at, ended_at, status, is_visible, sort_order, organizations_i18n(locale, name, role, description_md)',
     )
     .order('sort_order');
   if (error) throw new Error(`[admin] organizations: ${error.message}`);

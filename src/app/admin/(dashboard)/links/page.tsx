@@ -58,7 +58,7 @@ export default async function AdminLinksPage() {
             { key: 'group_id', label: '分組', type: 'select', options: groupOptions },
             { key: 'url', label: '網址' },
             { key: 'icon', label: '圖示名稱' },
-            { key: 'image_url', label: '圖示圖片網址' },
+            { key: 'image_url', label: '圖示圖片', type: 'image' },
             { key: 'sort_order', label: '排序', type: 'number' },
             { key: 'is_highlighted', label: '強調', type: 'checkbox' },
             { key: 'is_visible', label: '顯示', type: 'checkbox' },

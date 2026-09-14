@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -84,7 +85,17 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                 href={`/organizations/${org.slug}`}
                 className="flex items-center gap-3.5 rounded-md bg-surface p-3.5 text-text transition-colors hover:bg-ink-8 hover:text-text"
               >
-                <div className="size-11 shrink-0 rounded-sm media-slot" />
+                {org.logoUrl ? (
+                  <Image
+                    src={org.logoUrl}
+                    alt=""
+                    width={44}
+                    height={44}
+                    className="size-11 shrink-0 rounded-sm object-cover"
+                  />
+                ) : (
+                  <div className="size-11 shrink-0 rounded-sm media-slot" />
+                )}
                 <div className="min-w-0">
                   <p className="m-0 font-heading text-[16px] font-bold">{org.name}</p>
                   <p className="mt-0.5 text-[13px] text-ink-62">
