@@ -63,17 +63,18 @@ export function SettingsForm({
   const [contactEmail, setContactEmail] = useState(String(initial.contact_email ?? ''));
   const initialAbout = initial.about as AboutSettings;
   const [aboutPhoto, setAboutPhoto] = useState(initialAbout.photoUrl ?? '');
-  const [aboutText, setAboutText] = useState(() =>
-    Object.fromEntries(
-      (['zh-TW', 'en'] as const).map((locale) => [
-        locale,
-        {
-          summary: initialAbout[locale]?.summary ?? '',
-          beliefs: toLines(initialAbout[locale]?.beliefs),
-          traits: toLines(initialAbout[locale]?.traits),
-        },
-      ]),
-    ) as Record<AboutLocale, { summary: string; beliefs: string; traits: string }>,
+  const [aboutText, setAboutText] = useState(
+    () =>
+      Object.fromEntries(
+        (['zh-TW', 'en'] as const).map((locale) => [
+          locale,
+          {
+            summary: initialAbout[locale]?.summary ?? '',
+            beliefs: toLines(initialAbout[locale]?.beliefs),
+            traits: toLines(initialAbout[locale]?.traits),
+          },
+        ]),
+      ) as Record<AboutLocale, { summary: string; beliefs: string; traits: string }>,
   );
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>(
     (initial.social_links as SocialLink[]) ?? [],

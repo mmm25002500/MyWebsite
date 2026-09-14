@@ -47,7 +47,12 @@ export function ImageUploadField({
     setUploading(true);
     try {
       const supabase = createBrowserSupabase();
-      const ext = file.name.split('.').pop()?.toLowerCase().replace(/[^a-z0-9]/g, '') || 'png';
+      const ext =
+        file.name
+          .split('.')
+          .pop()
+          ?.toLowerCase()
+          .replace(/[^a-z0-9]/g, '') || 'png';
       const path = `${folder}/${crypto.randomUUID()}.${ext}`;
 
       const { error } = await supabase.storage.from('media').upload(path, file, {

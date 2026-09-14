@@ -14,6 +14,7 @@ import { ViewCounter } from '@/components/site/view-counter';
 import { Button } from '@/components/ui/button';
 import { Tag } from '@/components/ui/tag';
 import { Container, Display, Kicker } from '@/components/ui/typography';
+import { safeStaticParams } from '@/lib/data/static-params';
 import { siteUrl } from '@/lib/env';
 import { getAllProjectSlugs, getProjectBySlug } from '@/lib/data';
 import { isLocale, locales, type Locale } from '@/lib/i18n/config';
@@ -25,11 +26,13 @@ import type { ProjectStatus } from '@/types/content';
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const params: { locale: string; slug: string }[] = [];
-  for (const locale of locales) {
-    for (const slug of await getAllProjectSlugs(locale)) params.push({ locale, slug });
-  }
-  return params;
+  return safeStaticParams('projects/[slug]', async () => {
+    const params: { locale: string; slug: string }[] = [];
+    for (const locale of locales) {
+      for (const slug of await getAllProjectSlugs(locale)) params.push({ locale, slug });
+    }
+    return params;
+  });
 }
 
 export async function generateMetadata({

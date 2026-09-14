@@ -7,6 +7,7 @@ import { PageHeader } from '@/components/site/page-header';
 import { ProjectCard } from '@/components/site/project-card';
 import { Button } from '@/components/ui/button';
 import { Container, Display, Kicker } from '@/components/ui/typography';
+import { safeStaticParams } from '@/lib/data/static-params';
 import { getOrganizations, getProjects } from '@/lib/data';
 import { isLocale, locales, type Locale } from '@/lib/i18n/config';
 import { Link } from '@/lib/i18n/routing';
@@ -17,12 +18,14 @@ import type { OrganizationStatus } from '@/types/content';
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const params: { locale: string; slug: string[] }[] = [];
-  for (const locale of locales) {
-    params.push({ locale, slug: [] });
-    for (const org of await getOrganizations(locale)) params.push({ locale, slug: [org.slug] });
-  }
-  return params;
+  return safeStaticParams('organizations', async () => {
+    const params: { locale: string; slug: string[] }[] = [];
+    for (const locale of locales) {
+      params.push({ locale, slug: [] });
+      for (const org of await getOrganizations(locale)) params.push({ locale, slug: [org.slug] });
+    }
+    return params;
+  });
 }
 
 export async function generateMetadata({
@@ -147,7 +150,7 @@ export default async function OrganizationsPage({
             <li key={org.id}>
               <Link
                 href={`/organizations/${org.slug}`}
-                className="flex flex-col gap-2 py-6 text-text transition-colors hover:bg-ink-4 hover:text-text md:flex-row md:items-baseline md:gap-6"
+                className="flex flex-col gap-3 py-6 text-text transition-colors hover:bg-ink-4 hover:text-text md:flex-row md:items-center md:gap-6"
               >
                 {org.logoUrl ? (
                   // 使用者可能貼任意網域的網址，next/image 遇到白名單外的網域會讓整頁 500；
@@ -157,10 +160,10 @@ export default async function OrganizationsPage({
                     src={org.logoUrl}
                     alt=""
                     loading="lazy"
-                    className="size-11 shrink-0 rounded-sm object-cover"
+                    className="size-16 shrink-0 rounded-md object-cover"
                   />
                 ) : (
-                  <div className="size-11 shrink-0 rounded-sm media-slot" />
+                  <div className="size-16 shrink-0 rounded-md media-slot" />
                 )}
                 <div className="min-w-0 flex-1">
                   <h2 className="font-heading text-[23px] font-bold">{org.name}</h2>

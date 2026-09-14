@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { PageHeader } from '@/components/site/page-header';
 import { PostListRow } from '@/components/site/post-list-row';
 import { Container } from '@/components/ui/typography';
+import { safeStaticParams } from '@/lib/data/static-params';
 import { getSeriesList, getSeriesPosts } from '@/lib/data';
 import { isLocale, locales, type Locale } from '@/lib/i18n/config';
 import { notFoundMetadata, pageAlternates } from '@/lib/seo';
@@ -12,11 +13,13 @@ import { notFoundMetadata, pageAlternates } from '@/lib/seo';
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const params: { locale: string; slug: string }[] = [];
-  for (const locale of locales) {
-    for (const series of await getSeriesList(locale)) params.push({ locale, slug: series.slug });
-  }
-  return params;
+  return safeStaticParams('notes/series', async () => {
+    const params: { locale: string; slug: string }[] = [];
+    for (const locale of locales) {
+      for (const series of await getSeriesList(locale)) params.push({ locale, slug: series.slug });
+    }
+    return params;
+  });
 }
 
 export async function generateMetadata({

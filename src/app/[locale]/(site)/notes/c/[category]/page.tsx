@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
+import { safeStaticParams } from '@/lib/data/static-params';
 import { getCategories } from '@/lib/data';
 import { isLocale, locales, type Locale } from '@/lib/i18n/config';
 import { notFoundMetadata, pageAlternates } from '@/lib/seo';
@@ -11,13 +12,15 @@ import { NotesIndex } from '../../notes-index';
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const params: { locale: string; category: string }[] = [];
-  for (const locale of locales) {
-    for (const category of await getCategories(locale)) {
-      params.push({ locale, category: category.slug });
+  return safeStaticParams('notes/c', async () => {
+    const params: { locale: string; category: string }[] = [];
+    for (const locale of locales) {
+      for (const category of await getCategories(locale)) {
+        params.push({ locale, category: category.slug });
+      }
     }
-  }
-  return params;
+    return params;
+  });
 }
 
 export async function generateMetadata({

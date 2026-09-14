@@ -1,3 +1,4 @@
+import { safeStaticParams } from '@/lib/data/static-params';
 import { notFoundMetadata } from '@/lib/seo';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
@@ -29,11 +30,13 @@ import { formatDate } from '@/lib/utils';
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const params: { locale: string; slug: string }[] = [];
-  for (const locale of locales) {
-    for (const slug of await getAllPostSlugs(locale)) params.push({ locale, slug });
-  }
-  return params;
+  return safeStaticParams('notes/p', async () => {
+    const params: { locale: string; slug: string }[] = [];
+    for (const locale of locales) {
+      for (const slug of await getAllPostSlugs(locale)) params.push({ locale, slug });
+    }
+    return params;
+  });
 }
 
 function canonicalRoot(locale: Locale) {

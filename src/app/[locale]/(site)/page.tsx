@@ -237,18 +237,18 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                     className="flex items-center gap-3.5 rounded-md bg-surface p-3.5 text-text transition-colors hover:bg-ink-8 hover:text-text"
                   >
                     {org.logoUrl ? (
-                  // 使用者可能貼任意網域的網址，next/image 遇到白名單外的網域會讓整頁 500；
-                  // 小圖示改用原生 <img>，最壞只是載不出來。
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={org.logoUrl}
-                    alt=""
-                    loading="lazy"
-                    className="size-11 shrink-0 rounded-sm object-cover"
-                  />
-                ) : (
-                  <div className="size-11 shrink-0 rounded-sm media-slot" />
-                )}
+                      // 使用者可能貼任意網域的網址，next/image 遇到白名單外的網域會讓整頁 500；
+                      // 小圖示改用原生 <img>，最壞只是載不出來。
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={org.logoUrl}
+                        alt=""
+                        loading="lazy"
+                        className="size-11 shrink-0 rounded-sm object-cover"
+                      />
+                    ) : (
+                      <div className="size-11 shrink-0 rounded-sm media-slot" />
+                    )}
                     <div className="min-w-0">
                       <p className="m-0 font-heading text-[16px] font-bold">{org.name}</p>
                       <p className="mt-0.5 text-[13px] text-ink-62">

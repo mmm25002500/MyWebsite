@@ -567,7 +567,9 @@ export function ProjectForm({
                 <ImageUploadField
                   value={image.url}
                   onChange={(next) =>
-                    setImages((rows) => rows.map((row, i) => (i === index ? { ...row, url: next } : row)))
+                    setImages((rows) =>
+                      rows.map((row, i) => (i === index ? { ...row, url: next } : row)),
+                    )
                   }
                   folder="projects"
                 />

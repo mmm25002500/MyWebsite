@@ -73,18 +73,18 @@ export default async function LinksPage({ params }: { params: Promise<{ locale: 
                     )}
                   >
                     {button.imageUrl ? (
-                  // 使用者可能貼任意網域的網址，next/image 遇到白名單外的網域會讓整頁 500；
-                  // 小圖示改用原生 <img>，最壞只是載不出來。
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={button.imageUrl}
-                    alt=""
-                    loading="lazy"
-                    className="size-8 shrink-0 rounded-sm object-cover"
-                  />
-                ) : (
-                  <span className="size-8 shrink-0 rounded-sm media-slot" aria-hidden="true" />
-                )}
+                      // 使用者可能貼任意網域的網址，next/image 遇到白名單外的網域會讓整頁 500；
+                      // 小圖示改用原生 <img>，最壞只是載不出來。
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={button.imageUrl}
+                        alt=""
+                        loading="lazy"
+                        className="size-8 shrink-0 rounded-sm object-cover"
+                      />
+                    ) : (
+                      <span className="size-8 shrink-0 rounded-sm media-slot" aria-hidden="true" />
+                    )}
                     <span className="min-w-0 flex-1">
                       <span className="block font-heading text-[16px] font-bold">
                         {button.label}
