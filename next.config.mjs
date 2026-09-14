@@ -58,6 +58,21 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: ['@phosphor-icons/react'],
+    /*
+     * 建置時產生頁面的穩定性。
+     *
+     * Supabase 用的是最小規格，建置時 Next.js 每個 worker 預設同時產生 8 頁、
+     * 每頁都查資料庫，瞬間湧進的查詢曾讓閘道回 Gateway Timeout，整個部署失敗。
+     *
+     * - retryCount：某一頁產生失敗時自動重試兩次，暫時性的逾時不會讓建置失敗。
+     *   真正的程式錯誤重試也不會過，只是晚一點失敗。
+     * - maxConcurrency：同時產生的頁數從 8 降到 4，從源頭減輕資料庫的壓力。
+     *
+     * `generateStaticParams`（列出要產生哪些頁）不在這兩個設定的範圍內，另外由
+     * `safeStaticParams` 處理。
+     */
+    staticGenerationRetryCount: 2,
+    staticGenerationMaxConcurrency: 4,
   },
 };
 
