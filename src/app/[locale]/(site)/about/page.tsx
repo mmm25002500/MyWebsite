@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -86,11 +85,13 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                 className="flex items-center gap-3.5 rounded-md bg-surface p-3.5 text-text transition-colors hover:bg-ink-8 hover:text-text"
               >
                 {org.logoUrl ? (
-                  <Image
+                  // 使用者可能貼任意網域的網址，next/image 遇到白名單外的網域會讓整頁 500；
+                  // 小圖示改用原生 <img>，最壞只是載不出來。
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
                     src={org.logoUrl}
                     alt=""
-                    width={44}
-                    height={44}
+                    loading="lazy"
                     className="size-11 shrink-0 rounded-sm object-cover"
                   />
                 ) : (

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
 import { deleteProject, saveProject } from '@/actions/projects';
+import { ImageUploadField } from '@/components/admin/image-upload-field';
 import { Button } from '@/components/ui/button';
 import type { AdminProjectDetail } from '@/lib/data/queries/admin';
 import { locales, type Locale } from '@/lib/i18n/config';
@@ -469,15 +470,8 @@ export function ProjectForm({
             </div>
 
             <div>
-              <label className={label} htmlFor="p-cover">
-                封面圖網址
-              </label>
-              <input
-                id="p-cover"
-                value={coverUrl}
-                onChange={(e) => setCoverUrl(e.target.value)}
-                className={field}
-              />
+              <p className={label}>封面圖</p>
+              <ImageUploadField value={coverUrl} onChange={setCoverUrl} folder="projects" />
             </div>
 
             <div className="space-y-2">
@@ -569,23 +563,13 @@ export function ProjectForm({
               key={index}
               className="flex flex-wrap items-start gap-3 rounded-lg border border-divider bg-surface p-3"
             >
-              <div className="size-16 shrink-0 overflow-hidden rounded-md media-slot">
-                {image.url ? (
-                  // 圖片來源可能是任意 Storage 路徑，不走 next/image 的最佳化。
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={image.url} alt="" className="size-full object-cover" />
-                ) : null}
-              </div>
               <div className="flex-1 space-y-2">
-                <input
+                <ImageUploadField
                   value={image.url}
-                  placeholder="圖片網址"
-                  onChange={(e) =>
-                    setImages((rows) =>
-                      rows.map((row, i) => (i === index ? { ...row, url: e.target.value } : row)),
-                    )
+                  onChange={(next) =>
+                    setImages((rows) => rows.map((row, i) => (i === index ? { ...row, url: next } : row)))
                   }
-                  className={field}
+                  folder="projects"
                 />
                 <div className="grid grid-cols-2 gap-2">
                   <input

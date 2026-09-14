@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState, useTransition } from 'react';
 
 import { deletePost, savePost } from '@/actions/posts';
+import { ImageUploadField } from '@/components/admin/image-upload-field';
 import { Button } from '@/components/ui/button';
 import type { AdminPostDetail } from '@/lib/data/queries/admin';
 import { locales, type Locale } from '@/lib/i18n/config';
@@ -347,15 +348,8 @@ export function PostForm({
             />
           </div>
           <div>
-            <label className={label} htmlFor="post-cover">
-              封面圖網址
-            </label>
-            <input
-              id="post-cover"
-              value={coverUrl}
-              onChange={(event) => setCoverUrl(event.target.value)}
-              className={field}
-            />
+            <p className={label}>封面圖</p>
+            <ImageUploadField value={coverUrl} onChange={setCoverUrl} folder="posts" />
           </div>
         </div>
       ) : null}
