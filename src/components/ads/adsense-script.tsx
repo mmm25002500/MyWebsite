@@ -1,9 +1,11 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { adsEnabled, adsenseClient } from '@/lib/ads/config';
 import { inConsentRegion, useAdsConsent } from '@/lib/ads/consent';
+import { wantsNonce } from '@/lib/security/csp-paths';
 
 const SCRIPT_ID = 'adsbygoogle-js';
 
@@ -18,6 +20,8 @@ const SCRIPT_ID = 'adsbygoogle-js';
  */
 export function AdsenseScript() {
   const consent = useAdsConsent();
+  // 帶 nonce 的嚴格頁面（帳號、搜尋）CSP 不放行廣告網域，載了只會被擋。
+  const strictPage = wantsNonce(usePathname());
   const [region, setRegion] = useState<'unknown' | 'consent-required' | 'free'>('unknown');
 
   useEffect(() => {
@@ -28,7 +32,7 @@ export function AdsenseScript() {
   const personalized = region === 'free' || consent === 'granted';
 
   useEffect(() => {
-    if (!adsEnabled || !allowed) return;
+    if (!adsEnabled || !allowed || strictPage) return;
     if (document.getElementById(SCRIPT_ID)) return;
 
     // 必須在腳本載入前就宣告，否則第一批廣告請求還是會帶個人化參數。
@@ -41,7 +45,7 @@ export function AdsenseScript() {
     script.async = true;
     script.crossOrigin = 'anonymous';
     document.head.appendChild(script);
-  }, [allowed, personalized]);
+  }, [allowed, personalized, strictPage]);
 
   return null;
 }

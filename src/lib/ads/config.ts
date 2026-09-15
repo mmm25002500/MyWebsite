@@ -26,17 +26,6 @@ export const adSlots = {
 export type AdSlotName = keyof typeof adSlots;
 
 /**
- * 會出現廣告的路徑。
- *
- * middleware 只在這些路徑放寬 CSP——首頁、聯絡表單、登入註冊與後台維持原本
- * 帶 nonce 的嚴格政策，不因為廣告而一起降級。
- */
-export function isAdRoute(pathname: string): boolean {
-  const path = pathname.replace(/^\/en(?=\/|$)/, '') || '/';
-  return path === '/notes' || path.startsWith('/notes/') || path.startsWith('/projects/');
-}
-
-/**
  * AdSense 需要放行的網域（規格 §13.4 的例外）。
  *
  * 清單取自 Google 對 AdSense 的 CSP 說明；廣告框會再往下載入自己的資源，

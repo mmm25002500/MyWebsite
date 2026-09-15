@@ -3,9 +3,10 @@ import createIntlMiddleware from 'next-intl/middleware';
 import { NextResponse, type NextRequest } from 'next/server';
 
 import { themeScriptSource } from '@/components/site/theme-script';
-import { adsEnabled, adsenseHosts, isAdRoute } from '@/lib/ads/config';
+import { adsEnabled, adsenseHosts } from '@/lib/ads/config';
 import { isLocale } from '@/lib/i18n/config';
 import { routing } from '@/lib/i18n/routing';
+import { wantsNonce } from '@/lib/security/csp-paths';
 import { refreshSession } from '@/lib/supabase/middleware';
 
 const handleI18n = createIntlMiddleware(routing);
@@ -85,10 +86,9 @@ function contentSecurityPolicy(
         .join(' '),
       "style-src 'self' 'unsafe-inline'",
       [
-        `img-src 'self' data: blob: https://${supabaseHost}`,
-        'https://i.ytimg.com',
-        'https://avatars.githubusercontent.com',
-        'https://lh3.googleusercontent.com',
+        // 後台的圖片欄位允許貼任意外部網址（例如圖示網站），逐一列網域列不完。
+        // 圖片無法執行程式，放行 https: 的風險只剩載入外部資源，可接受。
+        "img-src 'self' data: blob: https:",
         ...(ads ? adsenseHosts.image : []),
       ].join(' '),
       [
@@ -128,7 +128,7 @@ function contentSecurityPolicy(
       .filter(Boolean)
       .join(' '),
     "style-src 'self' 'unsafe-inline'",
-    `img-src 'self' data: blob: https://${supabaseHost} https://i.ytimg.com https://avatars.githubusercontent.com https://lh3.googleusercontent.com`,
+    "img-src 'self' data: blob: https:",
     'frame-src https://www.youtube-nocookie.com https://challenges.cloudflare.com',
     [
       "connect-src 'self'",
@@ -195,31 +195,6 @@ function overrideRequestHeaders(
   response.headers.set('x-middleware-override-headers', names.join(','));
 }
 
-/**
- * 哪些路徑用帶 nonce 的嚴格政策。
- *
- * **nonce 和靜態預先渲染是互斥的**：Next.js 的 nonce 是逐請求現產、在渲染時蓋到
- * script 標籤上，而 SSG／ISR 的 HTML 只產生一次並重複回應，蓋不進去。結果就是
- * 政策要求 nonce、HTML 卻沒有，行內腳本（含 RSC 的 `self.__next_f` 酬載）全被擋，
- * 整頁空白。
- *
- * 因此嚴格政策只給「每次請求都會重新渲染」的路徑——整個後台，以及會讀 cookie
- * 判斷登入狀態的帳號與登入相關頁面。其餘的公開內容頁走放寬版（`'unsafe-inline'`，
- * 不帶 nonce），保住 ISR 帶來的效能。
- *
- * **這是一個明確的取捨**：公開頁面失去 script-src 對行內注入的防護，剩下 `'self'`
- * 與網域白名單，以及 React 預設的輸出跳脫。權限操作、表單與 session 都在嚴格政策
- * 那一側。名單裡任何一條若哪天變成完全靜態，那一頁就會白畫面，改路由時要一併檢查。
- */
-const strictCspPaths = ['/admin', '/account', '/login', '/register', '/reset-password', '/search'];
-
-function wantsNonce(pathname: string): boolean {
-  const segments = pathname.split('/');
-  const bare = isLocale(segments[1] ?? '') ? `/${segments.slice(2).join('/')}` : pathname;
-
-  return strictCspPaths.some((path) => bare === path || bare.startsWith(`${path}/`));
-}
-
 async function applySecurityHeaders(
   request: NextRequest,
   response: NextResponse,
@@ -227,8 +202,16 @@ async function applySecurityHeaders(
 ): Promise<NextResponse> {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseHost = supabaseUrl ? new URL(supabaseUrl).hostname : '*.supabase.co';
-  const ads = adsEnabled && isAdRoute(pathname);
-  const nonce = !ads && wantsNonce(pathname) ? crypto.randomUUID().replace(/-/g, '') : null;
+  const nonce = wantsNonce(pathname) ? crypto.randomUUID().replace(/-/g, '') : null;
+  /*
+   * 所有不帶 nonce 的公開頁面都放行廣告網域。
+   *
+   * 原本只有文章與作品頁放行，但廣告腳本放在全站共用的版面裡，連結樹、關於頁等
+   * 其他頁面也會載入，就被 CSP 擋下。公開頁面的政策本來就已經帶 'unsafe-inline'
+   * （靜態快取的頁面蓋不了 nonce），多放行幾個 Google 網域並不會再降低什麼。
+   * 帶 nonce 的嚴格頁面（後台、帳號、登入、搜尋）維持不放廣告。
+   */
+  const ads = adsEnabled && !nonce;
 
   const csp = contentSecurityPolicy(nonce, await getThemeScriptHash(), supabaseHost, ads);
 
