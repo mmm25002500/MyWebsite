@@ -38,11 +38,17 @@ export const adsenseHosts = {
     'https://tpc.googlesyndication.com',
     'https://www.googletagservices.com',
     'https://adservice.google.com',
+    // Google 的無效流量偵測（sodar）。原本只放在 connect-src，腳本本身被擋，
+    // 瀏覽器主控台每頁都會留一筆違規，也可能影響廣告的有效流量判定。
+    'https://ep1.adtrafficquality.google',
+    'https://ep2.adtrafficquality.google',
   ],
   frame: [
     'https://googleads.g.doubleclick.net',
     'https://tpc.googlesyndication.com',
     'https://www.google.com',
+    'https://ep1.adtrafficquality.google',
+    'https://ep2.adtrafficquality.google',
   ],
   image: [
     'https://pagead2.googlesyndication.com',
