@@ -13,6 +13,7 @@ import {
   saveSeries,
   saveTag,
 } from '@/actions/taxonomy';
+import { confirmAction } from '@/components/admin/confirm-dialog';
 import { TaxonomyManager, type TaxonomyDraft } from '@/components/admin/taxonomy-manager';
 import { Button } from '@/components/ui/button';
 import type { AdminSeriesRow, AdminTaxonomyRow } from '@/lib/data/queries/admin';
@@ -56,7 +57,13 @@ export function TagsManager({ rows }: { rows: AdminTaxonomyRow[] }) {
     target: '',
   });
 
-  const runMerge = () => {
+  const runMerge = async () => {
+    const ok = await confirmAction({
+      title: '合併這兩個標籤？',
+      description: '合併後無法復原。',
+      confirmLabel: '合併',
+    });
+    if (!ok) return;
     if (!merge.source || !merge.target) return;
     startTransition(async () => {
       const result = await mergeTags(merge.source, merge.target);
@@ -68,7 +75,13 @@ export function TagsManager({ rows }: { rows: AdminTaxonomyRow[] }) {
     });
   };
 
-  const runPrune = () => {
+  const runPrune = async () => {
+    const ok = await confirmAction({
+      title: '清除所有未使用的標籤？',
+      description: '沒有被任何文章或作品使用的標籤會一次全部刪除，無法復原。',
+      confirmLabel: '清除',
+    });
+    if (!ok) return;
     startTransition(async () => {
       const result = await pruneUnusedTags();
       if (result.ok) toast.success(`清除了 ${result.removed ?? 0} 個未使用標籤`);

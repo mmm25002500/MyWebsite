@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState, useTransition, type ReactNode } from 'react';
 
+import { confirmAction } from '@/components/admin/confirm-dialog';
 import { deleteResource, saveResource, type ResourceTable } from '@/actions/resources';
 import { ImageUploadField } from '@/components/admin/image-upload-field';
 import { Button } from '@/components/ui/button';
@@ -90,7 +91,17 @@ export function ResourceList({
     });
   };
 
-  const remove = (id: string) => {
+  const remove = async (id: string) => {
+    const row = rows.find((item) => item.id === id);
+    const name =
+      row && labelField
+        ? String(row.i18n['zh-TW']?.[labelField] ?? row.values[labelField] ?? '').trim()
+        : '';
+    const ok = await confirmAction({
+      title: name ? `刪除「${name}」？` : '刪除這一筆？',
+      description: '刪除後無法復原。',
+    });
+    if (!ok) return;
     startTransition(async () => {
       const result = await deleteResource(table, id);
       if (!result.ok) {
@@ -270,7 +281,7 @@ export function ResourceList({
               <button
                 type="button"
                 disabled={pending}
-                onClick={() => remove(row.id)}
+                onClick={() => void remove(row.id)}
                 className="cursor-pointer text-[14px] text-ink-70 hover:text-accent-2-700"
               >
                 刪除

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
+import { confirmAction } from '@/components/admin/confirm-dialog';
 import { pinComment, setCommentStatus, updateCommentContent } from '@/actions/moderation';
 import { banUser } from '@/actions/moderation';
 import { Button } from '@/components/ui/button';
@@ -107,7 +108,13 @@ export function CommentModeration({
               size="sm"
               variant="secondary"
               disabled={pending}
-              onClick={() => run(() => setCommentStatus([...selected], 'deleted'))}
+              onClick={async () => {
+                const ok = await confirmAction({
+                  title: `刪除選取的 ${selected.size} 則留言？`,
+                  description: '留言會從前台移除。',
+                });
+                if (ok) run(() => setCommentStatus([...selected], 'deleted'));
+              }}
             >
               刪除
             </Button>

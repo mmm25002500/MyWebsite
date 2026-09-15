@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
+import { confirmAction } from '@/components/admin/confirm-dialog';
 import { Button } from '@/components/ui/button';
 import type { AdminTaxonomyRow } from '@/lib/data/queries/admin';
 import { locales, type Locale } from '@/lib/i18n/config';
@@ -92,8 +93,10 @@ export function TaxonomyManager({
     });
   };
 
-  const remove = (id: string) => {
+  const remove = async (id: string) => {
     setError(null);
+    const ok = await confirmAction({ title: '刪除這個項目？', description: '刪除後無法復原。' });
+    if (!ok) return;
     startTransition(async () => {
       const result = await onDelete(id);
       if (!result.ok) {
@@ -308,7 +311,7 @@ export function TaxonomyManager({
                   </button>
                   <button
                     type="button"
-                    onClick={() => remove(row.id)}
+                    onClick={() => void remove(row.id)}
                     disabled={pending}
                     className="ml-3 cursor-pointer text-[14px] text-ink-70 hover:text-accent-2-700"
                   >

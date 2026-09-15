@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
+import { confirmAction } from '@/components/admin/confirm-dialog';
 import { deleteContactMessage, updateContactMessage, type ContactStatus } from '@/actions/contact';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -84,8 +85,13 @@ export function ContactInbox({
     });
   };
 
-  const remove = () => {
+  const remove = async () => {
     if (!selected) return;
+    const ok = await confirmAction({
+      title: '刪除這則聯絡訊息？',
+      description: '刪除後無法復原。',
+    });
+    if (!ok) return;
     startTransition(async () => {
       const result = await deleteContactMessage(selected.id);
       if (result.ok) {

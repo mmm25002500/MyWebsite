@@ -2,6 +2,7 @@
 
 import { useTransition } from 'react';
 
+import { confirmAction } from '@/components/admin/confirm-dialog';
 import { revalidateAll, runCronJob, type CronJob } from '@/actions/tools';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/lib/toast';
@@ -67,7 +68,18 @@ export function ToolsPanel() {
               size="sm"
               variant="secondary"
               disabled={pending}
-              onClick={() => run(() => runCronJob(job.key))}
+              onClick={async () => {
+                if (
+                  job.key === 'prune_analytics' &&
+                  !(await confirmAction({
+                    title: '立即清除 90 天前的事件？',
+                    description: '原始流量事件會永久刪除，只保留每日彙總，無法復原。',
+                    confirmLabel: '清除',
+                  }))
+                )
+                  return;
+                run(() => runCronJob(job.key));
+              }}
             >
               立即執行
             </Button>

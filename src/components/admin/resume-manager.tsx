@@ -12,6 +12,7 @@ import {
   type SaveEducationInput,
   type SaveExperienceInput,
 } from '@/actions/resume';
+import { confirmAction } from '@/components/admin/confirm-dialog';
 import { CertificationList, LanguageList, SkillGroupForm } from '@/components/admin/resume-lists';
 import { Button } from '@/components/ui/button';
 import type { AdminEducation, AdminExperience, AdminSkillGroup } from '@/lib/data/queries/admin';
@@ -411,7 +412,15 @@ export function ResumeManager({ data, canEditSettings }: Props) {
                 <button
                   type="button"
                   disabled={pending}
-                  onClick={() => run(() => deleteResumeItem('experiences', row.id))}
+                  onClick={async () => {
+                    if (
+                      await confirmAction({
+                        title: '刪除這筆工作經歷？',
+                        description: '刪除後無法復原。',
+                      })
+                    )
+                      run(() => deleteResumeItem('experiences', row.id));
+                  }}
                   className="cursor-pointer text-[14px] text-ink-70 hover:text-accent-2-700"
                 >
                   刪除
@@ -578,7 +587,15 @@ export function ResumeManager({ data, canEditSettings }: Props) {
                 <button
                   type="button"
                   disabled={pending}
-                  onClick={() => run(() => deleteResumeItem('education', row.id))}
+                  onClick={async () => {
+                    if (
+                      await confirmAction({
+                        title: '刪除這筆學歷？',
+                        description: '刪除後無法復原。',
+                      })
+                    )
+                      run(() => deleteResumeItem('education', row.id));
+                  }}
                   className="cursor-pointer text-[14px] text-ink-70 hover:text-accent-2-700"
                 >
                   刪除
@@ -714,7 +731,12 @@ function SkillGroupEditor({
         <button
           type="button"
           disabled={pending}
-          onClick={() => onRun(() => deleteResumeItem('skill_groups', group.id))}
+          onClick={async () => {
+            if (
+              await confirmAction({ title: '刪除整個技能分組？', description: '刪除後無法復原。' })
+            )
+              onRun(() => deleteResumeItem('skill_groups', group.id));
+          }}
           className="cursor-pointer text-[14px] text-ink-70 hover:text-accent-2-700"
         >
           刪除分組
@@ -772,7 +794,12 @@ function SkillGroupEditor({
             <button
               type="button"
               disabled={pending}
-              onClick={() => onRun(() => deleteResumeItem('skills', skill.id))}
+              onClick={async () => {
+                if (
+                  await confirmAction({ title: '刪除這項技能？', description: '刪除後無法復原。' })
+                )
+                  onRun(() => deleteResumeItem('skills', skill.id));
+              }}
               className="cursor-pointer text-[14px] text-ink-70 hover:text-accent-2-700"
             >
               刪除

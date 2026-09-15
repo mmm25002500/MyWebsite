@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 
 import { AdminShell } from '@/components/admin/admin-shell';
+import { ConfirmProvider } from '@/components/admin/confirm-dialog';
 import { Toaster } from '@/components/ui/toaster';
 import { getAdminSession } from '@/lib/auth/session';
 
@@ -19,7 +20,8 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
 
   return (
     <AdminShell role={session.role} displayName={session.displayName}>
-      {children}
+      {/* 刪除等不可逆操作的二次確認，後台所有頁面共用（見 useConfirm）。 */}
+      <ConfirmProvider>{children}</ConfirmProvider>
       <Toaster />
     </AdminShell>
   );

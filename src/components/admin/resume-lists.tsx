@@ -8,6 +8,7 @@ import {
   saveLanguage,
   saveSkillGroup,
 } from '@/actions/resume';
+import { confirmAction } from '@/components/admin/confirm-dialog';
 import { Button } from '@/components/ui/button';
 import type { AdminSkillGroup } from '@/lib/data/queries/admin';
 import { locales, type Locale } from '@/lib/i18n/config';
@@ -279,7 +280,15 @@ export function LanguageList({
               <button
                 type="button"
                 disabled={pending}
-                onClick={() => onRun(() => deleteResumeItem('languages_spoken', row.id))}
+                onClick={async () => {
+                  if (
+                    await confirmAction({
+                      title: '刪除這個語言？',
+                      description: '刪除後無法復原。',
+                    })
+                  )
+                    onRun(() => deleteResumeItem('languages_spoken', row.id));
+                }}
                 className="cursor-pointer text-[14px] text-ink-70 hover:text-accent-2-700"
               >
                 刪除
@@ -506,7 +515,15 @@ export function CertificationList({
               <button
                 type="button"
                 disabled={pending}
-                onClick={() => onRun(() => deleteResumeItem('certifications', row.id))}
+                onClick={async () => {
+                  if (
+                    await confirmAction({
+                      title: '刪除這張證照？',
+                      description: '刪除後無法復原。',
+                    })
+                  )
+                    onRun(() => deleteResumeItem('certifications', row.id));
+                }}
                 className="cursor-pointer text-[14px] text-ink-70 hover:text-accent-2-700"
               >
                 刪除

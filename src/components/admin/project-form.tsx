@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
+import { confirmAction } from '@/components/admin/confirm-dialog';
 import { deleteProject, saveProject } from '@/actions/projects';
 import { ImageUploadField } from '@/components/admin/image-upload-field';
 import { Button } from '@/components/ui/button';
@@ -208,8 +209,10 @@ export function ProjectForm({
     });
   };
 
-  const remove = () => {
+  const remove = async () => {
     if (!project) return;
+    const ok = await confirmAction({ title: '刪除這個作品？', description: '刪除後無法復原。' });
+    if (!ok) return;
     startTransition(async () => {
       const result = await deleteProject(project.id);
       if (!result.ok) {

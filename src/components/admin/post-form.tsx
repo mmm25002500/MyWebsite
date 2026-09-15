@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState, useTransition } from 'react';
 
+import { confirmAction } from '@/components/admin/confirm-dialog';
 import { deletePost, savePost } from '@/actions/posts';
 import { ImageUploadField } from '@/components/admin/image-upload-field';
 import { Button } from '@/components/ui/button';
@@ -174,8 +175,10 @@ export function PostForm({
     });
   };
 
-  const remove = () => {
+  const remove = async () => {
     if (!post) return;
+    const ok = await confirmAction({ title: '刪除這篇文章？', description: '刪除後無法復原。' });
+    if (!ok) return;
     startTransition(async () => {
       const result = await deletePost(post.id);
       if (!result.ok) {
