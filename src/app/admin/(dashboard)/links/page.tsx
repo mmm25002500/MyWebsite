@@ -1,3 +1,4 @@
+import { linkIconOptions } from '@/components/site/link-icon';
 import { ResourceList } from '@/components/admin/resource-list';
 import { getAdminLinks } from '@/lib/data/queries/admin';
 
@@ -57,7 +58,13 @@ export default async function AdminLinksPage() {
             { key: 'description', label: '說明', i18n: true },
             { key: 'group_id', label: '分組', type: 'select', options: groupOptions },
             { key: 'url', label: '網址' },
-            { key: 'icon', label: '圖示名稱' },
+            // 選單與前台共用同一份清單；有上傳圖片時以圖片為準。
+            {
+              key: 'icon',
+              label: '圖示（沒有圖片時使用，暗色模式會自動反白）',
+              type: 'select',
+              options: linkIconOptions,
+            },
             { key: 'image_url', label: '圖示圖片', type: 'image' },
             { key: 'sort_order', label: '排序', type: 'number' },
             { key: 'is_highlighted', label: '強調', type: 'checkbox' },

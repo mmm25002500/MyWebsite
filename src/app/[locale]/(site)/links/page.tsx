@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
+import { hasLinkIcon, LinkButtonIcon } from '@/components/site/link-icon';
 import { TrackedLink } from '@/components/site/tracked-link';
 import { Container, Display, Kicker } from '@/components/ui/typography';
 import { getLinkGroups, getSiteSettings } from '@/lib/data';
@@ -82,6 +83,11 @@ export default async function LinksPage({ params }: { params: Promise<{ locale: 
                         loading="lazy"
                         className="size-8 shrink-0 rounded-sm object-cover"
                       />
+                    ) : hasLinkIcon(button.icon) ? (
+                      // 向量圖示跟著文字色走，暗色模式自動反白（單色圖片做不到）。
+                      <span className="flex size-8 shrink-0 items-center justify-center">
+                        <LinkButtonIcon name={button.icon} />
+                      </span>
                     ) : (
                       <span className="size-8 shrink-0 rounded-sm media-slot" aria-hidden="true" />
                     )}
