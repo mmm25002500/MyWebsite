@@ -1,8 +1,9 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
+import { Turnstile } from '@/components/site/turnstile';
 import { Button } from '@/components/ui/button';
 import { authCallbackUrl, hasSupabase } from '@/lib/env';
 import { Link } from '@/lib/i18n/routing';
@@ -32,6 +33,18 @@ export function AuthForm({
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(initialError ?? null);
   const [sent, setSent] = useState(false);
+  /*
+   * 人機驗證的權杖。
+   *
+   * 機器人從 2026-09-11 起持續灌假帳號（Gmail 的點號變形信箱，每天十幾到二十幾個），
+   * 註冊表單當時沒有任何人機驗證。權杖一併送給 Supabase，由它在伺服器端驗證——
+   * Supabase 的 CAPTCHA 設定關閉時會忽略這個欄位，因此先部署不會影響現有的登入。
+   *
+   * 權杖是一次性的：送出失敗後必須重置 widget，否則下一次會拿舊權杖再被拒絕一次。
+   */
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaReset, setCaptchaReset] = useState(0);
+  const onCaptcha = useCallback((token: string | null) => setCaptchaToken(token), []);
 
   const fieldClass =
     'w-full min-h-9 rounded-md border border-divider bg-surface px-2.5 py-1.5 text-[15px] text-text caret-accent outline-none transition-colors hover:border-ink-45 focus-visible:border-accent';
@@ -59,7 +72,11 @@ export function AuthForm({
 
     try {
       if (mode === 'login') {
-        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+          options: { captchaToken: captchaToken ?? undefined },
+        });
         if (signInError) throw signInError;
 
         // 記錄這次登入的裝置與地區，失敗不影響登入本身。
@@ -82,6 +99,7 @@ export function AuthForm({
           options: {
             data: { display_name: displayName },
             emailRedirectTo: authCallbackUrl(),
+            captchaToken: captchaToken ?? undefined,
           },
         });
         if (signUpError) throw signUpError;
@@ -90,6 +108,9 @@ export function AuthForm({
       }
     } catch {
       setError(t('common.error'));
+      // 權杖只能用一次，換一張新的再試。
+      setCaptchaReset((value) => value + 1);
+      setCaptchaToken(null);
     } finally {
       setPending(false);
     }
@@ -183,6 +204,8 @@ export function AuthForm({
         </div>
 
         {error ? <p className="text-[15px] text-accent-2-700">{error}</p> : null}
+
+        <Turnstile onToken={onCaptcha} resetSignal={captchaReset} />
 
         <Button type="submit" block disabled={pending}>
           {mode === 'login' ? t('auth.loginTitle') : t('auth.registerTitle')}

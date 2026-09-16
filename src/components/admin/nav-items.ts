@@ -146,8 +146,13 @@ export const adminNav: AdminNavGroup[] = [
         minRole: 'admin',
       },
       {
+        /*
+         * 兩步驟驗證已搬到前台的帳號設定（每個使用者都能自己設定，不限後台角色），
+         * 後台的 /admin/security 也在那時移除，但這個選單項目被留了下來，變成死連結。
+         * 直接指向前台的帳號設定。
+         */
         key: 'security',
-        href: '/admin/security',
+        href: '/account',
         label: '帳號安全',
         icon: 'shield-check',
         minRole: 'editor',

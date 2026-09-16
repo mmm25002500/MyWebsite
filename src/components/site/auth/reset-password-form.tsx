@@ -1,8 +1,9 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
+import { Turnstile } from '@/components/site/turnstile';
 import { Button } from '@/components/ui/button';
 import { authCallbackUrl, hasSupabase } from '@/lib/env';
 import { Link } from '@/lib/i18n/routing';
@@ -14,6 +15,10 @@ export function ResetPasswordForm() {
   const [pending, setPending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // 人機驗證：密碼重設信同樣會被機器人拿來對任意信箱發信，見 auth-form 的說明。
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaReset, setCaptchaReset] = useState(0);
+  const onCaptcha = useCallback((token: string | null) => setCaptchaToken(token), []);
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -28,11 +33,14 @@ export function ResetPasswordForm() {
       const supabase = createBrowserSupabase();
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: authCallbackUrl('/reset-password/set'),
+        captchaToken: captchaToken ?? undefined,
       });
       if (resetError) throw resetError;
       setSent(true);
     } catch {
       setError(t('common.error'));
+      setCaptchaReset((value) => value + 1);
+      setCaptchaToken(null);
     } finally {
       setPending(false);
     }
@@ -59,6 +67,7 @@ export function ResetPasswordForm() {
           />
         </div>
         {error ? <p className="text-[15px] text-accent-2-700">{error}</p> : null}
+        <Turnstile onToken={onCaptcha} resetSignal={captchaReset} />
         <Button type="submit" block disabled={pending}>
           {t('contact.submit')}
         </Button>
