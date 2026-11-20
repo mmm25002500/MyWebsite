@@ -8,6 +8,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { AdsenseScript } from '@/components/ads/adsense-script';
 import { AnalyticsTracker } from '@/components/site/analytics-tracker';
 import { RouteProgress } from '@/components/site/route-progress';
+import { OLD_SITE_URL } from '@/components/site/nav-items';
 import { SiteChrome } from '@/components/site/site-chrome';
 import { SiteFooter } from '@/components/site/site-footer';
 import { getNavItems } from '@/lib/data';
@@ -36,6 +37,20 @@ export default async function SiteLayout({
         {t('common.skipToContent')}
       </a>
       <RouteProgress />
+      <div className="border-b border-divider bg-ink-8 px-4 py-2 text-center text-[13px] text-text md:text-[15px]">
+        {t('banner.before')}
+        <a
+          href={OLD_SITE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-accent underline underline-offset-2"
+        >
+          {OLD_SITE_URL.replace('https://', '')}
+        </a>
+        {t('banner.after')}
+        <br />
+        {t('banner.wip')}
+      </div>
       <SiteChrome locale={locale} navItems={nav.map(({ key, href }) => ({ key, href }))} />
       <Suspense fallback={null}>
         <AnalyticsTracker locale={locale} />

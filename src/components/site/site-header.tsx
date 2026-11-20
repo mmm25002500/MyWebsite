@@ -1,13 +1,13 @@
 'use client';
 
-import { ListIcon, MagnifyingGlassIcon, XIcon } from '@phosphor-icons/react/dist/ssr';
+import { ArrowUpRightIcon, ListIcon, MagnifyingGlassIcon, XIcon } from '@phosphor-icons/react/dist/ssr';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
 import { LocaleSwitch } from '@/components/site/locale-switch';
 import { ThemeToggle } from '@/components/site/theme-toggle';
 import { UserMenu } from '@/components/site/user-menu';
-import type { NavKey } from '@/components/site/nav-items';
+import { OLD_SITE_URL, type NavKey } from '@/components/site/nav-items';
 import type { Locale } from '@/lib/i18n/config';
 import { Link, usePathname } from '@/lib/i18n/routing';
 import { useExitTransition } from '@/lib/hooks/use-exit-transition';
@@ -83,6 +83,15 @@ export function SiteHeader({
                 {t(`nav.${item.key}`)}
               </Link>
             ))}
+            <a
+              href={OLD_SITE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex shrink-0 items-center gap-0.5 whitespace-nowrap text-[15px] text-text hover:text-accent"
+            >
+              {t('nav.oldSite')}
+              <ArrowUpRightIcon size={12} weight="bold" aria-hidden />
+            </a>
           </nav>
 
           <div className="ml-auto flex shrink-0 items-center gap-1.5">
@@ -171,6 +180,17 @@ export function SiteHeader({
                     </Link>
                   </li>
                 ))}
+                <li>
+                  <a
+                    href={OLD_SITE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 rounded-md px-3 py-2.5 text-[16px] text-text hover:bg-ink-8"
+                  >
+                    {t('nav.oldSite')}
+                    <ArrowUpRightIcon size={14} weight="bold" aria-hidden />
+                  </a>
+                </li>
               </ul>
             </nav>
 

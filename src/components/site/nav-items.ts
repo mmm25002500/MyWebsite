@@ -13,3 +13,6 @@ export const navItems = [
 ] as const;
 
 export type NavKey = (typeof navItems)[number]['key'];
+
+/** 舊版網站（old 分支的 Vue 版本）。 */
+export const OLD_SITE_URL = 'https://old.tershi.com';

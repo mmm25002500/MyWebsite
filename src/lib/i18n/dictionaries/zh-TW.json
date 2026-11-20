@@ -9,7 +9,13 @@
     "edition": "zh-TW · 第 3 版",
     "twitter": "@TershiXia"
   },
+  "banner": {
+    "before": "本站為新網站，舊網站在 ",
+    "after": "。",
+    "wip": "本網站還在開發當中，尚未完成。"
+  },
   "nav": {
+    "oldSite": "舊網站",
     "home": "首頁",
     "about": "關於",
     "notes": "筆記",

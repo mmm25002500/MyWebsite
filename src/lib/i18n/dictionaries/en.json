@@ -9,7 +9,13 @@
     "edition": "en · 3rd edition",
     "twitter": "@TershiXia"
   },
+  "banner": {
+    "before": "This is the new site. The old site is at ",
+    "after": ".",
+    "wip": "This site is still under development."
+  },
   "nav": {
+    "oldSite": "Old site",
     "home": "Home",
     "about": "About",
     "notes": "Notes",
